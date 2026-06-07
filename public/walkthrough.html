@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base — The Operating System</title>
+<!--
+  Self-contained exec showcase. Ported from the Base Operating System design system
+  (base-operating-system-design-system/project/ui_kits/showcase). Single file so it
+  opens directly in a browser over file:// — no server, no local module fetches.
+  React + Babel load from CDN (https). Every diagram is inline SVG; no external assets.
+  All figures are illustrative / strawman — to validate in discovery. Not live Base data.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap');
+
+  :root {
+    --paper: #000000;
+    --ink: #FFE2C0;
+    --soft: #0E1622;
+    --navy: #131F30;
+    --line: rgba(255, 226, 192, 0.20);
+    --accent: #BF344E;
+    --muted: rgba(255, 226, 192, 0.60);
+    --font-serif: "Forum", Georgia, "Times New Roman", serif;
+    --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+  .aurora-floor {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 70vh; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(80% 60% at 8% 122%, rgba(191,52,78,0.55) 0%, rgba(191,52,78,0) 55%),
+      radial-gradient(80% 60% at 92% 122%, rgba(46,139,139,0.5) 0%, rgba(46,139,139,0) 55%);
+  }
+  #root { position: relative; z-index: 1; }
+
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 50; transition: width .1s linear; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 72px); }
+  section[data-screen-label] { padding: clamp(48px, 8vh, 104px) 0; scroll-margin-top: 12px; }
+  section.hero-sec { padding-top: 0; }
+
+  .ghost-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 26px;
+    border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--ink);
+    font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .ghost-pill:hover { border-color: var(--accent); background: rgba(191,52,78,0.12); }
+
+  @keyframes lc-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes lc-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+  @media (max-width: 900px) { .dotnav { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .progress { transition: none; }
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="aurora-floor" aria-hidden="true"></div>
+<div id="root"></div>
+
+<!-- ============ data: palette, lifecycle, roles, routing, KPIs ============ -->
+<script type="text/babel">
+const T = {
+  paper:  "#000000", ink: "#FFE2C0", accent: "#BF344E", muted: "rgba(255,226,192,0.60)",
+  soft:   "#0E1622", line: "rgba(255,226,192,0.20)", amber: "#D6A85F", green: "#3FA66B",
+  navy:   "#131F30",
+  body:   "rgba(255,226,192,0.88)",
+  onRole: "#FFF4E6",
+  teal:   "#2E8B8B",
+  role: {
+    partnerships: "#2E8B8B", producer: "#BF344E", host: "#9B6FB0",
+    finance: "#3FA66B", cityManager: "#D6A85F",
+  },
+  tint: {
+    partnerships: "rgba(46,139,139,0.16)", producer: "rgba(191,52,78,0.16)", host: "rgba(155,111,176,0.18)",
+    finance: "rgba(63,166,107,0.16)", cityManager: "rgba(214,168,95,0.16)", amber: "rgba(214,168,95,0.16)",
+  },
+  aurora: "linear-gradient(105deg,#BF344E 0%,#5B2E5A 42%,#1E3A52 64%,#2E8B8B 100%)",
+  auroraGlow: "radial-gradient(120% 95% at 12% 116%, rgba(191,52,78,0.5) 0%, rgba(191,52,78,0) 48%), radial-gradient(120% 95% at 92% 116%, rgba(46,139,139,0.5) 0%, rgba(46,139,139,0) 50%)",
+  serif: '"Forum", Georgia, "Times New Roman", serif',
+  sans: '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
+  mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+};
+
+const LANES = [
+  { key: "partnerships", label: "Partnerships" },
+  { key: "producer",     label: "Producer" },
+  { key: "host",         label: "On-site Host" },
+  { key: "finance",      label: "Finance" },
+  { key: "cityManager",  label: "City Manager" },
+];
+
+const STATES = [
+  { name: "Sourced", lane: "partnerships",
+    gateIn: "city_id + demand / quarterly-target reference + venue-type target",
+    sla: "pipeline intake" },
+  { name: "Drafted", lane: "producer",
+    gateIn: "≥1 candidate venue (venue_id, capacity, rate range) + city_id + date window + demand signal",
+    sla: "3 business days from Sourced" },
+  { name: "Venue-Requested", lane: "partnerships",
+    gateIn: "locked spec — capacity target, theme, date (≤2 candidates), member_cost, cost-to-Base ceiling, run-of-show v0, required-venue list — sent to all required venues",
+    sla: "spec lock + outreach ≤5 biz days; floor T-28d" },
+  { name: "Venue-Booked", lane: "partnerships",
+    gateIn: "all required venues ≥ Soft-Held: availability + soft hold + draft terms + rate quote (per venue)",
+    sla: "T-21d" },
+  { name: "Confirmed", lane: "producer", hardCheckpoint: true,
+    gateIn: "every required venue SIGNED + host assigned (if required) + run-of-show v1 (all-green)",
+    sla: "T-7d" },
+  { name: "Run", lane: "host",
+    gateIn: "day-of pack: final RSVP/headcount, run-of-show v2, host briefed, venue day-of contact, materials/AV checklist, deposit sent/scheduled",
+    sla: "pack complete T-24h; fires at event start" },
+  { name: "Reconciled", lane: "finance",
+    gateIn: "close-out: actual attendance, incident log, all per-venue receipts/invoices, host sign-off, damage/overage note",
+    sla: "receipts ≤5 biz days post-event" },
+  { name: "Closed", lane: "cityManager",
+    gateIn: "costs matched to receipts + paid, cost-to-Base vs budget variance, member revenue reconciled, postmortem note, venue reliability_score updated",
+    sla: "≤10 biz days post-event" },
+];
+
+const SIDE_STATES = [
+  { name: "Rescheduled", lane: "producer", entersFrom: "Confirmed / Booked", returnsTo: "Venue-Requested",
+    gateIn: "new date/window + reason + venue re-availability check + member-comms (if ≥Confirmed) + which agreements carry vs void",
+    sla: "re-request ≤2 biz days" },
+  { name: "Cancelled", lane: "cityManager", entersFrom: "any state",
+    gateIn: "reason code + current-state snapshot + venue notifications sent + sunk-cost/deposit record + member-comms (if ≥Confirmed)",
+    sla: "venue + member notice ≤24h of decision" },
+];
+
+const UNKNOWNS = [
+  { n: "01", q: "What are today's actual confirmation steps, lead times, and failure rate?", why: "the baseline we're improving against" },
+  { n: "02", q: "Events per month per city now, the 12-month projection, and same-night concurrency?", why: 'the real shape of "scale"' },
+  { n: "03", q: "Is there a canonical venue list with stable IDs today, or is it scattered across tools?", why: "sizes root cause #1" },
+  { n: "04", q: "What currently counts as an exception, who gets called, and what's the expected response time?", why: "shapes the escalation path" },
+  { n: "05", q: "Are hosts internal staff, external experts, or both — and are they re-booked?", why: "shapes the data model" },
+];
+
+const ENTITIES = [
+  { label: "Event", key: "event_id", atom: true },
+  { label: "Venue", key: "venue_id" },
+  { label: "City", key: "city_id" },
+  { label: "Host", key: "host_id" },
+  { label: "Venue Comms Thread", key: "thread_id" },
+  { label: "Receipt", key: "receipt_id" },
+  { label: "Incident", key: "incident_id" },
+];
+
+const KPIS = [
+  { label: "Confirmation by T-7", value: 98.4, unit: "%", target: "≥ 98%", trend: "+1.2 vs last mo" },
+  { label: "Receipt SLA (≤ 5 biz days)", value: 94.0, unit: "%", target: "≥ 95%", trend: "+3.0 vs last mo" },
+  { label: "Override rate (system health)", value: 6.2, unit: "%", target: "watch trend", trend: "-1.4 vs last mo" },
+  { label: "Events this month", value: 312, unit: "", target: "toward 500/mo", trend: "+28 vs last mo" },
+];
+
+const CITY_VOLUME = [
+  { city: "NYC", v: 74 }, { city: "LA", v: 61 }, { city: "Chicago", v: 48 },
+  { city: "Austin", v: 39 }, { city: "Miami", v: 33 }, { city: "Seattle", v: 27 },
+  { city: "Denver", v: 18 }, { city: "Atlanta", v: 12 },
+];
+
+const OVERRIDE_TREND = [
+  { m: "Jan", rate: 9.1 }, { m: "Feb", rate: 8.3 }, { m: "Mar", rate: 7.6 },
+  { m: "Apr", rate: 7.0 }, { m: "May", rate: 6.5 }, { m: "Jun", rate: 6.2 },
+];
+
+const CAPABILITIES = [
+  { n: 1, t: "Categorize & route venue comms", d: "A rule over message category × event state → the state's owner." },
+  { n: 2, t: "Centralized partner-comms view", d: "A query over the one event record (keyed event_id + venue_id), not a new inbox." },
+  { n: 3, t: "Automated confirmation follow-ups", d: "A rule over the gated state machine — it already knows what's unconfirmed, and by when." },
+  { n: 4, t: "Automated receipt collection", d: "Automating a defined step — the reconciliation checkpoint already defines what's owed." },
+  { n: 5, t: "Last-minute change support", d: "The sanctioned override path + Incident + reschedule/cancel states, designed in." },
+];
+
+const FAILURE_MODES = [
+  { t: "Plan for 80, room holds 50", d: "A venue's change lands in an inbox and never reaches the record. The signature failure — structurally killed by promote-don't-strand.", guard: "Promote to the spine" },
+  { t: "The dark venue", d: "A multi-venue event reads \"confirmed\" while one required room quietly fell through.", guard: "All-green roll-up gate" },
+  { t: "Knowledge silo (HQ ↔ city)", d: "A lesson learned in one city never spreads; a new city reinvents the system.", guard: "Doctrine store + SOP loop" },
+  { t: "Federated-SoT join drift", d: "Spine and financial book disagree on the budget; an event \"closes\" with money still owed.", guard: "Reconciliation join gate" },
+];
+
+const OVERRIDE_STEPS = [
+  { n: 1, title: "Gate unmet, event must proceed", body: 'The checkpoint says "you cannot proceed" — but the event is tomorrow.' },
+  { n: 2, title: "Authorized role force-advances", body: "City Manager (HQ / Finance for money) force-advances past the unmet checkpoint." },
+  { n: 3, title: "Opens an Incident + at-risk flag", body: 'Logs which checkpoint, who authorized it, and why; the event carries a visible "advanced-on-override" flag.' },
+  { n: 4, title: "Mandatory back-fill before Close", body: "The skipped info must be supplied at reconciliation — the event cannot close until the gap is back-filled." },
+];
+const HARD_GATES = [
+  "No money goes out without a signed agreement.",
+  'Public ticket sales open only against an actually-signed venue — never a force-advanced "confirmed."',
+  "No event closes with an open override or unreconciled money — an override is a deferral, not a waiver.",
+];
+
+const BREAKPOINTS = [
+  { vol: 20, load: 14, note: "manual chase OK" },
+  { vol: 80, load: 41, note: "reconciliation strain" },
+  { vol: 160, load: 63, note: "concurrency / escalation limit" },
+  { vol: 300, load: 82, note: "knowledge-consistency drift" },
+  { vol: 500, load: 97, note: "target — structural ceiling" },
+];
+
+Object.assign(window, {
+  T, LANES, STATES, SIDE_STATES, UNKNOWNS, ENTITIES, KPIS, CITY_VOLUME, OVERRIDE_TREND, CAPABILITIES,
+  FAILURE_MODES, OVERRIDE_STEPS, HARD_GATES, BREAKPOINTS,
+});
+</script>
+
+<!-- ============ primitives: reveal + nav + chips + tiles ============ -->
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(
+    () => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  useEffect(() => {
+    const mq = matchMedia("(prefers-reduced-motion: reduce)");
+    const on = () => setReduced(mq.matches);
+    mq.addEventListener?.("change", on);
+    return () => mq.removeEventListener?.("change", on);
+  }, []);
+  return reduced;
+}
+
+function Reveal({ children, delay = 0, y = 16, as = "div", style, ...rest }) {
+  const reduced = useReducedMotion();
+  const ref = useRef(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    if (reduced) { setShown(true); return; }
+    const el = ref.current;
+    if (!el) return;
+    let done = false;
+    const check = () => {
+      if (done || !ref.current) return;
+      const r = ref.current.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (r.top < vh * 0.9 && r.bottom > 0) { done = true; setShown(true); cleanup(); }
+    };
+    const cleanup = () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    check();
+    const raf = requestAnimationFrame(check);
+    return () => { cleanup(); cancelAnimationFrame(raf); };
+  }, [reduced]);
+  const Tag = as;
+  return (
+    <Tag ref={ref} style={{
+      opacity: shown ? 1 : 0,
+      transform: shown ? "none" : `translateY(${y}px)`,
+      transition: reduced ? "none" : `opacity .6s cubic-bezier(.22,1,.36,1) ${delay}s, transform .6s cubic-bezier(.22,1,.36,1) ${delay}s`,
+      ...style,
+    }} {...rest}>{children}</Tag>
+  );
+}
+
+function Eyebrow({ children, tone = "accent", style }) {
+  return <div style={{
+    fontFamily: T.sans, fontSize: 13, fontWeight: 700, letterSpacing: "0.16em",
+    textTransform: "uppercase", color: tone === "muted" ? T.muted : T.accent, ...style,
+  }}>{children}</div>;
+}
+
+function Badge({ children, tone = "neutral", uppercase, style }) {
+  const map = {
+    neutral: { fg: T.ink, bg: T.soft, bd: T.line },
+    muted: { fg: T.muted, bg: "transparent", bd: T.line },
+    accent: { fg: T.accent, bg: T.tint.producer, bd: "transparent" },
+    amber: { fg: T.amber, bg: T.tint.amber, bd: "transparent" },
+    green: { fg: T.green, bg: T.tint.finance, bd: "transparent" },
+  }[tone] || {};
+  return <span style={{
+    display: "inline-flex", alignItems: "center", fontFamily: T.sans, fontSize: 11.5, fontWeight: 700,
+    letterSpacing: uppercase ? "0.08em" : "0.01em", textTransform: uppercase ? "uppercase" : "none",
+    lineHeight: 1, padding: "4px 9px", borderRadius: 999, color: map.fg, background: map.bg,
+    border: `1px solid ${map.bd}`, whiteSpace: "nowrap", ...style,
+  }}>{children}</span>;
+}
+
+function RoleChip({ role = "producer", label, variant = "soft", style }) {
+  const solid = T.role[role], tint = T.tint[role];
+  const filled = variant === "filled";
+  const names = { partnerships: "Partnerships", producer: "Producer", host: "On-site Host", finance: "Finance", cityManager: "City Manager" };
+  return <span style={{
+    display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.sans, fontSize: 13, fontWeight: 600,
+    lineHeight: 1, padding: "5px 11px", borderRadius: 999, color: filled ? T.onRole : solid,
+    background: filled ? solid : tint, border: filled ? "none" : `1px solid ${solid}`, ...style,
+  }}>
+    <span style={{ width: 7, height: 7, borderRadius: "50%", background: filled ? T.onRole : solid, opacity: filled ? .9 : 1 }} />
+    {label || names[role]}
+  </span>;
+}
+
+function EntityChip({ label, stableKey, atom, style }) {
+  return <span style={{
+    display: "inline-flex", alignItems: "center", gap: 8, padding: atom ? "9px 15px" : "6px 12px",
+    borderRadius: 10, background: atom ? T.accent : "transparent", border: atom ? "none" : `1px solid ${T.ink}`,
+    color: atom ? T.onRole : T.ink, fontFamily: T.sans, fontWeight: atom ? 700 : 600, fontSize: atom ? 16 : 14, ...style,
+  }}>
+    {label}
+    {stableKey && <code style={{
+      fontFamily: T.mono, fontSize: atom ? 12.5 : 11.5, fontWeight: 400, padding: "2px 6px", borderRadius: 3,
+      background: atom ? "rgba(255,255,255,.18)" : T.soft, color: atom ? "rgba(255,255,255,.92)" : T.muted,
+    }}>{stableKey}</code>}
+  </span>;
+}
+
+function StatTile({ label, value, unit = "", target, trend, emphasis }) {
+  const reduced = useReducedMotion();
+  const ref = useRef(null);
+  const [n, setN] = useState(reduced ? value : 0);
+  useEffect(() => {
+    if (reduced) { setN(value); return; }
+    const el = ref.current; if (!el) return;
+    let raf, started = false;
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting && !started) {
+        started = true; const t0 = performance.now(), dur = 1100;
+        const tick = (t) => { const p = Math.min(1, (t - t0) / dur); const e2 = 1 - Math.pow(1 - p, 3);
+          setN(value * e2); if (p < 1) raf = requestAnimationFrame(tick); };
+        raf = requestAnimationFrame(tick); io.disconnect();
+      }
+    }), { threshold: 0.4 });
+    io.observe(el);
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+  }, [reduced, value]);
+  const isInt = Number.isInteger(value);
+  const disp = isInt ? Math.round(n) : n.toFixed(1);
+  const up = trend && trend.trim().startsWith("+"), down = trend && trend.trim().startsWith("-");
+  return <div ref={ref} style={{
+    background: T.navy, border: `1px solid ${emphasis ? T.accent : T.line}`, borderRadius: 14,
+    padding: "18px 20px", boxShadow: emphasis ? "0 0 0 1px rgba(191,52,78,0.25)" : "none",
+  }}>
+    <div style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.muted, lineHeight: 1.3, minHeight: 34 }}>{label}</div>
+    <div style={{ display: "flex", alignItems: "baseline", gap: 3, marginTop: 10 }}>
+      <span style={{ fontFamily: T.serif, fontSize: 38, fontWeight: 700, letterSpacing: "-0.02em", color: emphasis ? T.accent : T.ink, lineHeight: 1 }}>{disp}</span>
+      {unit && <span style={{ fontFamily: T.serif, fontSize: 22, color: T.muted }}>{unit}</span>}
+    </div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12, gap: 8 }}>
+      <span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.muted }}>{target}</span>
+      {trend && <span style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 600, color: up ? T.green : down ? T.accent : T.muted }}>{trend}</span>}
+    </div>
+  </div>;
+}
+
+function Callout({ children, tone = "accent", chip, style }) {
+  const tones = {
+    accent: { c: T.accent, t: T.tint.producer }, assumption: { c: T.muted, t: T.soft },
+    amber: { c: T.amber, t: T.tint.amber }, green: { c: T.green, t: T.tint.finance },
+  }[tone];
+  return <aside style={{
+    borderLeft: `3px solid ${tones.c}`, background: tones.t, borderRadius: 6, padding: "16px 20px",
+    color: tone === "assumption" ? T.muted : T.body, fontFamily: T.sans,
+    fontSize: tone === "assumption" ? 14 : 16, lineHeight: 1.5, ...style,
+  }}>
+    {chip && <span style={{ display: "inline-block", fontFamily: T.sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: tones.c, marginBottom: 8 }}>{chip}</span>}
+    <div>{children}</div>
+  </aside>;
+}
+
+function DotNav({ sections, active, onJump }) {
+  return <nav aria-label="Sections" style={{
+    position: "fixed", right: 22, top: "50%", transform: "translateY(-50%)", zIndex: 40,
+    display: "flex", flexDirection: "column", gap: 14,
+  }} className="dotnav">
+    {sections.map((s, i) => (
+      <button key={s.id} onClick={() => onJump(s.id)} title={s.label} aria-label={s.label}
+        style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: 0, cursor: "pointer", padding: 0, flexDirection: "row-reverse" }}>
+        <span style={{
+          width: active === i ? 11 : 8, height: active === i ? 11 : 8, borderRadius: "50%",
+          background: active === i ? T.accent : "transparent", border: `1.5px solid ${active === i ? T.accent : T.muted}`,
+          transition: "all .25s ease", display: "block",
+        }} />
+        <span style={{
+          fontFamily: T.sans, fontSize: 11, fontWeight: 600, color: T.muted, whiteSpace: "nowrap",
+          opacity: active === i ? 1 : 0, transform: active === i ? "none" : "translateX(6px)", transition: "all .25s ease",
+        }}>{s.label}</span>
+      </button>
+    ))}
+  </nav>;
+}
+
+Object.assign(window, { useReducedMotion, Reveal, Eyebrow, Badge, RoleChip, EntityChip, StatTile, Callout, DotNav });
+</script>
+
+<!-- ============ Lifecycle swimlane (Section 2 centerpiece) ============ -->
+<script type="text/babel">
+const { useState: useStateLC, useMemo } = React;
+
+const LC = { LABEL_W: 138, COL_W: 116, NW: 100, NH: 46, HEADER_H: 30, LANE_H: 78 };
+
+function Lifecycle() {
+  const reduced = useReducedMotion();
+  const [step, setStep] = useStateLC(4);
+  const activeIndex = step - 1;
+  const W = LC.LABEL_W + STATES.length * LC.COL_W;
+  const H = LC.HEADER_H + LANES.length * LC.LANE_H;
+
+  const laneY = (laneKey) => {
+    const L = LANES.findIndex((l) => l.key === laneKey);
+    return LC.HEADER_H + L * LC.LANE_H + LC.LANE_H / 2;
+  };
+  const nodeX = (i) => LC.LABEL_W + i * LC.COL_W + LC.COL_W / 2;
+
+  const nodes = useMemo(() => STATES.map((s, i) => ({
+    ...s, i, x: nodeX(i), y: laneY(s.lane), color: T.role[s.lane],
+  })), []);
+
+  const active = STATES[activeIndex];
+
+  const edgePath = (a, b) => {
+    const x1 = a.x + LC.NW / 2, x2 = b.x - LC.NW / 2;
+    const mx = (x1 + x2) / 2;
+    if (a.y === b.y) return `M ${x1} ${a.y} L ${x2} ${b.y}`;
+    return `M ${x1} ${a.y} L ${mx} ${a.y} L ${mx} ${b.y} L ${x2} ${b.y}`;
+  };
+
+  return (
+    <div>
+      <div style={{ background: T.navy, color: T.ink, borderRadius: 12, padding: "16px 22px", marginBottom: 22, border: `1px solid ${T.line}` }}>
+        <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 400, letterSpacing: "0.02em", lineHeight: 1.3, textTransform: "uppercase" }}>
+          a handoff = a state change + a required data package + a named owner + a due date
+        </div>
+        <div style={{ fontFamily: T.sans, fontSize: 13, color: T.muted, marginTop: 6 }}>
+          one accountable owner per state.
+        </div>
+      </div>
+
+      <div style={{ overflowX: "auto", paddingBottom: 4 }}>
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 880, display: "block" }} role="img"
+          aria-label="Gated event lifecycle swimlane">
+          <defs>
+            <marker id="lc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill={T.muted} />
+            </marker>
+            <marker id="lc-arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill={T.role.cityManager} />
+            </marker>
+          </defs>
+
+          {LANES.map((l, idx) => {
+            const y = LC.HEADER_H + idx * LC.LANE_H;
+            return (
+              <g key={l.key}>
+                <rect x="0" y={y} width={W} height={LC.LANE_H} fill={idx % 2 ? "transparent" : "rgba(0,0,0,0.012)"} />
+                <rect x="0" y={y} width={LC.LABEL_W} height={LC.LANE_H} fill={T.tint[l.key]} opacity="0.5" />
+                <rect x={LC.LABEL_W - 3} y={y + 10} width="3" height={LC.LANE_H - 20} rx="1.5" fill={T.role[l.key]} />
+                <text x="18" y={y + LC.LANE_H / 2} dominantBaseline="middle" fill={T.role[l.key]}
+                  style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 700 }}>{l.label}</text>
+                <line x1="0" y1={y} x2={W} y2={y} stroke={T.line} strokeWidth="1" />
+              </g>
+            );
+          })}
+          <text x="18" y={LC.HEADER_H / 2 + 2} dominantBaseline="middle" fill={T.muted}
+            style={{ fontFamily: T.sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em" }}>OWNER ↓ / LIFECYCLE →</text>
+
+          {nodes.slice(0, -1).map((a, i) => {
+            const b = nodes[i + 1];
+            const isCheckpoint = b.hardCheckpoint;
+            const isActiveEdge = (i + 1) === activeIndex;
+            const d = edgePath(a, b);
+            const stroke = isCheckpoint ? T.role.cityManager : (i + 1 <= activeIndex ? T.role[a.lane] : T.line);
+            return (
+              <g key={`e${i}`}>
+                <path d={d} fill="none" stroke={stroke} strokeWidth={isCheckpoint ? 3.4 : 2}
+                  markerEnd={isCheckpoint ? "url(#lc-arrow-gold)" : "url(#lc-arrow)"}
+                  opacity={i + 1 <= activeIndex || isCheckpoint ? 1 : 0.5} />
+                {isActiveEdge && !reduced && (
+                  <path d={d} fill="none" stroke={isCheckpoint ? T.role.cityManager : T.accent} strokeWidth={isCheckpoint ? 3.4 : 2.4}
+                    strokeDasharray="10 240" strokeLinecap="round">
+                    <animate attributeName="stroke-dashoffset" from="250" to="0" dur="0.9s" repeatCount="indefinite" />
+                  </path>
+                )}
+              </g>
+            );
+          })}
+
+          {(() => {
+            const cp = nodes.find((n) => n.hardCheckpoint);
+            const prev = nodes[cp.i - 1];
+            const mx = (prev.x + LC.NW / 2 + cp.x - LC.NW / 2) / 2;
+            const topY = Math.min(prev.y, cp.y) - 18;
+            return (
+              <g>
+                <rect x={mx - 7} y={Math.min(prev.y, cp.y) - 8} width="14" height={Math.abs(cp.y - prev.y) + 16} rx="3"
+                  fill="none" stroke={T.role.cityManager} strokeWidth="2" opacity="0.65" />
+                <text x={mx} y={topY - 6} textAnchor="middle" fill={T.role.cityManager}
+                  style={{ fontFamily: T.sans, fontSize: 11.5, fontWeight: 700 }}>Booked ≠ Confirmed</text>
+              </g>
+            );
+          })()}
+
+          {nodes.map((n) => {
+            const done = n.i < activeIndex;
+            const isActive = n.i === activeIndex;
+            const future = n.i > activeIndex;
+            return (
+              <g key={n.name} transform={`translate(${n.x - LC.NW / 2}, ${n.y - LC.NH / 2})`}
+                style={{ transition: reduced ? "none" : "transform .35s cubic-bezier(.22,1,.36,1)" }}>
+                <rect width={LC.NW} height={LC.NH} rx="9"
+                  fill={future ? T.soft : n.color}
+                  stroke={future ? n.color : (isActive ? T.ink : "none")}
+                  strokeWidth={future ? 1.4 : (isActive ? 2 : 0)}
+                  opacity={future ? 0.92 : 1}
+                  style={{ filter: isActive && !reduced ? `drop-shadow(0 0 14px ${n.color})` : "none" }} />
+                <text x={LC.NW / 2} y={LC.NH / 2} textAnchor="middle" dominantBaseline="middle"
+                  fill={future ? n.color : T.onRole}
+                  style={{ fontFamily: T.sans, fontSize: 12.5, fontWeight: 700 }}>{n.name}</text>
+                {done && <circle cx={LC.NW - 11} cy={11} r="6" fill={T.onRole} />}
+                {done && <path d={`M ${LC.NW - 14} 11 l 2.2 2.4 l 4-4.6`} fill="none" stroke={n.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+        padding: "12px 16px", background: T.soft, border: `1px solid ${T.line}`, borderRadius: 999, marginTop: 18 }}>
+        <button type="button" onClick={() => setStep((s) => Math.max(1, s - 1))} disabled={step <= 1} style={stepBtn(step <= 1)}>← Back</button>
+        <div style={{ textAlign: "center", lineHeight: 1.2 }}>
+          <div style={{ fontFamily: T.mono, fontSize: 11, color: T.muted, letterSpacing: "0.04em" }}>Step {step} of {STATES.length}</div>
+          <div style={{ fontFamily: T.sans, fontSize: 14, fontWeight: 700, color: T.ink }}>{active.name}</div>
+        </div>
+        <button type="button" onClick={() => setStep((s) => Math.min(STATES.length, s + 1))} disabled={step >= STATES.length} style={stepBtn(step >= STATES.length)}>Advance →</button>
+      </div>
+
+      <div style={{ marginTop: 16, background: T.navy, border: `1px solid ${active.hardCheckpoint ? T.role.cityManager : T.line}`,
+        borderRadius: 12, padding: "18px 20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
+          <Eyebrow tone="muted">Entry gate → {active.name}</Eyebrow>
+          <RoleChip role={active.lane} />
+          {active.hardCheckpoint && <Badge tone="amber" uppercase>Hard checkpoint</Badge>}
+        </div>
+        <div style={{ fontFamily: T.sans, fontSize: 15.5, color: T.body, lineHeight: 1.5 }}>{active.gateIn}</div>
+        <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.muted }}>SLA</span>
+          <Badge tone="neutral">{active.sla}</Badge>
+          <Badge tone="muted" uppercase>strawman, to validate in discovery</Badge>
+        </div>
+        {active.hardCheckpoint && (
+          <div style={{ marginTop: 12, fontFamily: T.sans, fontSize: 13.5, color: T.role.cityManager }}>
+            <strong>Booked ≠ Confirmed</strong> — soft / verbal hold vs a signed agreement + host + run-of-show. This is where Base's confirmations fail today.
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14, marginTop: 16 }}>
+        {SIDE_STATES.map((s) => (
+          <div key={s.name} style={{ background: T.soft, border: `1px dashed ${T.role[s.lane]}`, borderRadius: 12, padding: "14px 16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
+              <RoleChip role={s.lane} label={s.name} />
+              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.muted }}>
+                {s.entersFrom} →{s.returnsTo ? ` re-enters ${s.returnsTo}` : " off-ramp"}
+              </span>
+            </div>
+            <div style={{ fontFamily: T.sans, fontSize: 13, color: T.body, lineHeight: 1.45 }}>{s.gateIn}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function stepBtn(disabled) {
+  return {
+    fontFamily: T.sans, fontSize: 14, fontWeight: 600, padding: "9px 18px", borderRadius: 999,
+    border: `1px solid ${T.line}`, background: disabled ? "transparent" : T.navy,
+    color: disabled ? T.line : T.ink, cursor: disabled ? "default" : "pointer",
+  };
+}
+
+Object.assign(window, { Lifecycle });
+</script>
+
+<!-- ============ Sections 1–3: Hero, Discovery, Framework ============ -->
+<script type="text/babel">
+function TriangleSun({ size = 52 }) {
+  return (
+    <svg width={size} height={size * 0.9} viewBox="0 0 120 108" fill="none" aria-label="Base mark">
+      <path d="M60 10 L106 94 L14 94 Z" stroke={T.ink} strokeWidth="3.5" strokeLinejoin="round" fill="none" />
+      <circle cx="71" cy="58" r="20" fill={T.ink} />
+    </svg>
+  );
+}
+
+function Hero() {
+  const reduced = useReducedMotion();
+  const stage = () => ({});
+  return (
+    <div style={{ position: "relative", minHeight: "84vh", display: "flex", flexDirection: "column",
+      justifyContent: "flex-start", alignItems: "center", textAlign: "center",
+      paddingTop: "clamp(48px, 11vh, 150px)", paddingBottom: "clamp(48px, 9vh, 110px)" }}>
+      <div style={{ position: "relative", maxWidth: 880, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ ...stage(0), marginBottom: 8 }}><TriangleSun size={60} /></div>
+        <div style={{ ...stage(0.08), display: "flex", alignItems: "center", gap: 10, width: "min(520px, 80%)", color: T.line, marginBottom: 34 }}>
+          <span style={{ flex: 1, height: 1, background: "currentColor" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", border: `1px solid ${T.line}` }} />
+          <span style={{ flex: 1, height: 1, background: "currentColor" }} />
+        </div>
+        <div style={{ ...stage(0.12) }}><Eyebrow>An Operating Framework for Base</Eyebrow></div>
+        <h1 style={{ ...stage(0.2), fontFamily: T.serif, fontSize: "clamp(30px, 4.4vw, 48px)", fontWeight: 400,
+          lineHeight: 1.22, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, margin: "18px 0 0" }}>
+          Operating cost grows{" "}
+          <span style={{ color: T.accent }}>slower than event volume</span>
+        </h1>
+        <p style={{ ...stage(0.28), fontFamily: T.sans, fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.55, color: T.body,
+          marginTop: 26, marginBottom: 0, maxWidth: "52ch" }}>
+          A reasoning-level systems design for the team scaling Base from roughly 20 events a month to 500+ across
+          dozens of cities — written for the operators who will run it, not the tools they'll buy.
+        </p>
+        <div style={{ ...stage(0.4), marginTop: 36 }}>
+          <a className="ghost-pill" href="#" onClick={(e) => e.preventDefault()}>Great Minds Meet Here</a>
+        </div>
+      </div>
+      <div aria-hidden="true" style={{ position: "relative", marginTop: 48, color: T.muted,
+        animation: reduced ? "none" : "lc-bob 2s ease-in-out infinite" }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 9l6 6 6-6" /></svg>
+      </div>
+    </div>
+  );
+}
+
+function Discovery() {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>01 · Problem Definition</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12 }}>
+          The gaps in the model are the discovery interview.
+        </h2>
+        <p style={{ fontFamily: T.sans, fontSize: 20, lineHeight: 1.45, color: T.body, marginTop: 16, maxWidth: "60ch" }}>
+          These are not answers. Each is a real, human-held unknown we would put on the table and validate in
+          discovery before designing against it.
+        </p>
+      </Reveal>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginTop: 32 }}>
+        {UNKNOWNS.map((u, i) => <UnknownCard key={u.n} u={u} delay={i * 0.06} />)}
+      </div>
+    </div>
+  );
+}
+
+function UnknownCard({ u, delay }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <Reveal delay={delay}>
+      <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+        style={{ position: "relative", background: T.navy, border: `1px solid ${T.line}`, borderRadius: 14,
+          padding: "22px 24px", overflow: "hidden", height: "100%",
+          transform: hover ? "translateY(-4px)" : "none", boxShadow: hover ? `0 0 0 1px ${T.line}, 0 14px 40px rgba(0,0,0,.5)` : "none",
+          transition: "transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s cubic-bezier(.22,1,.36,1)" }}>
+        <span style={{ position: "absolute", top: 14, right: 18, fontFamily: T.serif, fontSize: 56, fontWeight: 400,
+          color: T.line, lineHeight: 1 }}>{u.n}</span>
+        <span style={{ display: "inline-block", fontFamily: T.sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
+          textTransform: "uppercase", color: hover ? T.accent : T.muted, transition: "color .25s" }}>
+          Unknown — to validate in discovery
+        </span>
+        <p style={{ fontFamily: T.sans, fontSize: 17, lineHeight: 1.45, color: T.ink, margin: "14px 0 0", maxWidth: "34ch", position: "relative" }}>{u.q}</p>
+        <p style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, margin: "10px 0 0", fontStyle: "italic" }}>{u.why}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+function Framework() {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>03 · Data &amp; Process Architecture</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12 }}>
+          Sort before you solve.
+        </h2>
+        <p style={{ fontFamily: T.sans, fontSize: 20, lineHeight: 1.45, color: T.body, marginTop: 16, maxWidth: "62ch" }}>
+          The seven challenges Base listed are not seven problems. They are two root causes and their symptoms.
+          Fix the two roots and the symptoms dissolve — mopping the floor while the tap runs is not a plan.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.08} style={{ marginTop: 30 }}><RootCause /></Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 22 }}>
+        <Callout tone="accent">
+          No canonical record and no clear ownership are the roots. Manual follow-up, dropped information, and
+          undefined escalation are what those roots produce.
+        </Callout>
+      </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 30 }}>
+        <h3 style={{ fontFamily: T.serif, fontSize: 28, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>The Event is the atom.</h3>
+        <p style={{ fontFamily: T.sans, fontSize: 17, lineHeight: 1.5, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
+          Communications, costs, hosts, and exceptions all attach downstream — they cannot stand alone. Every entity
+          carries a stable system key independent of its display name, because names collide and change: that is exactly
+          how "one venue, five spellings" reappears at the data layer.
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 20 }}>
+          {ENTITIES.map((e) => <EntityChip key={e.label} label={e.label} stableKey={e.key} atom={e.atom} />)}
+        </div>
+        <OneToMany />
+        <p style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, marginTop: 6, maxWidth: "60ch" }}>
+          Event ↔ Venue is one-to-many, so a multi-venue event can never hide a single failing location.
+        </p>
+      </Reveal>
+    </div>
+  );
+}
+
+function RootCause() {
+  const challenges = [
+    "#1 Info across systems", "#2 Event vs operational data", "#3 Ownership unclear",
+    "#4 Manual follow-up", "#5 Dropped / stale info", "#6 Undefined escalation", "#7 Knowledge in individuals",
+  ];
+  const W = 980, chH = 30, chGap = 11, chY = (i) => 16 + i * (chH + chGap);
+  const roots = [
+    { label: "No canonical record", y: chY(1) + 14, feeders: [0, 1] },
+    { label: "No clear ownership", y: chY(5) + 0, feeders: [2, 6] },
+  ];
+  const symptoms = [{ label: "#4 Manual follow-up" }, { label: "#5 Dropped / stale info" }, { label: "#6 Undefined escalation" }];
+  const symY = (j) => 40 + j * 78;
+  const cX = 20, cW = 196, rX = 420, rW = 188, rH = 52, sX = 752, sW = 208, sH = 44;
+  const H = chY(6) + chH + 16;
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 760, display: "block" }} role="img" aria-label="Root-cause flow">
+        <defs>
+          <marker id="rc-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill={T.muted} /></marker>
+          <marker id="rc-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill={T.accent} /></marker>
+        </defs>
+        <text x={cX} y={H - 2} fill={T.muted} style={{ fontFamily: T.sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em" }}>7 CHALLENGES</text>
+        <text x={rX} y={H - 2} fill={T.accent} style={{ fontFamily: T.sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em" }}>2 ROOTS</text>
+        <text x={sX} y={H - 2} fill={T.muted} style={{ fontFamily: T.sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em" }}>SYMPTOMS</text>
+
+        {roots.map((r, ri) => r.feeders.map((fi) => (
+          <path key={`c${ri}-${fi}`} d={`M ${cX + cW} ${chY(fi) + chH / 2} C ${cX + cW + 70} ${chY(fi) + chH / 2}, ${rX - 70} ${r.y + rH / 2}, ${rX} ${r.y + rH / 2}`}
+            fill="none" stroke={T.line} strokeWidth="1.6" markerEnd="url(#rc-a)" />
+        )))}
+        {roots.map((r, ri) => symptoms.map((s, sj) => (
+          <path key={`s${ri}-${sj}`} d={`M ${rX + rW} ${r.y + rH / 2} C ${rX + rW + 70} ${r.y + rH / 2}, ${sX - 70} ${symY(sj) + sH / 2}, ${sX} ${symY(sj) + sH / 2}`}
+            fill="none" stroke={T.accent} strokeWidth="1.4" opacity="0.5" markerEnd="url(#rc-acc)" />
+        )))}
+
+        {challenges.map((c, i) => (
+          <g key={c}>
+            <rect x={cX} y={chY(i)} width={cW} height={chH} rx="7" fill={T.soft} stroke={T.line} />
+            <text x={cX + 12} y={chY(i) + chH / 2} dominantBaseline="middle" fill={T.ink} style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 600 }}>{c}</text>
+          </g>
+        ))}
+        {roots.map((r) => (
+          <g key={r.label}>
+            <rect x={rX} y={r.y} width={rW} height={rH} rx="9" fill={T.soft} stroke={T.accent} strokeWidth="2" />
+            <text x={rX + rW / 2} y={r.y + rH / 2} textAnchor="middle" dominantBaseline="middle" fill={T.accent} style={{ fontFamily: T.serif, fontSize: 16, fontWeight: 400, letterSpacing: "0.02em" }}>{r.label}</text>
+          </g>
+        ))}
+        {symptoms.map((s, j) => (
+          <g key={s.label}>
+            <rect x={sX} y={symY(j)} width={sW} height={sH} rx="9" fill={T.navy} stroke={T.line} />
+            <text x={sX + sW / 2} y={symY(j) + sH / 2} textAnchor="middle" dominantBaseline="middle" fill={T.body} style={{ fontFamily: T.sans, fontSize: 12.5, fontWeight: 600 }}>{s.label}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function OneToMany() {
+  return (
+    <svg width="280" height="92" viewBox="0 0 280 92" style={{ marginTop: 18 }} role="img" aria-label="Event to Venue one-to-many">
+      <defs><marker id="otm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill={T.accent} /></marker></defs>
+      <rect x="2" y="34" width="64" height="24" rx="6" fill={T.accent} />
+      <text x="34" y="46" textAnchor="middle" dominantBaseline="middle" fill={T.onRole} style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 700 }}>Event</text>
+      {[16, 46, 76].map((cy, i) => (
+        <g key={i}>
+          <path d={`M 66 46 C 130 46, 150 ${cy}, 210 ${cy}`} fill="none" stroke={T.accent} strokeWidth="1.6" markerEnd="url(#otm)" />
+          <rect x="212" y={cy - 11} width="62" height="22" rx="6" fill="none" stroke={T.ink} />
+          <text x="243" y={cy} textAnchor="middle" dominantBaseline="middle" fill={T.ink} style={{ fontFamily: T.sans, fontSize: 11, fontWeight: 600 }}>Venue</text>
+        </g>
+      ))}
+      <text x="138" y="86" textAnchor="middle" fill={T.muted} style={{ fontFamily: T.sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em" }}>ONE-TO-MANY</text>
+    </svg>
+  );
+}
+
+Object.assign(window, { Hero, Discovery, Framework });
+</script>
+
+<!-- ============ Risk Analysis (Q4) + Scalability (Q5) ============ -->
+<script type="text/babel">
+function RiskScale() {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>04–05 · Risk Analysis &amp; Scalability</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.14, maxWidth: "20ch" }}>
+          Scale is a vector — each dimension breaks a different part first.
+        </h2>
+        <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.55, color: T.body, marginTop: 16, maxWidth: "64ch" }}>
+          At ~20 events a month, manual reconciliation survives — people hand-stitch the scattered copies. The failures
+          below are rare enough to absorb. The same per-event gaps compound roughly 25× into systemic failure; what
+          breaks first is the manual reconciliation a working baseline was quietly resting on.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 30 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 14 }}>The failure modes that concern us most</Eyebrow>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+          {FAILURE_MODES.map((f) => (
+            <div key={f.t} style={{ background: T.navy, border: `1px solid ${T.line}`, borderLeft: `3px solid ${T.accent}`, borderRadius: 12, padding: "18px 20px" }}>
+              <div style={{ fontFamily: T.sans, fontSize: 16, fontWeight: 700, color: T.ink }}>{f.t}</div>
+              <div style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, marginTop: 8, lineHeight: 1.5 }}>{f.d}</div>
+              <div style={{ marginTop: 12 }}><Badge tone="green" uppercase>Guard · {f.guard}</Badge></div>
+            </div>
+          ))}
+        </div>
+        <Callout tone="assumption" style={{ marginTop: 16 }}>
+          A gate is a hardened dependency. Risks cluster at the seams — source-of-truth joins and ownership handoffs —
+          and every seam already carries a gate. <strong style={{ color: T.ink }}>The risk map and the system design are the same map, two views.</strong>
+        </Callout>
+      </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 34 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 14 }}>20 → 500 breakpoint watch</Eyebrow>
+        <div style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 14, padding: "22px 24px" }}>
+          <BreakpointChart data={BREAKPOINTS} />
+          <div style={{ fontFamily: T.sans, fontSize: 12.5, color: T.muted, marginTop: 14, lineHeight: 1.5 }}>
+            Operational load vs event volume — illustrative, to validate in discovery. The model holds for any large
+            multiplier; it is the compounding of per-event gaps, not the exact factor, that breaks a manual system.
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 34 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The sanctioned override path — never a silent skip</Eyebrow>
+        <h3 style={{ fontFamily: T.serif, fontSize: 24, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>
+          Keep the exception inside the system.
+        </h3>
+        <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.55, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
+          Reality will not always wait for a checkpoint. So the override is designed in — the source of truth survives
+          contact with reality, and <strong style={{ color: T.ink }}>the override rate becomes a health metric.</strong>
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 0, marginTop: 22, position: "relative" }}>
+          {OVERRIDE_STEPS.map((s, i) => (
+            <div key={s.n} style={{ padding: "0 16px", borderLeft: i === 0 ? "none" : `1px solid ${T.line}`, position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ width: 26, height: 26, borderRadius: "50%", background: i >= 1 && i <= 2 ? T.amber : T.accent, color: T.onRole, fontFamily: T.serif, fontWeight: 400, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.n}</span>
+                {i >= 1 && i <= 3 ? <Badge tone="amber" uppercase>At-risk flag</Badge> : null}
+              </div>
+              <div style={{ fontFamily: T.sans, fontSize: 14.5, fontWeight: 700, color: T.ink, marginTop: 12 }}>{s.title}</div>
+              <div style={{ fontFamily: T.sans, fontSize: 13, color: T.muted, marginTop: 6, lineHeight: 1.5 }}>{s.body}</div>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 22 }}>
+        <div style={{ background: "rgba(191,52,78,0.06)", border: `1px solid ${T.accent}`, borderRadius: 14, padding: "20px 22px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="2">
+              <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
+            </svg>
+            <span style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.accent }}>Three hard gates — non-overridable</span>
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
+            {HARD_GATES.map((g) => (
+              <li key={g} style={{ display: "flex", gap: 10, fontFamily: T.sans, fontSize: 14.5, color: T.body, lineHeight: 1.45 }}>
+                <span style={{ color: T.accent, flexShrink: 0 }}>—</span>{g}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Reveal>
+    </div>
+  );
+}
+
+function BreakpointChart({ data }) {
+  const W = 760, H = 230, padL = 44, padB = 44, padT = 16, padR = 14;
+  const maxLoad = 100;
+  const sx = (i) => padL + (i / (data.length - 1)) * (W - padL - padR);
+  const sy = (v) => padT + (1 - v / maxLoad) * (H - padT - padB);
+  const path = data.map((d, i) => `${i ? "L" : "M"} ${sx(i)} ${sy(d.load)}`).join(" ");
+  const area = `${path} L ${sx(data.length - 1)} ${H - padB} L ${sx(0)} ${H - padB} Z`;
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 560, display: "block" }} role="img" aria-label="Operational load vs event volume">
+        {[0, 50, 100].map((g) => { const y = sy(g); return (
+          <g key={g}><line x1={padL} y1={y} x2={W - padR} y2={y} stroke={T.line} strokeWidth="1" />
+            <text x={padL - 8} y={y} textAnchor="end" dominantBaseline="middle" fill={T.muted} style={{ fontFamily: T.mono, fontSize: 10 }}>{g}</text></g>
+        ); })}
+        <path d={area} fill={T.amber} opacity="0.08" />
+        <path d={path} fill="none" stroke={T.amber} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        {data.map((d, i) => (
+          <g key={d.vol}>
+            <circle cx={sx(i)} cy={sy(d.load)} r={i === data.length - 1 ? 5 : 3.5} fill={i === data.length - 1 ? T.accent : T.navy} stroke={i === data.length - 1 ? T.accent : T.amber} strokeWidth="2" />
+            <text x={sx(i)} y={H - padB + 15} textAnchor="middle" fill={T.ink} style={{ fontFamily: T.sans, fontSize: 11, fontWeight: 700 }}>{d.vol}/mo</text>
+            <text x={sx(i)} y={H - padB + 30} textAnchor="middle" fill={T.muted} style={{ fontFamily: T.sans, fontSize: 9.5 }}>{d.note}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+Object.assign(window, { RiskScale });
+</script>
+
+<!-- ============ Sections: BI Automation Hub, The Path, CTA ============ -->
+<script type="text/babel">
+const PHASES = [
+  { n: 1, name: "Foundation", role: "partnerships", tag: "MVP", bullets: ["Stable identity keys", "Entity model + canonical event record", "Source-of-truth boundaries"] },
+  { n: 2, name: "Process", role: "host", tag: "MVP", bullets: ['Lifecycle states + "done" defs', "Gated handoff packages", "One owner per state + RACI"] },
+  { n: 3, name: "Standardize", role: "cityManager", tag: "MVP", bullets: ["HQ schema / templates / SOPs", "City configuration layer", "Onboarding kit"] },
+  { n: 4, name: "Automate", role: "producer", tag: "Later — the test", bullets: ["Categorize & route venue comms", "Centralized partner-comms view", "Pre-event follow-ups", "Receipt collection", "Disruption support"] },
+  { n: 5, name: "Scale-out", role: "amber", tag: "Later", bullets: ["Pilot one city", "Harden against reality", "Replicate via SOP"] },
+];
+const phaseColor = (r) => (r === "amber" ? T.amber : T.role[r]);
+
+function BIHub() {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>The Automation Layer</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12, maxWidth: "18ch" }}>
+          The hub is the outcome of the framework, not a bolt-on.
+        </h2>
+        <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "64ch" }}>
+          It only works because the layers beneath it are clean: stable entity keys, gated handoffs, and one owner per
+          state. <strong>Automation is the test, not the foundation</strong> — if a step can't be cleanly automated,
+          that's the signal the process or data underneath isn't clean yet.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div style={{ display: "flex", gap: 12, alignItems: "flex-start", background: T.soft, border: `1px solid ${T.line}`,
+          borderRadius: 10, padding: "13px 16px", margin: "22px 0 28px" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={T.muted} strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
+            <circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+          <span style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, lineHeight: 1.45 }}>
+            <strong style={{ color: T.ink }}>Illustrative figures — to validate in discovery.</strong> These metrics are an
+            inferred synthesis to show what the system would measure, not live or real Base data.
+          </span>
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
+          {KPIS.map((k, i) => <StatTile key={k.label} {...k} emphasis={i === 3} />)}
+        </div>
+      </Reveal>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 18, marginTop: 18 }}>
+        <Reveal delay={0.05}><ChartCard title="Per-city event volume" caption="500/mo is a system-wide target + labeled assumption — to validate in discovery.">
+          <BarChart data={CITY_VOLUME} />
+        </ChartCard></Reveal>
+        <Reveal delay={0.08}><ChartCard title="Override rate — system health" caption="We watch the trend, not a single number. The pattern shows which checkpoints are too rigid vs where ops keeps failing.">
+          <LineChart data={OVERRIDE_TREND} healthyMax={7.0} />
+        </ChartCard></Reveal>
+      </div>
+
+      <Reveal delay={0.05} style={{ marginTop: 34 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The automation layer — last, not first</Eyebrow>
+        <h3 style={{ fontFamily: T.serif, fontSize: 26, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>Five capabilities, each a rule on a clean substrate.</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 20 }}>
+          {CAPABILITIES.map((c) => (
+            <div key={c.n} style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 12, padding: "18px 20px" }}>
+              <div style={{ fontFamily: T.serif, fontSize: 26, fontWeight: 400, color: T.accent, lineHeight: 1 }}>{c.n}</div>
+              <div style={{ fontFamily: T.sans, fontSize: 15, fontWeight: 700, color: T.ink, marginTop: 10 }}>{c.t}</div>
+              <div style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, marginTop: 6, lineHeight: 1.45 }}>{c.d}</div>
+            </div>
+          ))}
+        </div>
+        <Callout tone="assumption" style={{ marginTop: 18 }}>
+          All five sit at the end of the sequence, on top of clean entities, gated handoffs, and clear ownership.
+          <strong style={{ color: T.ink }}> Automation is the test, not the foundation.</strong>
+        </Callout>
+      </Reveal>
+    </div>
+  );
+}
+
+function ChartCard({ title, caption, children }) {
+  return (
+    <div style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 14, padding: "20px 22px" }}>
+      <div style={{ fontFamily: T.sans, fontSize: 14, fontWeight: 700, color: T.ink }}>{title}</div>
+      {children}
+      <div style={{ fontFamily: T.sans, fontSize: 12, color: T.muted, marginTop: 12, lineHeight: 1.4 }}>{caption}</div>
+    </div>
+  );
+}
+
+function BarChart({ data }) {
+  const max = Math.max(...data.map((d) => d.v));
+  const W = 440, H = 200, padL = 56, padB = 26, padT = 10, padR = 10;
+  const bw = (W - padL - padR) / data.length;
+  const sy = (v) => padT + (1 - v / max) * (H - padT - padB);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ marginTop: 12 }} role="img" aria-label="Per-city event volume">
+      {[0, 0.5, 1].map((g) => { const y = padT + (1 - g) * (H - padT - padB); return (
+        <g key={g}><line x1={padL} y1={y} x2={W - padR} y2={y} stroke={T.line} strokeWidth="1" />
+          <text x={padL - 8} y={y} textAnchor="end" dominantBaseline="middle" fill={T.muted} style={{ fontFamily: T.mono, fontSize: 10 }}>{Math.round(max * g)}</text></g>
+      ); })}
+      {data.map((d, i) => {
+        const x = padL + i * bw + bw * 0.18, w = bw * 0.64, y = sy(d.v);
+        return <g key={d.city}>
+          <rect x={x} y={y} width={w} height={H - padB - y} rx="3" fill={T.role.partnerships} />
+          <text x={x + w / 2} y={H - padB + 13} textAnchor="middle" fill={T.muted} style={{ fontFamily: T.sans, fontSize: 10, fontWeight: 600 }}>{d.city}</text>
+        </g>;
+      })}
+    </svg>
+  );
+}
+
+function LineChart({ data, healthyMax }) {
+  const W = 440, H = 200, padL = 40, padB = 26, padT = 12, padR = 12;
+  const max = 10, min = 5;
+  const sx = (i) => padL + (i / (data.length - 1)) * (W - padL - padR);
+  const sy = (v) => padT + (1 - (v - min) / (max - min)) * (H - padT - padB);
+  const path = data.map((d, i) => `${i ? "L" : "M"} ${sx(i)} ${sy(d.rate)}`).join(" ");
+  const area = `${path} L ${sx(data.length - 1)} ${H - padB} L ${sx(0)} ${H - padB} Z`;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ marginTop: 12 }} role="img" aria-label="Override rate trend">
+      <line x1={padL} y1={sy(healthyMax)} x2={W - padR} y2={sy(healthyMax)} stroke={T.accent} strokeWidth="1.4" strokeDasharray="5 4" />
+      <text x={W - padR} y={sy(healthyMax) - 6} textAnchor="end" fill={T.accent} style={{ fontFamily: T.sans, fontSize: 10, fontWeight: 700 }}>healthy ≤ {healthyMax}</text>
+      <path d={area} fill={T.accent} opacity="0.07" />
+      <path d={path} fill="none" stroke={T.accent} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      {data.map((d, i) => <g key={d.m}>
+        <circle cx={sx(i)} cy={sy(d.rate)} r="3.5" fill={T.navy} stroke={T.accent} strokeWidth="2" />
+        <text x={sx(i)} y={H - padB + 13} textAnchor="middle" fill={T.muted} style={{ fontFamily: T.sans, fontSize: 10, fontWeight: 600 }}>{d.m}</text>
+      </g>)}
+    </svg>
+  );
+}
+
+function Path() {
+  const [sel, setSel] = useState(1);
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>06 · Implementation Approach</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12 }}>The Path.</h2>
+        <p style={{ fontFamily: T.sans, fontSize: 20, lineHeight: 1.45, color: T.body, marginTop: 16, maxWidth: "56ch" }}>
+          Process before automation. Automation is the test, not the foundation.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.06} style={{ marginTop: 30 }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          {PHASES.map((p) => {
+            const on = sel === p.n, c = phaseColor(p.role);
+            return (
+              <button key={p.n} onClick={() => setSel(p.n)} style={{
+                flex: "1 1 180px", textAlign: "left", cursor: "pointer", background: on ? T.navy : T.soft,
+                border: `1px solid ${on ? c : T.line}`, borderTop: `3px solid ${c}`, borderRadius: 12, padding: "16px 18px",
+                transform: on ? "translateY(-4px)" : "none", opacity: on ? 1 : 0.7,
+                boxShadow: on ? `0 14px 40px rgba(0,0,0,.5)` : "none",
+                transition: "all .3s cubic-bezier(.22,1,.36,1)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ width: 26, height: 26, borderRadius: "50%", background: c, color: T.onRole, fontFamily: T.serif,
+                    fontWeight: 400, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}>{p.n}</span>
+                  <span style={{ fontFamily: T.serif, fontSize: 18, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>{p.name}</span>
+                </div>
+                <Badge tone={p.tag.startsWith("MVP") ? "green" : "muted"} uppercase style={{ marginTop: 12 }}>{p.tag}</Badge>
+                {on && <ul style={{ margin: "12px 0 0", padding: "0 0 0 16px", color: T.body }}>
+                  {p.bullets.map((b) => <li key={b} style={{ fontFamily: T.sans, fontSize: 13, lineHeight: 1.5 }}>{b}</li>)}
+                </ul>}
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
+          <div style={{ flex: "3", borderTop: `2px solid ${T.role.partnerships}`, paddingTop: 8, fontFamily: T.sans, fontSize: 12, fontWeight: 700, color: T.role.partnerships, letterSpacing: "0.04em" }}>
+            PHASES 1–3 · MVP — THE SUBSTRATE
+          </div>
+          <div style={{ flex: "2", borderTop: `2px solid ${T.accent}`, paddingTop: 8, fontFamily: T.sans, fontSize: 12, fontWeight: 700, color: T.accent, letterSpacing: "0.04em" }}>
+            PHASES 4–5 · LATER — EARNS ITS PLACE
+          </div>
+        </div>
+        {sel === 4 && <Callout tone="accent" style={{ marginTop: 16 }}>This phase is the litmus test for the system's health — applied last.</Callout>}
+      </Reveal>
+    </div>
+  );
+}
+
+function CTA() {
+  return (
+    <Reveal>
+      <div style={{ position: "relative", background: T.navy, color: T.ink, borderRadius: 18, padding: "clamp(28px, 5vw, 56px)", overflow: "hidden", border: `1px solid ${T.line}` }}>
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: T.auroraGlow, opacity: 0.7, pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+        <Eyebrow tone="muted">Read next in the packet</Eyebrow>
+        <p style={{ fontFamily: T.serif, fontSize: "clamp(22px,3vw,32px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "0.03em", textTransform: "uppercase", margin: "16px 0 0", maxWidth: "24ch", color: T.ink }}>
+          We didn't automate the chaos. We built the structure that makes the chaos optional — then let automation prove it.
+        </p>
+        <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.6, color: T.body, margin: "22px 0 0", maxWidth: "62ch" }}>
+          The full reasoning lives in the accompanying written framework — a design document and a decision log of
+          twenty-three decisions (D1–D23): how the seven challenges collapse into two root causes, the gated event
+          lifecycle, the federated source of truth, the sanctioned-override exception path, this implementation sequence,
+          and the post-grill hardening — transition / migration while live, owner-continuity under disruption, and
+          doctrine propagation at scale.
+        </p>
+        <hr style={{ border: 0, height: 2, width: 56, background: T.accent, margin: "30px 0 16px" }} />
+        <div style={{ fontFamily: T.serif, fontSize: 22, letterSpacing: "0.06em", textTransform: "uppercase", color: T.ink }}>Great Minds Meet Here</div>
+        <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24,
+          padding: "12px 24px", border: `1px solid ${T.line}`, borderRadius: 999, background: "transparent",
+          color: T.ink, fontFamily: T.sans, fontSize: 12, fontWeight: 600, letterSpacing: "0.14em",
+          textTransform: "uppercase", textDecoration: "none", cursor: "pointer" }}>↑ Back to the top</a>
+        </div>
+      </div>
+    </Reveal>
+  );
+}
+
+Object.assign(window, { BIHub, Path, CTA });
+</script>
+
+<!-- ============ App: section spine + scroll progress + dot rail ============ -->
+<script type="text/babel">
+const SECTIONS = [
+  { id: "hero", label: "Base", Comp: Hero, hero: true },
+  { id: "discovery", label: "1 · Problem Definition", Comp: Discovery },
+  { id: "flow", label: "2 · System Design", Comp: LifecycleSection },
+  { id: "framework", label: "3 · Data Architecture", Comp: Framework },
+  { id: "risk", label: "4–5 · Risk & Scale", Comp: RiskScale },
+  { id: "hub", label: "The Automation Layer", Comp: BIHub },
+  { id: "path", label: "6 · Implementation", Comp: Path },
+  { id: "cta", label: "Deep Dive", Comp: CTA },
+];
+
+function LifecycleSection() {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow style={{ marginBottom: 14 }}>02 · System Design</Eyebrow>
+        <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12, maxWidth: "20ch" }}>
+          How information moves — one record, federated by role.
+        </h2>
+        <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "62ch" }}>
+          Each transition is a gated handoff. The event cannot enter the next state until the required data package
+          exists and a named owner accepts it — so missing or late information becomes structurally unable to propagate.
+        </p>
+      </Reveal>
+      <Reveal delay={0.06} style={{ marginTop: 30 }}><Lifecycle /></Reveal>
+    </div>
+  );
+}
+
+function App() {
+  const [active, setActive] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
+  const refs = React.useRef([]);
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      setProgress((h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100);
+      const mid = window.scrollY + window.innerHeight * 0.4;
+      let cur = 0;
+      refs.current.forEach((el, i) => { if (el && el.offsetTop <= mid) cur = i; });
+      setActive(cur);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const jump = (id) => {
+    const i = SECTIONS.findIndex((s) => s.id === id);
+    const el = refs.current[i];
+    if (el) window.scrollTo({ top: el.offsetTop - 8, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
+
+  return (
+    <React.Fragment>
+      <div className="progress" style={{ width: progress + "%" }} />
+      <DotNav sections={SECTIONS} active={active} onJump={jump} />
+      <div className="wrap">
+        {SECTIONS.map((s, i) => {
+          const Comp = s.Comp;
+          return (
+            <section key={s.id} data-screen-label={s.label} className={s.hero ? "hero-sec" : ""}
+              ref={(el) => (refs.current[i] = el)}>
+              <Comp />
+            </section>
+          );
+        })}
+        <footer style={{ borderTop: `1px solid var(--line)`, padding: "30px 0 60px", color: "var(--muted)",
+          fontFamily: "var(--font-sans)", fontSize: 13 }}>
+          Base — Operating Framework · all figures illustrative, to validate in discovery.
+        </footer>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

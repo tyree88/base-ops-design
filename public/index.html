@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base — The Operating System</title>
+<style>
+/* ============================================================
+   Base Operating System — SHELL (combined, scroll-first).
+   Fixed top navbar selecting three tabs, each loaded as an iframe:
+     1 Walkthrough — the scrollytelling showcase (the scroll output; default)
+     2 Framework   — the decision hub (framework.html)
+     3 Brain       — the graphify knowledge graph (brain.html)
+   Hash-routed (#walkthrough / #framework / #brain), deep-linkable,
+   back-button friendly. Self-contained; nocturnal Base brand.
+   walkthrough.html is generated from 03_deliverables/exec-artifact/index.html
+   (see sync-public.sh); brain.html from brain-recolor.sh.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --paper: #000000; --ink: #FFE2C0; --soft: #0E1622; --line: rgba(255, 226, 192, 0.20);
+  --accent: #BF344E; --teal: #2E8B8B; --muted: rgba(255, 226, 192, 0.60);
+  --font-serif: "Forum", Georgia, "Times New Roman", serif;
+  --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, "SF Mono", Consolas, monospace;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); --dur-fast: 0.18s; --nav-h: 60px;
+}
+@media (prefers-reduced-motion: reduce) { :root { --dur-fast: 0.001s; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans);
+  display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+.nav { flex: 0 0 var(--nav-h); height: var(--nav-h); display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 3vw, 32px);
+  background: rgba(6, 9, 14, 0.92); border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px); position: relative; z-index: 10; }
+
+.brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.brand .mark-svg { height: 28px; width: auto; display: block; flex-shrink: 0; }
+.brand .mark { font-family: var(--font-serif); font-size: 19px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink); }
+.brand .meta { font-family: var(--font-sans); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); padding-left: 14px; margin-left: 4px;
+  border-left: 1px solid var(--line); }
+
+.tabs { display: flex; align-items: stretch; gap: clamp(6px, 2vw, 28px); height: 100%; }
+.tab { position: relative; display: inline-flex; align-items: center; height: 100%;
+  font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); text-decoration: none; white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-standard); }
+.tab:hover { color: var(--ink); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: center;
+  transition: transform var(--dur-fast) var(--ease-standard); }
+.tab[aria-current="page"] { color: var(--ink); }
+.tab[aria-current="page"]::after { transform: scaleX(1); }
+.tab .idx { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-right: 7px; }
+
+.stage { flex: 1 1 auto; min-height: 0; position: relative; background: var(--paper); }
+.stage iframe { width: 100%; height: 100%; border: 0; display: block; background: var(--paper); }
+
+@media (max-width: 720px) {
+  .brand .meta { display: none; }
+  .tab .idx { display: none; }
+  .brand .mark { font-size: 17px; }
+}
+@media (max-width: 480px) { .tab { font-size: 11px; letter-spacing: 0.06em; } }
+</style>
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">
+      <svg class="mark-svg" viewBox="0 0 120 108" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Base triangle-sun mark">
+        <path d="M60 10 L106 94 L14 94 Z" stroke="#FFE2C0" stroke-width="3.5" stroke-linejoin="round" fill="none"></path>
+        <circle cx="71" cy="58" r="20" fill="#FFE2C0"></circle>
+      </svg>
+      <span class="mark">Base</span>
+      <span class="meta">Operational Systems Design</span>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <a class="tab" id="tab-walkthrough" href="#walkthrough"><span class="idx">01</span>Walkthrough</a>
+      <a class="tab" id="tab-framework"   href="#framework"><span class="idx">02</span>Framework</a>
+      <a class="tab" id="tab-brain"       href="#brain"><span class="idx">03</span>Brain</a>
+    </nav>
+  </header>
+
+  <main class="stage">
+    <iframe id="stage" title="Walkthrough — the operating framework, scrolled" src="walkthrough.html"></iframe>
+  </main>
+
+<script>
+  // Tab registry — id → iframe src + iframe title. Walkthrough (the scroll output) is the default.
+  var TABS = {
+    walkthrough: { src: "walkthrough.html", title: "Walkthrough — the operating framework, scrolled" },
+    framework:   { src: "framework.html",   title: "Framework — decisions, risks, assumptions" },
+    brain:       { src: "brain.html",       title: "Brain — knowledge graph" }
+  };
+  var ORDER = ["walkthrough", "framework", "brain"];
+  var frame = document.getElementById("stage");
+
+  function currentId() {
+    var id = (location.hash || "").replace(/^#/, "");
+    return TABS[id] ? id : "walkthrough";
+  }
+  function render(id) {
+    var t = TABS[id], want = t.src, have = frame.getAttribute("data-src");
+    if (have !== want) { frame.src = want; frame.setAttribute("data-src", want); frame.title = t.title; }
+    ORDER.forEach(function (k) {
+      var el = document.getElementById("tab-" + k);
+      if (k === id) { el.setAttribute("aria-current", "page"); } else { el.removeAttribute("aria-current"); }
+    });
+  }
+  window.addEventListener("hashchange", function () { render(currentId()); });
+  (function () { frame.setAttribute("data-src", "walkthrough.html"); render(currentId()); })();
+</script>
+</body>
+</html>
