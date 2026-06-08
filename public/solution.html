@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Solution — Base Operating System</title>
+<style>
+/* ============================================================
+   Base Operating System — SOLUTION tab (tab #2).
+   The future state once the system design is implemented: the Event
+   at the center of a clean, mostly self-running machine. Synthesis,
+   not problem-restating. Self-contained; nocturnal Base brand.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --paper: #000000; --ink: #FFE2C0; --soft: #0E1622; --navy: #131F30; --line: rgba(255, 226, 192, 0.20);
+  --accent: #BF344E; --teal: #2E8B8B; --violet: #9B6FB0; --green: #3FA66B; --gold: #D6A85F;
+  --muted: rgba(255, 226, 192, 0.60); --body: rgba(255, 226, 192, 0.86);
+  --font-serif: "Forum", Georgia, "Times New Roman", serif;
+  --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, "SF Mono", Consolas, monospace;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s; --dur-reveal: 0.6s; --reveal-rise: 16px;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0.001s; --dur-reveal: 0.001s; --reveal-rise: 0px; } html { scroll-behavior: auto; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); min-height: 100vh;
+  font-family: var(--font-sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+.aurora-floor { position: fixed; left: 0; right: 0; bottom: 0; height: 70vh; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(80% 60% at 8% 124%, rgba(191,52,78,0.5) 0%, rgba(191,52,78,0) 55%),
+    radial-gradient(80% 60% at 92% 124%, rgba(46,139,139,0.46) 0%, rgba(46,139,139,0) 55%); }
+
+.wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto;
+  padding: clamp(40px, 7vh, 88px) clamp(24px, 6vw, 80px) 96px; }
+
+.eyebrow { font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 0.18em;
+  font-weight: 700; font-size: 12.5px; color: var(--accent); }
+h1 { font-family: var(--font-serif); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em;
+  font-size: clamp(28px, 4.4vw, 46px); line-height: 1.18; color: var(--ink); margin: 16px 0 0; max-width: 20ch; }
+h1 .accent { color: var(--accent); }
+.lead { font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 18px); line-height: 1.6;
+  color: var(--body); max-width: 64ch; margin: 24px 0 0; }
+.lead b { color: var(--ink); font-weight: 600; }
+
+.rule-dotted { display: flex; align-items: center; gap: 8px; color: var(--line); margin: 40px 0 32px; }
+.rule-dotted::before, .rule-dotted::after { content: ""; flex: 1; height: 1px; background: currentColor; }
+.rule-dotted > .dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--line); }
+
+/* scroll-reveal */
+.reveal { opacity: 0; transform: translateY(var(--reveal-rise));
+  transition: opacity var(--dur-reveal) var(--ease-out-soft), transform var(--dur-reveal) var(--ease-out-soft); }
+.reveal.shown { opacity: 1; transform: none; }
+
+/* hub */
+.hub { background: var(--navy); border: 1px solid var(--line); border-radius: 16px; padding: clamp(16px, 3vw, 28px); }
+.hub svg { width: 100%; height: auto; display: block; }
+
+/* future-state panels */
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 22px; }
+.panel { background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px;
+  border-top: 3px solid var(--spoke, var(--accent)); }
+.panel .pt { font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: var(--ink); }
+.panel .pd { font-family: var(--font-sans); font-size: 13.5px; line-height: 1.5; color: var(--muted); margin-top: 8px; }
+
+/* what it earns */
+.earns { margin-top: 30px; background: rgba(191,52,78,0.06); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent); border-radius: 12px; padding: 22px 24px; }
+.earns .lbl { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.earns ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.earns li { position: relative; padding-left: 20px; font-family: var(--font-sans); font-size: 15px;
+  line-height: 1.5; color: var(--body); }
+.earns li::before { content: ""; position: absolute; left: 0; top: 8px; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--gold); }
+.earns li b { color: var(--ink); font-weight: 600; }
+.earns .note { margin-top: 14px; font-size: 12px; color: var(--muted); }
+
+/* connective close */
+.close { margin-top: 34px; }
+.close h2 { font-family: var(--font-serif); font-size: clamp(20px, 2.6vw, 28px); font-weight: 400;
+  letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink); margin: 0 0 18px; }
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.golink { display: block; background: var(--soft); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px 20px; text-decoration: none; color: var(--ink);
+  transition: border-color var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard); }
+.golink:hover { border-color: var(--accent); transform: translateY(-3px); }
+.golink .gt { font-family: var(--font-sans); font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.golink .gd { font-family: var(--font-sans); font-size: 13px; color: var(--muted); margin-top: 5px; line-height: 1.45; }
+.golink .gt .arr { color: var(--accent); }
+
+.tagline { margin-top: 52px; }
+.tagline .line { font-family: var(--font-serif); text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: clamp(18px, 2.2vw, 23px); color: var(--ink); }
+.tagline .sub { font-family: var(--font-sans); font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* frame-breaker: shown only when this tab page is opened standalone (not inside the shell) */
+#open-full { position: fixed; top: 14px; right: 16px; z-index: 9999; display: none; align-items: center; gap: 8px;
+  padding: 9px 16px; border: 1px solid rgba(255,226,192,0.30); border-radius: 999px; background: rgba(6,9,14,0.82);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--ink); font-family: var(--font-sans);
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+  transition: border-color .18s, background .18s; }
+#open-full:hover { border-color: var(--accent); background: rgba(191,52,78,0.16); }
+</style>
+</head>
+<body>
+<div class="aurora-floor" aria-hidden="true"></div>
+<div class="wrap">
+
+  <div class="eyebrow">If we build this —</div>
+  <h1>The destination: a club that <span class="accent">runs itself, event by event</span></h1>
+  <p class="lead">
+    Once the system is in place, the work stops being a scramble. Every event becomes <b>the core unit the whole
+    machine turns on</b> — sourced, confirmed, run, and settled through one clean path that mostly runs itself. The
+    promise made real: <b>operating cost grows slower than the number of events</b>. <span style="color:var(--muted)">(Illustrative target — to validate in discovery.)</span>
+  </p>
+
+  <div class="rule-dotted"><span class="dot"></span></div>
+
+  <!-- ============ the synthesis hub: the Event at the center ============ -->
+  <div class="hub reveal">
+    <svg viewBox="0 0 760 460" role="img" aria-label="The Event at the center of a self-running system: one official record, the automation layer, the live map, and the self-running flow.">
+      <defs>
+        <radialGradient id="ev" cx="50%" cy="42%" r="62%">
+          <stop offset="0%" stop-color="#D9536B"/><stop offset="100%" stop-color="#BF344E"/>
+        </radialGradient>
+      </defs>
+      <!-- connectors -->
+      <g stroke-width="1.6" fill="none" opacity="0.85">
+        <line x1="380" y1="230" x2="380" y2="92"  stroke="#2E8B8B"/>
+        <line x1="380" y1="230" x2="380" y2="368" stroke="#3FA66B"/>
+        <line x1="380" y1="230" x2="150" y2="230" stroke="#D6A85F"/>
+        <line x1="380" y1="230" x2="610" y2="230" stroke="#9B6FB0"/>
+      </g>
+      <g fill="#FFE2C0">
+        <circle cx="380" cy="161" r="3"/><circle cx="380" cy="299" r="3"/>
+        <circle cx="265" cy="230" r="3"/><circle cx="495" cy="230" r="3"/>
+      </g>
+
+      <!-- spoke nodes -->
+      <!-- top: one official record (teal) -->
+      <g>
+        <rect x="280" y="40" width="200" height="52" rx="11" fill="#0E1622" stroke="#2E8B8B" stroke-width="1.4"/>
+        <text x="380" y="62" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">One Official Record</text>
+        <text x="380" y="80" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">every fact has one home</text>
+      </g>
+      <!-- left: automation (gold) -->
+      <g>
+        <rect x="10" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#D6A85F" stroke-width="1.4"/>
+        <text x="110" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Automation Layer</text>
+        <text x="110" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">chases the follow-ups itself</text>
+      </g>
+      <!-- right: live map (violet) -->
+      <g>
+        <rect x="550" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#9B6FB0" stroke-width="1.4"/>
+        <text x="650" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Live Map</text>
+        <text x="650" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">navigate every event</text>
+      </g>
+      <!-- bottom: self-running flow (green) -->
+      <g>
+        <rect x="280" y="368" width="200" height="52" rx="11" fill="#0E1622" stroke="#3FA66B" stroke-width="1.4"/>
+        <text x="380" y="390" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Self-Running Flow</text>
+        <text x="380" y="408" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">clean, owned stages</text>
+      </g>
+
+      <!-- the Event atom at the center -->
+      <circle cx="380" cy="230" r="62" fill="url(#ev)"/>
+      <circle cx="380" cy="230" r="62" fill="none" stroke="#FFE2C0" stroke-width="1.5" opacity="0.85"/>
+      <text x="380" y="226" text-anchor="middle" fill="#FFF4E6" font-family="Forum,Georgia,serif" font-size="22" letter-spacing="0.04em">THE EVENT</text>
+      <text x="380" y="248" text-anchor="middle" fill="rgba(255,244,230,0.85)" font-family="Poppins,sans-serif" font-size="11" font-weight="600">the core unit</text>
+    </svg>
+  </div>
+
+  <!-- ============ future-state panels ============ -->
+  <div class="panels">
+    <div class="panel reveal" style="--spoke:var(--teal)">
+      <div class="pt">One official record</div>
+      <div class="pd">Every fact about an event lives in one place. Nothing to reconcile across tools, nothing dropped between them — what you read is what's true.</div>
+    </div>
+    <div class="panel reveal" style="--spoke:var(--gold)">
+      <div class="pt">The system does the chasing</div>
+      <div class="pd">Confirmations and receipts are followed up automatically. People stop hand-chasing status; the routine work simply happens on time.</div>
+    </div>
+    <div class="panel reveal" style="--spoke:var(--violet)">
+      <div class="pt">A live map, not a doc</div>
+      <div class="pd">The whole operation is navigable as a living map — every event, owner, and connection in one view, so anyone can see where things stand at a glance.</div>
+    </div>
+    <div class="panel reveal" style="--spoke:var(--green)">
+      <div class="pt">Each event advances itself</div>
+      <div class="pd">An event moves through clean, owned stages on its own. Each step has one accountable owner and can't advance until it's truly ready.</div>
+    </div>
+  </div>
+
+  <!-- ============ what it earns ============ -->
+  <div class="earns reveal">
+    <span class="lbl">What this earns</span>
+    <ul>
+      <li><b>Scale without scaling the team</b> — run 500+ events a month across dozens of cities while the human effort per event keeps falling.</li>
+      <li><b>Every event confirmed in time</b> — the soft-hold-to-signed gap closes, so events stop falling through at the last minute.</li>
+      <li><b>Nothing drops silently</b> — when something slips, it surfaces as a flagged exception, never a quiet failure.</li>
+      <li><b>A new city goes live on day one</b> — it inherits the whole system instead of reinventing one.</li>
+    </ul>
+    <div class="note">All figures illustrative — to validate in discovery. Not live or authoritative Base data.</div>
+  </div>
+
+  <!-- ============ connective close: links into the other tabs ============ -->
+  <div class="close reveal">
+    <h2>See how it gets there</h2>
+    <div class="links">
+      <a class="golink" target="_top" href="index.html#walkthrough">
+        <div class="gt">See it run <span class="arr">→</span></div>
+        <div class="gd">The walkthrough — the whole argument, scrolled end to end.</div>
+      </a>
+      <a class="golink" target="_top" href="index.html#framework">
+        <div class="gt">The decisions behind it <span class="arr">→</span></div>
+        <div class="gd">The framework — every choice, risk, and assumption.</div>
+      </a>
+      <a class="golink" target="_top" href="index.html#brain">
+        <div class="gt">The live map <span class="arr">→</span></div>
+        <div class="gd">The brain — explore how every part connects.</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="tagline">
+    <div class="rule-dotted" style="margin-bottom: 18px;"><span class="dot"></span></div>
+    <div class="line">Great Minds Meet Here</div>
+    <div class="sub">The destination, once the system design is built. All figures illustrative — to validate in discovery.</div>
+  </div>
+
+</div>
+
+<a id="open-full" href="index.html#solution" aria-label="Open in the full presentation">↑ Full presentation</a>
+<script>
+  // reveal-on-scroll (respects reduced-motion via the CSS dur override)
+  (function () {
+    var els = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("shown"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("shown"); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+  // frame-breaker: show the "Full presentation" link only when opened standalone
+  (function () { var a = document.getElementById("open-full"); if (!a) return; var s = true; try { s = (window.self === window.top); } catch (e) { s = true; } if (s) a.style.display = "inline-flex"; })();
+</script>
+</body>
+</html>

@@ -85,8 +85,9 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
     </div>
     <nav class="tabs" aria-label="Sections">
       <a class="tab" id="tab-walkthrough" href="#walkthrough"><span class="idx">01</span>Walkthrough</a>
-      <a class="tab" id="tab-framework"   href="#framework"><span class="idx">02</span>Framework</a>
-      <a class="tab" id="tab-brain"       href="#brain"><span class="idx">03</span>Brain</a>
+      <a class="tab" id="tab-solution"    href="#solution"><span class="idx">02</span>Solution</a>
+      <a class="tab" id="tab-framework"   href="#framework"><span class="idx">03</span>Framework</a>
+      <a class="tab" id="tab-brain"       href="#brain"><span class="idx">04</span>Brain</a>
     </nav>
   </header>
 
@@ -98,10 +99,11 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
   // Tab registry — id → iframe src + iframe title. Walkthrough (the scroll output) is the default.
   var TABS = {
     walkthrough: { src: "walkthrough.html", title: "Walkthrough — the guided tour of how Base runs events" },
+    solution:    { src: "solution.html",    title: "The Solution — the destination once the system is built" },
     framework:   { src: "framework.html",   title: "Framework — the decisions, risks, and assumptions behind the design" },
     brain:       { src: "brain.html",       title: "Brain — an explorable map of how every decision connects" }
   };
-  var ORDER = ["walkthrough", "framework", "brain"];
+  var ORDER = ["walkthrough", "solution", "framework", "brain"];
   var frame = document.getElementById("stage");
 
   function currentId() {
