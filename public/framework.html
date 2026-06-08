@@ -97,7 +97,7 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 
 <section class="section active" id="overview"><h2 class="shead">Operational framework for Base</h2>
 <p class="lead">An ops system for a membership social club scaling from ~20 to 500+ events per month across dozens of cities. The brief grades reasoning, not tools.</p>
-<div class="panel"><b>The big idea.</b> The seven problems Base listed boil down to two root causes — there is <b>no single official record</b> of an event that someone owns, and <b>no clear owner</b> for the process around it. So the real gap is a missing foundation (one official record of each event, plus a step-by-step process where every stage has a named owner), not missing tools. Everything Base wants — confirmations that hold, a view everyone trusts, automation later — only works once that foundation exists.</div>
+<div class="panel"><b>The big idea.</b> The seven problems Base listed boil down to two root causes: there is <b>no single official record</b> of an event that someone owns, and <b>no clear owner</b> for the process around it. So the real gap is a missing foundation (one official record of each event, plus a step-by-step process where every stage has a named owner), not missing tools. Everything Base wants (confirmations that hold, a view everyone trusts, automation later) only works once that foundation exists.</div>
 <h3>Coverage</h3>
 <div class="grid g4">
 <div class="stat"><div class="n">~80%</div><div class="l">Problem definition</div></div>
@@ -113,12 +113,12 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 </div>
 <h3>Status legend</h3>
 <p><span class="pill p-held">solid</span> holds up cold under hard questioning &nbsp; <span class="pill p-fork">open choice</span> a reversible first call &nbsp; <span class="pill p-crack">has a gap</span> couldn't fully defend — needs fixing &nbsp; <span class="pill p-deriv">follows from others</span> falls out of an earlier decision</p>
-<div class="note">This hub pulls the whole exercise into one place — the brief, the reasoning journey, all 23 decisions, the design artifacts, the pressure-test transcripts, the open gaps, the assumptions, and the file map. Navigate from the left. Underlying detail lives in the project files (see <b>File map</b>).</div></section>
+<div class="note">This hub pulls the whole exercise into one place: the brief, the reasoning journey, all 23 decisions, the design artifacts, the pressure-test transcripts, the open gaps, the assumptions, and the file map. Navigate from the left. Underlying detail lives in the project files (see <b>File map</b>).</div></section>
 <section class="section" id="problem"><h2 class="shead">Problem &amp; frame</h2>
 <p class="lead">How the problem was understood before any solution was drawn.</p>
 <div class="panel"><b>The brief in one line.</b> Build an operational framework for dozens of cities and hundreds of events a month, minimizing manual intervention and keeping reliability. The load-bearing sentence: <i>"automation alone will not solve these problems if the underlying process design is flawed."</i></div>
-<h3>Current stack — assume it exists; do not assume it's optimal</h3>
-<p>Asana (tasks) · Slack (team chat) · Missive (shared inboxes / external comms) · Airtable (operational + city data). The problem isn't any single tool — it's that <b>four systems hold four partial copies of an event's truth and none is authoritative.</b> A venue change lands in a Missive inbox and lives there; that's where "plan for 80, room holds 50" is born.</p>
+<h3>Current stack: assume it exists, but don't assume it's optimal</h3>
+<p>Asana (tasks) · Slack (team chat) · Missive (shared inboxes / external comms) · Airtable (operational + city data). The problem isn't any single tool. It's that <b>four systems hold four partial copies of an event's truth and none is authoritative.</b> A venue change lands in a Missive inbox and lives there; that's where "plan for 80, room holds 50" is born.</p>
 <h3>Seven challenges → two root causes + symptoms — Decision 1, sort before you solve (D1)</h3>
 <table>
 <tr><th>Layer</th><th>Items</th></tr>
@@ -126,22 +126,22 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <tr><td><b>Root — ownership/knowledge</b></td><td>#3 process ownership unclear · #7 knowledge trapped in individuals</td></tr>
 <tr><td><b>Symptoms</b></td><td>#4 manual follow-ups · #5 missing/late info → downstream failures · #6 undefined escalation</td></tr>
 </table>
-<p class="muted">Fix the two roots and the symptoms dissolve — sort before solving, rather than mopping the floor with the tap running.</p>
+<p class="muted">Fix the two roots and the symptoms dissolve. Sort before solving, rather than mopping the floor with the tap running.</p>
 <h3>The frame, step by step</h3>
-<div class="beat"><div class="bn">0</div><div class="bx"><b>Don't anchor on the tools.</b> "What's missing?" means nothing against a list of tools — only against a model of the functions that have to exist.</div></div>
+<div class="beat"><div class="bn">0</div><div class="bx"><b>Don't anchor on the tools.</b> "What's missing?" means nothing against a list of tools, only against a model of the functions that have to exist.</div></div>
 <div class="beat"><div class="bn">1</div><div class="bx"><b>Don't accept the brief's list as-is.</b> Are the 7 problems equals, or do some cause the others? That turns a to-do list into a sort.</div></div>
 <div class="beat"><div class="bn">2</div><div class="bx"><b>Root-cause vs symptom test.</b> "If every other problem were fixed, would this one still exist?" #5/#4/#6 vanish → symptoms; #1/#2/#3/#7 stand alone → root causes.</div></div>
 <div class="beat"><div class="bn">3</div><div class="bx"><b>The hinge — test the tools framing.</b> "If every tool were perfectly integrated tomorrow, would the problem be solved?" No — there's still no agreement on what the one official record <i>is</i> or who owns it. The problem flips from tooling to foundation.</div></div>
 <div class="beat"><div class="bn">4</div><div class="bx"><b>Restate it positively.</b> Base has no operating system for its core unit of work — one official, owned record per event + a defined process around it.</div></div>
-<div class="beat"><div class="bn">5</div><div class="bx"><b>Set the boundary — Decision 3, model the operations side (D3).</b> Scope = the venue and operations side (from sourcing an event to settling its costs). The demand side (member acquisition, matching) is out — it only touches this at event sizing. <span class="pill p-crack">has a gap</span> the wording later leaks member money back in.</div></div>
+<div class="beat"><div class="bn">5</div><div class="bx"><b>Set the boundary — Decision 3, model the operations side (D3).</b> Scope = the venue and operations side (from sourcing an event to settling its costs). The demand side (member acquisition, matching) is out; it only touches this at event sizing. <span class="pill p-crack">has a gap</span> the wording later leaks member money back in.</div></div>
 <h3>Scale is several dimensions, not one number</h3>
 <p>20→500 events/month is the headline, but the dimensions that actually break things differ: cities · venues per city · events per venue · ops headcount · hosts · <b>same-night events running at once</b> · geographic/timezone spread. Each one stresses a different part of the system first.</p></section>
 <section class="section" id="journey"><h2 class="shead">The journey</h2>
-<p class="lead">How the conversation actually unfolded — slow and question-by-question up front, a fast run of automated helper agents in the middle, an audit at the end. The gaps cluster where that automated run moved fastest.</p>
-<div class="beat"><div class="bn">1</div><div class="bx"><b>Frame the problem.</b> Sort root causes from symptoms — not just better tools. → Decision 1, sort before you solve (D1). <span class="pill p-held">solid</span></div></div>
+<p class="lead">How the conversation actually unfolded: slow and question-by-question up front, a fast run of automated helper agents in the middle, an audit at the end. The gaps cluster where that automated run moved fastest.</p>
+<div class="beat"><div class="bn">1</div><div class="bx"><b>Frame the problem.</b> Sort root causes from symptoms, not just better tools. → Decision 1, sort before you solve (D1). <span class="pill p-held">solid</span></div></div>
 <div class="beat"><div class="bn">2</div><div class="bx"><b>Find the core unit.</b> The thing everything attaches to → the Event. Killed the "give it an AI brain" tool-jump. → Decision 2, the core unit is the Event (D2), plus Decision 4, the set of things we track (D4) and Decision 5, one event can span many venues (D5) <span class="pill p-crack">scope dispute (D3)</span></div></div>
 <div class="beat"><div class="bn">3</div><div class="bx"><b>One official record.</b> One owned home per fact; chat is never the record. → Decision 7, one official record (D7), with Decision 6, what a hand-off is (D6) and Decision 15, official record finalized (D15) <span class="pill p-held">solid</span></div></div>
-<div class="beat"><div class="bn">4</div><div class="bx"><b>The event lifecycle.</b> Name the gated stages — locked in after five rounds of deferring behind meta-work. → Decision 9, the event lifecycle (D9) <span class="pill p-held">solid</span></div></div>
+<div class="beat"><div class="bn">4</div><div class="bx"><b>The event lifecycle.</b> Name the gated stages, locked in after five rounds of deferring behind meta-work. → Decision 9, the event lifecycle (D9) <span class="pill p-held">solid</span></div></div>
 <div class="beat"><div class="bn">5</div><div class="bx"><b>Ownership &amp; status.</b> One owner per gate; one status seen through many views. <b>The automated helper agents take over here.</b> → Decision 8, who owns what (D8), Decision 10, one accountable owner per stage (D10), Decision 11, multi-venue confirmation (D11), Decision 12, gated hand-offs (D12), Decision 13, one status four views (D13)</div></div>
 <div class="beat"><div class="bn">6</div><div class="bx"><b>Risk &amp; exceptions.</b> Make the exception a first-class part of the system (an override always opens an Incident). → Decision 18, exceptions stay in the system (D18) <span class="pill p-held">solid</span>, Decision 19, risk and scale (D19) <span class="pill p-crack">has a gap</span></div></div>
 <div class="beat"><div class="bn">7</div><div class="bx"><b>Standardize &amp; sequence.</b> Standardize the structure; automate last. → Decision 14, decide and move (D14), Decision 16, standardize structure localize content (D16), Decision 17, dependency map (D17), Decision 20, build order (D20)</div></div>
@@ -213,7 +213,7 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 </table>
 <!-- glossary:end --></section>
 <section class="section" id="artifacts"><h2 class="shead">Design artifacts</h2>
-<p class="lead">The structural outputs — the set of things we track, the gated lifecycle, who's accountable / consulted / informed, and the one-official-record model. Full detail in <code>02_design/</code>.</p>
+<p class="lead">The structural outputs: the set of things we track, the gated lifecycle, who's accountable / consulted / informed, and the one-official-record model. Full detail in <code>02_design/</code>.</p>
 
 <h3>The things we track</h3>
 <table>
@@ -226,7 +226,7 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <tr><td><b>Receipt</b></td><td>sub-item</td><td>a stable ID</td><td>Finance</td><td>1 event · 1 venue</td></tr>
 <tr><td><b>Incident</b></td><td>changes often</td><td>a stable ID</td><td class="muted">undefined (has a gap)</td><td>1 event · 0–1 venue</td></tr>
 </table>
-<p class="muted">Every thing carries a stable ID — a permanent system key that's independent of its display name. That's what stops "one venue, five spellings" reappearing in the data.</p>
+<p class="muted">Every thing carries a stable ID, a permanent system key that's independent of its display name. That's what stops "one venue, five spellings" reappearing in the data.</p>
 
 <h3>Event lifecycle (gated state machine)</h3>
 <div class="flow"><span class="st">Sourced</span><span class="arr">→</span><span class="st">Drafted</span><span class="arr">→</span><span class="st">Venue-Requested</span><span class="arr">→</span><span class="st">Venue-Booked</span><span class="arr">→</span><span class="st">Confirmed</span><span class="arr">→</span><span class="st">Run</span><span class="arr">→</span><span class="st">Reconciled</span><span class="arr">→</span><span class="st">Closed</span></div>

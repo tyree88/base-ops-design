@@ -184,7 +184,7 @@ const CAPABILITIES = [
 ];
 
 const FAILURE_MODES = [
-  { t: "Plan for 80, room holds 50", d: "A venue's change lands in someone's inbox and never reaches the official record. The signature failure — ruled out because a fact isn't real until it's written to that record.", guard: "Write it to the official record" },
+  { t: "Plan for 80, room holds 50", d: "A venue's change lands in someone's inbox and never reaches the official record. The signature failure, ruled out because a fact isn't real until it's written to that record.", guard: "Write it to the official record" },
   { t: "A venue quietly drops out", d: "An event spanning several venues reads \"confirmed\" while one required room has quietly fallen through.", guard: "Advance only when every venue is ready" },
   { t: "Knowledge stuck in one place (headquarters and the local city team)", d: "A lesson learned in one city never spreads; a new city reinvents the system.", guard: "Shared playbook + update loop" },
   { t: "The records disagree", d: "The operations record and the finance book disagree on the budget; an event \"closes\" with money still owed.", guard: "Reconcile the records before close" },
@@ -621,7 +621,7 @@ function Hero() {
         <p style={{ ...stage(0.28), fontFamily: T.sans, fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.55, color: T.body,
           marginTop: 26, marginBottom: 0, maxWidth: "52ch" }}>
           A reasoning-level operating design for the team scaling Base from roughly 20 events a month to 500+ across
-          dozens of cities — written for the operators who will run it, not the tools they'll buy.
+          dozens of cities, written for the operators who will run it, not the tools they'll buy.
         </p>
         <div style={{ ...stage(0.4), marginTop: 36 }}>
           <a className="ghost-pill" href="#" onClick={(e) => e.preventDefault()}>Great Minds Meet Here</a>
@@ -687,7 +687,7 @@ function Framework() {
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 20, lineHeight: 1.45, color: T.body, marginTop: 16, maxWidth: "62ch" }}>
           The seven challenges Base listed are not seven problems. They are two root causes and their symptoms.
-          Fix the two roots and the symptoms dissolve — mopping the floor while the tap runs is not a plan.
+          Fix the two roots and the symptoms dissolve. Mopping the floor while the tap runs is not a plan.
         </p>
       </Reveal>
 
@@ -703,7 +703,7 @@ function Framework() {
       <Reveal delay={0.05} style={{ marginTop: 30 }}>
         <h3 style={{ fontFamily: T.serif, fontSize: 28, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>The Event is the core unit.</h3>
         <p style={{ fontFamily: T.sans, fontSize: 17, lineHeight: 1.5, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
-          Communications, costs, hosts, and exceptions all hang off the event — they cannot stand alone. Every thing we
+          Communications, costs, hosts, and exceptions all hang off the event; they cannot stand alone. Every thing we
           track carries a stable system ID, separate from its display name, because names collide and change: that is exactly
           how "one venue, five spellings" reappears in the data.
         </p>
@@ -807,10 +807,10 @@ function RiskScale() {
       <Reveal>
         <Eyebrow style={{ marginBottom: 14 }}>04–05 · Risk Analysis &amp; Scalability</Eyebrow>
         <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.14, maxWidth: "20ch" }}>
-          Scale is a vector — each dimension breaks a different part first.
+          Scale is a vector: each dimension breaks a different part first.
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.55, color: T.body, marginTop: 16, maxWidth: "64ch" }}>
-          At ~20 events a month, manual reconciliation survives — people hand-stitch the scattered copies. The failures
+          At ~20 events a month, manual reconciliation survives; people hand-stitch the scattered copies. The failures
           below are rare enough to absorb. The same per-event gaps compound roughly 25× into systemic failure; what
           breaks first is the manual reconciliation a working baseline was quietly resting on.
         </p>
@@ -828,8 +828,8 @@ function RiskScale() {
           ))}
         </div>
         <Callout tone="assumption" style={{ marginTop: 16 }}>
-          A checkpoint is a reinforced seam. Risks cluster at the seams — where official records meet, and where work hands off
-          between owners — and every seam already carries a checkpoint. <strong style={{ color: T.ink }}>The risk map and the system design are the same map, two views.</strong>
+          A checkpoint is a reinforced seam. Risks cluster at the seams (where official records meet, and where work hands off
+          between owners), and every seam already carries a checkpoint. <strong style={{ color: T.ink }}>The risk map and the system design are the same map, two views.</strong>
         </Callout>
       </Reveal>
 
@@ -850,7 +850,7 @@ function RiskScale() {
           Keep the exception inside the system.
         </h3>
         <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.55, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
-          Reality will not always wait for a checkpoint. So the override is built in — the official record survives
+          Reality will not always wait for a checkpoint. So the override is built in. The official record survives
           contact with reality, and <strong style={{ color: T.ink }}>how often people override becomes a health metric.</strong>
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 0, marginTop: 22, position: "relative" }}>
@@ -940,7 +940,7 @@ function BIHub() {
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "64ch" }}>
           It only works because the layers beneath it are clean: stable IDs for everything, checked hand-offs, and one owner per
-          stage. <strong>Automation is the test, not the foundation</strong> — if a step can't be cleanly automated,
+          stage. <strong>Automation is the test, not the foundation.</strong> If a step can't be cleanly automated,
           that's the signal the process or data underneath isn't clean yet.
         </p>
       </Reveal>
@@ -973,7 +973,7 @@ function BIHub() {
       </div>
 
       <Reveal delay={0.05} style={{ marginTop: 34 }}>
-        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The automation layer — last, not first</Eyebrow>
+        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The automation layer: last, not first</Eyebrow>
         <h3 style={{ fontFamily: T.serif, fontSize: 26, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>Five capabilities, each a rule on a clean foundation.</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 20 }}>
           {CAPABILITIES.map((c) => (
@@ -986,7 +986,7 @@ function BIHub() {
         </div>
         <Callout tone="assumption" style={{ marginTop: 18 }}>
           All five sit at the end of the sequence, on top of clean records, checked hand-offs, and clear ownership.
-          <strong style={{ color: T.ink }}> Automation is the test, not the foundation.</strong>
+          <strong style={{ color: T.ink }}> They earn their place only after that foundation holds.</strong>
         </Callout>
       </Reveal>
     </div>
@@ -1054,7 +1054,7 @@ function Path() {
         <Eyebrow style={{ marginBottom: 14 }}>06 · Implementation Approach</Eyebrow>
         <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12 }}>The Path.</h2>
         <p style={{ fontFamily: T.sans, fontSize: 20, lineHeight: 1.45, color: T.body, marginTop: 16, maxWidth: "56ch" }}>
-          Process before automation. Automation is the test, not the foundation.
+          Process before automation. Automation comes last, and only proves the process was sound.
         </p>
       </Reveal>
 
@@ -1104,13 +1104,13 @@ function CTA() {
         <div style={{ position: "relative" }}>
         <Eyebrow tone="muted">Read next in the packet</Eyebrow>
         <p style={{ fontFamily: T.serif, fontSize: "clamp(22px,3vw,32px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "0.03em", textTransform: "uppercase", margin: "16px 0 0", maxWidth: "24ch", color: T.ink }}>
-          We didn't automate the chaos. We built the structure that makes the chaos optional — then let automation prove it.
+          We didn't automate the chaos. We built the structure that makes it optional, then let automation prove the structure holds.
         </p>
         <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.6, color: T.body, margin: "22px 0 0", maxWidth: "62ch" }}>
           The full reasoning lives in the accompanying written framework — a design document and a log of all twenty-three
           decisions: how the seven challenges collapse into two root causes, the staged event
           lifecycle, the one official record split across roles, the approved way to override, this build sequence,
-          and the hardening that came out of stress-testing — switching over while the business runs live, keeping an owner
+          and the hardening that came out of stress-testing: switching over while the business runs live, keeping an owner
           on every event when someone is out, and keeping the playbook consistent as cities multiply.
         </p>
         <hr style={{ border: 0, height: 2, width: 56, background: T.accent, margin: "30px 0 16px" }} />

@@ -92,11 +92,11 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
   </header>
 
   <main class="stage">
-    <iframe id="stage" title="Walkthrough — the guided tour of how Base runs events" src="walkthrough.html"></iframe>
+    <iframe id="stage" title="The Solution — the destination once the system is built" src="solution.html"></iframe>
   </main>
 
 <script>
-  // Tab registry — id → iframe src + iframe title. Walkthrough (the scroll output) is the default.
+  // Tab registry — id → iframe src + iframe title. Solution is the default landing.
   var TABS = {
     walkthrough: { src: "walkthrough.html", title: "Walkthrough — the guided tour of how Base runs events" },
     solution:    { src: "solution.html",    title: "The Solution — the destination once the system is built" },
@@ -108,7 +108,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
 
   function currentId() {
     var id = (location.hash || "").replace(/^#/, "");
-    return TABS[id] ? id : "walkthrough";
+    return TABS[id] ? id : "solution";
   }
   function render(id) {
     var t = TABS[id], want = t.src, have = frame.getAttribute("data-src");
@@ -119,7 +119,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
     });
   }
   window.addEventListener("hashchange", function () { render(currentId()); });
-  (function () { frame.setAttribute("data-src", "walkthrough.html"); render(currentId()); })();
+  (function () { frame.setAttribute("data-src", "solution.html"); render(currentId()); })();
 </script>
 </body>
 </html>
