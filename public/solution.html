@@ -70,6 +70,32 @@ h1 .accent { color: var(--accent); }
 .panel .pt { font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: var(--ink); }
 .panel .pd { font-family: var(--font-sans); font-size: 13.5px; line-height: 1.5; color: var(--muted); margin-top: 8px; }
 
+/* the mechanism — the Event as the atom across systems */
+.mech { margin-top: 34px; }
+.mech-h { font-family: var(--font-serif); font-size: clamp(20px, 2.6vw, 28px); font-weight: 400; letter-spacing: 0.03em;
+  text-transform: uppercase; color: var(--ink); margin: 0; max-width: 22ch; }
+.mech-lead { font-family: var(--font-sans); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.6; color: var(--body);
+  max-width: 66ch; margin: 14px 0 0; }
+.mech-lead b { color: var(--ink); font-weight: 600; }
+.atom-map { background: var(--navy); border: 1px solid var(--line); border-radius: 14px;
+  padding: clamp(14px, 3vw, 24px); margin-top: 22px; }
+.atom-map svg { width: 100%; height: auto; display: block; }
+.atom-cap { font-family: var(--font-sans); font-size: 12.5px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+.atom-cap b { color: var(--ink); font-weight: 600; }
+.manual { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 22px; }
+.manual > div { border-radius: 12px; padding: 18px 20px; font-family: var(--font-sans); font-size: 14px; line-height: 1.5; }
+.manual-bad { background: var(--soft); border: 1px solid var(--line); border-left: 3px solid var(--muted); color: var(--muted); }
+.manual-good { background: rgba(63,166,107,0.08); border: 1px solid var(--line); border-left: 3px solid var(--green); color: var(--body); }
+.manual .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 8px; color: var(--muted); }
+.manual .tag.good { color: var(--green); }
+.manual b { color: var(--ink); font-weight: 600; }
+.pipeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 22px; }
+.step { background: var(--soft); border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: 12px; padding: 18px 20px; }
+.step .sn { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; }
+.step .st { font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 6px; }
+.step .sd { font-family: var(--font-sans); font-size: 13px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
+
 /* what it earns */
 .earns { margin-top: 30px; background: rgba(191,52,78,0.06); border: 1px solid var(--line);
   border-left: 3px solid var(--accent); border-radius: 12px; padding: 22px 24px; }
@@ -195,6 +221,62 @@ h1 .accent { color: var(--accent); }
     <div class="panel reveal" style="--spoke:var(--green)">
       <div class="pt">Each event advances itself</div>
       <div class="pd">An event moves through clean, owned stages on its own. Each step has one accountable owner and can't advance until it's truly ready.</div>
+    </div>
+  </div>
+
+  <!-- ============ the mechanism: the Event as the atom across systems ============ -->
+  <div class="mech reveal">
+    <div class="eyebrow" style="margin-bottom: 14px">How it works — the Event is the atom</div>
+    <h2 class="mech-h">One atom, many views — and no manual re-entry</h2>
+    <p class="mech-lead">
+      Every team's tool keeps its job. The shift is underneath: every system speaks about the same thing — <b>the Event</b> — by one <b>stable ID</b>. The Event is <b>the atom</b>: each system holds a <i>view</i> of it, never its own copy. An operating layer keeps them all pointing at the one official record, so a fact is fixed once and every view updates.
+    </p>
+
+    <!-- the atom, referenced by every system -->
+    <div class="atom-map">
+      <svg viewBox="0 0 760 250" role="img" aria-label="Each system references the same Event by its stable ID; the Event is the one shared atom.">
+        <!-- converging lines -->
+        <g stroke="#2E8B8B" stroke-width="1.5" opacity="0.8">
+          <line x1="80"  y1="66" x2="380" y2="180"/>
+          <line x1="226" y1="66" x2="380" y2="180"/>
+          <line x1="372" y1="66" x2="380" y2="180"/>
+          <line x1="518" y1="66" x2="380" y2="180"/>
+          <line x1="664" y1="66" x2="380" y2="180"/>
+        </g>
+        <!-- role-system nodes (by role, not product) -->
+        <g font-family="Poppins,sans-serif" font-size="12" font-weight="600" text-anchor="middle">
+          <g><rect x="14"  y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="80"  y="48" fill="#FFE2C0">Projects</text></g>
+          <g><rect x="160" y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="226" y="48" fill="#FFE2C0">Task management</text></g>
+          <g><rect x="306" y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="372" y="48" fill="#FFE2C0">External comms</text></g>
+          <g><rect x="452" y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="518" y="48" fill="#FFE2C0">Internal comms</text></g>
+          <g><rect x="598" y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="664" y="48" fill="#FFE2C0">Documents</text></g>
+        </g>
+        <!-- the Event: the one shared atom -->
+        <rect x="266" y="180" width="228" height="54" rx="12" fill="#131F30" stroke="#BF344E" stroke-width="1.6"/>
+        <text x="380" y="203" text-anchor="middle" fill="#FFE2C0" font-family="Forum,Georgia,serif" font-size="17" letter-spacing="0.04em">THE EVENT</text>
+        <text x="380" y="221" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="10.5">one official record · one stable ID</text>
+      </svg>
+      <p class="atom-cap">Each system references the same Event by its stable ID — <b>one atom, many views, never a second copy</b>. The systems don't hold competing facts; they hold pointers to the one record.</p>
+    </div>
+
+    <!-- solving manual entry -->
+    <div class="manual">
+      <div class="manual-bad">
+        <span class="tag">Today</span>
+        The glue between these systems is a <b>person</b> — copying status, chasing confirmations, re-keying the same fact in four places. That hand-work is where error, delay, and friction live.
+      </div>
+      <div class="manual-good">
+        <span class="tag good">In the future state</span>
+        Capture is <b>automatic</b>. Operating-layer agents read each system on a schedule, extract what changed, and write it once to the Event's record. People stop re-entering — <b>the system does the glue</b>.
+      </div>
+    </div>
+
+    <!-- the mechanism, by role -->
+    <div class="pipeline">
+      <div class="step"><div class="sn">01 · CAPTURE</div><div class="st">Read, don't re-type</div><div class="sd">Agents read each system on a schedule and extract what changed — no human stops work to log it.</div></div>
+      <div class="step"><div class="sn">02 · DOCUMENT</div><div class="st">Write once, to the atom</div><div class="sd">Each change is written once to the Event's official record, keyed to its stable ID. One home per fact.</div></div>
+      <div class="step"><div class="sn">03 · BUILD</div><div class="st">Skills on a clean record</div><div class="sd">Teams compose reusable skills and agent behaviors on top — each a thin rule on the Event, not a new system.</div></div>
+      <div class="step"><div class="sn">04 · GROW</div><div class="st">Memory that compounds</div><div class="sd">A documented memory gets richer every cycle — less is re-explained, more is inherited. The org speeds up.</div></div>
     </div>
   </div>
 
