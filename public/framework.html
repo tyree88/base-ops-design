@@ -97,7 +97,7 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 
 <section class="section active" id="overview"><h2 class="shead">Operational framework for Base</h2>
 <p class="lead">An ops system for a membership social club scaling from ~20 to 500+ events per month across dozens of cities. The brief grades reasoning, not tools.</p>
-<div class="panel"><b>Thesis.</b> The seven named challenges collapse to two root causes — <b>no canonical owned record</b> of an event, and <b>no clear ownership</b> of the process around it. So the problem is a missing <b>substrate</b> (one canonical record + a gated, owned lifecycle), not missing tools. Everything Base wants — reliable confirmations, org-wide visibility, eventual automation — only stands on that substrate.</div>
+<div class="panel"><b>The big idea.</b> The seven problems Base listed boil down to two root causes — there is <b>no single official record</b> of an event that someone owns, and <b>no clear owner</b> for the process around it. So the real gap is a missing foundation (one official record of each event, plus a step-by-step process where every stage has a named owner), not missing tools. Everything Base wants — confirmations that hold, a view everyone trusts, automation later — only works once that foundation exists.</div>
 <h3>Coverage</h3>
 <div class="grid g4">
 <div class="stat"><div class="n">~80%</div><div class="l">Problem definition</div></div>
@@ -112,14 +112,14 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <div class="stat"><div class="n">5</div><div class="l">discovery questions</div></div>
 </div>
 <h3>Status legend</h3>
-<p><span class="pill p-held">held</span> defends cold under the grill &nbsp; <span class="pill p-fork">fork</span> reversible v1 choice &nbsp; <span class="pill p-crack">cracked</span> couldn't fully defend — fix &nbsp; <span class="pill p-deriv">derived</span> falls out of an upstream call</p>
-<div class="note">This hub consolidates the whole exercise — the brief, the reasoning journey, all 23 decisions, the design artifacts, the grill transcripts, the open cracks, the assumptions, and the file map. Navigate from the left. Underlying detail lives in the project files (see <b>File map</b>).</div></section>
+<p><span class="pill p-held">solid</span> holds up cold under hard questioning &nbsp; <span class="pill p-fork">open choice</span> a reversible first call &nbsp; <span class="pill p-crack">has a gap</span> couldn't fully defend — needs fixing &nbsp; <span class="pill p-deriv">follows from others</span> falls out of an earlier decision</p>
+<div class="note">This hub pulls the whole exercise into one place — the brief, the reasoning journey, all 23 decisions, the design artifacts, the pressure-test transcripts, the open gaps, the assumptions, and the file map. Navigate from the left. Underlying detail lives in the project files (see <b>File map</b>).</div></section>
 <section class="section" id="problem"><h2 class="shead">Problem &amp; frame</h2>
 <p class="lead">How the problem was understood before any solution was drawn.</p>
 <div class="panel"><b>The brief in one line.</b> Build an operational framework for dozens of cities and hundreds of events a month, minimizing manual intervention and keeping reliability. The load-bearing sentence: <i>"automation alone will not solve these problems if the underlying process design is flawed."</i></div>
 <h3>Current stack — assume it exists; do not assume it's optimal</h3>
 <p>Asana (tasks) · Slack (team chat) · Missive (shared inboxes / external comms) · Airtable (operational + city data). The problem isn't any single tool — it's that <b>four systems hold four partial copies of an event's truth and none is authoritative.</b> A venue change lands in a Missive inbox and lives there; that's where "plan for 80, room holds 50" is born.</p>
-<h3>Seven challenges → two roots + symptoms (D1)</h3>
+<h3>Seven challenges → two root causes + symptoms — Decision 1, sort before you solve (D1)</h3>
 <table>
 <tr><th>Layer</th><th>Items</th></tr>
 <tr><td><b>Root — data/structure</b></td><td>#1 information fragmented across systems/owners · #2 event vs operational data siloed</td></tr>
@@ -128,94 +128,124 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 </table>
 <p class="muted">Fix the two roots and the symptoms dissolve — sort before solving, rather than mopping the floor with the tap running.</p>
 <h3>The frame, step by step</h3>
-<div class="beat"><div class="bn">0</div><div class="bx"><b>Reject the tool anchor.</b> "What's missing?" is meaningless against a tool list — only against a model of the functions that must exist.</div></div>
-<div class="beat"><div class="bn">1</div><div class="bx"><b>Refuse the brief's decomposition.</b> Are the 7 peers, or do some cause others? That turns a to-do list into a sort.</div></div>
-<div class="beat"><div class="bn">2</div><div class="bx"><b>Root/symptom test.</b> "If every other problem were fixed, would this still exist?" #5/#4/#6 vanish → symptoms; #1/#2/#3/#7 stand alone → roots.</div></div>
-<div class="beat"><div class="bn">3</div><div class="bx"><b>The hinge — falsify the tools framing.</b> "If every tool were perfectly integrated tomorrow, would the problem be solved?" No — still no agreement on what the canonical record <i>is</i> or who owns it. The problem flips from tooling to substrate.</div></div>
-<div class="beat"><div class="bn">4</div><div class="bx"><b>Restate positively.</b> Base has no operating system for its unit of work — one canonical, owned record per event + a defined process around it.</div></div>
-<div class="beat"><div class="bn">5</div><div class="bx"><b>Bound it (D3).</b> Scope = supply/operations (sourcing → reconciliation). Demand side (acquisition, matching) is out — it couples only at event sizing. <span class="pill p-crack">cracked</span> wording later leaks member money.</div></div>
-<h3>Scale is a vector, not a number</h3>
-<p>20→500 events/month is the headline, but the dimensions that actually break things differ: cities · venues per city · events per venue · ops headcount · hosts · <b>concurrency (same-night events)</b> · geographic/timezone spread. Each stresses a different part first.</p></section>
+<div class="beat"><div class="bn">0</div><div class="bx"><b>Don't anchor on the tools.</b> "What's missing?" means nothing against a list of tools — only against a model of the functions that have to exist.</div></div>
+<div class="beat"><div class="bn">1</div><div class="bx"><b>Don't accept the brief's list as-is.</b> Are the 7 problems equals, or do some cause the others? That turns a to-do list into a sort.</div></div>
+<div class="beat"><div class="bn">2</div><div class="bx"><b>Root-cause vs symptom test.</b> "If every other problem were fixed, would this one still exist?" #5/#4/#6 vanish → symptoms; #1/#2/#3/#7 stand alone → root causes.</div></div>
+<div class="beat"><div class="bn">3</div><div class="bx"><b>The hinge — test the tools framing.</b> "If every tool were perfectly integrated tomorrow, would the problem be solved?" No — there's still no agreement on what the one official record <i>is</i> or who owns it. The problem flips from tooling to foundation.</div></div>
+<div class="beat"><div class="bn">4</div><div class="bx"><b>Restate it positively.</b> Base has no operating system for its core unit of work — one official, owned record per event + a defined process around it.</div></div>
+<div class="beat"><div class="bn">5</div><div class="bx"><b>Set the boundary — Decision 3, model the operations side (D3).</b> Scope = the venue and operations side (from sourcing an event to settling its costs). The demand side (member acquisition, matching) is out — it only touches this at event sizing. <span class="pill p-crack">has a gap</span> the wording later leaks member money back in.</div></div>
+<h3>Scale is several dimensions, not one number</h3>
+<p>20→500 events/month is the headline, but the dimensions that actually break things differ: cities · venues per city · events per venue · ops headcount · hosts · <b>same-night events running at once</b> · geographic/timezone spread. Each one stresses a different part of the system first.</p></section>
 <section class="section" id="journey"><h2 class="shead">The journey</h2>
-<p class="lead">How the conversation actually unfolded — slow and Socratic up front, a fast agent cascade in the middle, an audit at the end. The cracks cluster where the cascade ran fastest.</p>
-<div class="beat"><div class="bn">1</div><div class="bx"><b>Frame the problem.</b> Sort root vs symptom — not better tools. → D1. <span class="pill p-held">held</span></div></div>
-<div class="beat"><div class="bn">2</div><div class="bx"><b>Find the atom.</b> The unit everything attaches to → the Event. Killed the "AI-brain" tool-jump. → D2, D4, D5 <span class="pill p-crack">D3</span></div></div>
-<div class="beat"><div class="bn">3</div><div class="bx"><b>One source of truth.</b> One owned home per fact; chat is never canonical. → D6, D7, D15 <span class="pill p-held">held</span></div></div>
-<div class="beat"><div class="bn">4</div><div class="bx"><b>Lifecycle.</b> Name the gated states — locked after five deferrals behind meta-work. → D9 <span class="pill p-held">held</span></div></div>
-<div class="beat"><div class="bn">5</div><div class="bx"><b>Ownership &amp; status.</b> One owner per gate; one status, many lenses. <b>Agents take over here.</b> → D8, D10, D11, D12, D13</div></div>
-<div class="beat"><div class="bn">6</div><div class="bx"><b>Risk &amp; exception.</b> Make the exception first-class (override = Incident). → D18 <span class="pill p-held">held</span>, D19 <span class="pill p-crack">cracked</span></div></div>
-<div class="beat"><div class="bn">7</div><div class="bx"><b>Standardize &amp; sequence.</b> Standardize structure; automate last. → D14, D16, D17, D20</div></div>
-<div class="beat"><div class="bn">8</div><div class="bx"><b>Review.</b> The grill found 6 cracks; the spine held. → see Risks &amp; cracks</div></div>
-<div class="note"><b>The punchline:</b> stages 1–4 (driven by hand, one question at a time) are almost all <span class="pill p-held">held</span>. The cracks bunch in stages 5–6 — the agent cascade, where the operator stepped out of the loop. Reasoning held where a human was in the room.</div></section>
+<p class="lead">How the conversation actually unfolded — slow and question-by-question up front, a fast run of automated helper agents in the middle, an audit at the end. The gaps cluster where that automated run moved fastest.</p>
+<div class="beat"><div class="bn">1</div><div class="bx"><b>Frame the problem.</b> Sort root causes from symptoms — not just better tools. → Decision 1, sort before you solve (D1). <span class="pill p-held">solid</span></div></div>
+<div class="beat"><div class="bn">2</div><div class="bx"><b>Find the core unit.</b> The thing everything attaches to → the Event. Killed the "give it an AI brain" tool-jump. → Decision 2, the core unit is the Event (D2), plus Decision 4, the set of things we track (D4) and Decision 5, one event can span many venues (D5) <span class="pill p-crack">scope dispute (D3)</span></div></div>
+<div class="beat"><div class="bn">3</div><div class="bx"><b>One official record.</b> One owned home per fact; chat is never the record. → Decision 7, one official record (D7), with Decision 6, what a hand-off is (D6) and Decision 15, official record finalized (D15) <span class="pill p-held">solid</span></div></div>
+<div class="beat"><div class="bn">4</div><div class="bx"><b>The event lifecycle.</b> Name the gated stages — locked in after five rounds of deferring behind meta-work. → Decision 9, the event lifecycle (D9) <span class="pill p-held">solid</span></div></div>
+<div class="beat"><div class="bn">5</div><div class="bx"><b>Ownership &amp; status.</b> One owner per gate; one status seen through many views. <b>The automated helper agents take over here.</b> → Decision 8, who owns what (D8), Decision 10, one accountable owner per stage (D10), Decision 11, multi-venue confirmation (D11), Decision 12, gated hand-offs (D12), Decision 13, one status four views (D13)</div></div>
+<div class="beat"><div class="bn">6</div><div class="bx"><b>Risk &amp; exceptions.</b> Make the exception a first-class part of the system (an override always opens an Incident). → Decision 18, exceptions stay in the system (D18) <span class="pill p-held">solid</span>, Decision 19, risk and scale (D19) <span class="pill p-crack">has a gap</span></div></div>
+<div class="beat"><div class="bn">7</div><div class="bx"><b>Standardize &amp; sequence.</b> Standardize the structure; automate last. → Decision 14, decide and move (D14), Decision 16, standardize structure localize content (D16), Decision 17, dependency map (D17), Decision 20, build order (D20)</div></div>
+<div class="beat"><div class="bn">8</div><div class="bx"><b>Review.</b> The pressure-test found 6 gaps; the core held. → see Risks &amp; gaps</div></div>
+<div class="note"><b>The punchline:</b> stages 1–4 (driven by hand, one question at a time) are almost all <span class="pill p-held">solid</span>. The gaps bunch in stages 5–6 — the fast automated run, where the operator stepped out of the loop. The reasoning held where a human was in the room.</div></section>
 <section class="section" id="decisions"><h2 class="shead">Decisions</h2>
-<p class="lead">Twenty logged decisions — choice and why. Filter by how each held up under the grill, or search.</p>
+<p class="lead">All 23 logged decisions — the choice and the why. Filter by how each held up under hard questioning, or search.</p>
 <div class="filters" id="dfilters">
 <button data-f="all" class="on">All</button>
-<button data-f="held">Held</button>
-<button data-f="fork">Fork</button>
-<button data-f="crack">Cracked</button>
-<button data-f="deriv">Derived</button>
+<button data-f="held">Solid</button>
+<button data-f="fork">Open choice</button>
+<button data-f="crack">Has a gap</button>
+<button data-f="deriv">Follows from others</button>
 <input id="dsearch" placeholder="search decisions…">
 </div>
 <div id="dlist">
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D1</span>Structure the 7 challenges</span><span class="pill p-held">held</span></div><div class="choice">7 challenges → two root families + symptoms.</div><div class="why">Roots breed symptoms; fix the two roots and several dissolve — don't mop with the tap on.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D2</span>The operational atom</span><span class="pill p-held">held</span></div><div class="choice">The atom is the Event; actions, comms, costs, exceptions are downstream.</div><div class="why">They can't stand alone — everything attaches to the event.</div></div>
-<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">D3</span>Scope boundary</span><span class="pill p-crack">cracked</span></div><div class="choice">Supply/operations only; demand side (acquisition, matching) out.</div><div class="why">Brief is venue comms + city ops. Wording cracked — member money re-enters the design.</div></div>
-<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">D4</span>Entity set</span><span class="pill p-deriv">derived</span></div><div class="choice">Event, Venue, City, Host, Comms Thread, Receipt, Incident — each a stable key.</div><div class="why">Derived via lifecycle / persistence / cardinality / ownership lenses.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D5</span>Event ↔ Venue cardinality</span><span class="pill p-held">held</span></div><div class="choice">One-to-many; receipts/confirmations/incidents scoped per venue.</div><div class="why">Tours span venues; a single event-level "confirmed" flag hides a dark venue. One-way door.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D6</span>What a handoff is</span><span class="pill p-held">held</span></div><div class="choice">Handoff = state change + required data package + owner + due date (gated).</div><div class="why">Structurally stops missing/late info from propagating (paired with D18).</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D7</span>Source of truth</span><span class="pill p-held">held</span></div><div class="choice">Federated by domain — one event record + finance + knowledge base; chat never canonical.</div><div class="why">"One tool for everything" is brittle; authoritative-per-domain is defensible.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D8</span>Ownership model</span><span class="pill p-held">held</span></div><div class="choice">Two axes — central/local + by lifecycle stage.</div><div class="why">Standard multi-unit pattern; gives unclear ownership a structural answer.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D9</span>Lifecycle states</span><span class="pill p-held">held</span></div><div class="choice">Sourced → Drafted → Venue-Requested → Venue-Booked → Confirmed → Run → Reconciled → Closed (+ Cancelled, Rescheduled).</div><div class="why">Booked ≠ Confirmed isolates the soft-hold→signed gap where Base fails; Reconciled ≠ Closed splits money from postmortem.</div></div>
-<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">D10</span>One owner per state</span><span class="pill p-crack">cracked</span></div><div class="choice">A single accountable owner for each state.</div><div class="why">Kills "everyone assumed someone else had it." Cracked: Incident owner is a phantom "Central Ops" not in the taxonomy.</div></div>
-<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">D11</span>Multi-venue confirm logic</span><span class="pill p-fork">fork</span></div><div class="choice">Per-venue status rolls up; advance all-green, hold weakest-link; a venue dropping post-advance → Incident, never silent.</div><div class="why">One event-level flag hides a dark venue. Gap: partial-failure member comms.</div></div>
-<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">D12</span>Gated entry packages + SLAs</span><span class="pill p-crack">cracked</span></div><div class="choice">Every transition needs a named data package before the next owner accepts; SLAs anchored to event date.</div><div class="why">Operationalizes D6. Cracked: SLA numbers are strawman — flag as illustrative or remove.</div></div>
-<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">D13</span>Per-layer status semantics</span><span class="pill p-crack">cracked</span></div><div class="choice">One canonical status, four lenses (City/Finance/Member/Venue); member visibility opens at Confirmed.</div><div class="why">Public view can't outrun signed reality. Cracked: no reverse gear for member money/visibility on reschedule or cancel.</div></div>
-<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">D14</span>Proceed-on-recommendation</span><span class="pill p-fork">fork</span></div><div class="choice">Lock the recommended side of open forks as v1; each one-line-reversible.</div><div class="why">Don't stall the machine on two-way doors. Caveat: needs a review gate — it let cracks ride unchecked.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D15</span>Source of truth, finalized</span><span class="pill p-held">held</span></div><div class="choice">Federated by system role (spine / financial book / doctrine / coordination) + 4 rules; money = envelope vs actuals, joined at reconciliation.</div><div class="why">Separates concerns with different change-rates and controls; "promote, don't strand" kills the 80→50 failure.</div></div>
-<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">D16</span>Standardized vs local</span><span class="pill p-fork">fork</span></div><div class="choice">Standardize structure, localize content — HQ owns schema/templates/procedures; city owns values/people/venues/calendar.</div><div class="why">Comparable, roll-up-able data + a new city inherits the system day one; local content respects local venue fit.</div></div>
-<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">D17</span>Dependency map</span><span class="pill p-deriv">derived</span></div><div class="choice">Mapped across systems/teams/processes with failure-on-break; a gate is a hardened dependency; two exposures remain.</div><div class="why">Shows the architecture already hardens most dependencies and names the two that aren't (HQ↔city knowledge; SoT join sync).</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D18</span>Exception handling</span><span class="pill p-held">held</span></div><div class="choice">Sanctioned override → opens an Incident + back-fill + risk flag, never silent; hard gates for money-out, public sale, clean-ledger close.</div><div class="why">A gate you can't override gets routed around; a sanctioned one keeps the exception in the system and turns override-rate into a health metric.</div></div>
-<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">D19</span>Risk &amp; scale posture</span><span class="pill p-crack">cracked</span></div><div class="choice">Failure modes map to the 2 roots; scale is a vector; three dimensions need explicit mitigation.</div><div class="why">Harden per dimension. Cracked: "sub-linear cost" is automation-dependent, not yet structural; concurrency mitigation leans on the (unsolved) knowledge loop.</div></div>
-<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">D20</span>Implementation sequencing</span><span class="pill p-deriv">derived</span></div><div class="choice">Foundational first → process → data → standardization → automation; automation is the test, not the foundation.</div><div class="why">The brief's own thesis: automation won't fix a flawed process.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D21</span>Transition / migration</span><span class="pill p-held">held</span></div><div class="choice">Parallel-run, city-by-city: new events instantiate on the new lifecycle, in-flight events drain on the old; one pilot city first; a named overlap-reconciliation owner; stable keys back-filled; governed by the D18 override-and-back-fill path.</div><div class="why">No flag-day rebuild is possible while 200+ events/mo run live — the cutover wedge is the first rollout decision. Post-grill.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D22</span>Owner-continuity under disruption</span><span class="pill p-held">held</span></div><div class="choice">Every state names a successor + escalation to City Manager, so a vanished or unavailable owner never orphans an event mid-state.</div><div class="why">One-owner-per-state gives accountability but is a single point of failure on owner loss; a successor rule restores continuity without splitting the accountable role. Post-grill; refines D10/D19.</div></div>
-<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">D23</span>Doctrine propagation at scale</span><span class="pill p-held">held</span></div><div class="choice">The ratification loop carries an SLA (ages past it → auto-escalate) and tiers to regional doctrine owners as cities grow.</div><div class="why">Novel-lesson volume re-spikes with each new market; unbounded central ratification latency would break consistency exactly at scale. Post-grill; refines D19.</div></div>
-</div></section>
-<section class="section" id="artifacts"><h2 class="shead">Design artifacts</h2>
-<p class="lead">The structural outputs — entity model, the gated lifecycle, ownership/RACI, and the source-of-truth model. Full detail in <code>02_design/</code>.</p>
-
-<h3>Entity model</h3>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D1)</span>Sort before you solve</span><span class="pill p-held">solid</span></div><div class="choice">7 challenges → two root-cause families + symptoms.</div><div class="why">Root causes breed symptoms; fix the two roots and several dissolve — don't mop with the tap on.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D2)</span>The core unit is the Event</span><span class="pill p-held">solid</span></div><div class="choice">The core unit is the Event; actions, messages, costs, exceptions all hang off it.</div><div class="why">They can't stand alone — everything attaches to the event.</div></div>
+<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">(D3)</span>Scope = operations side</span><span class="pill p-crack">has a gap</span></div><div class="choice">Operations side only; demand side (member acquisition, matching) out.</div><div class="why">The brief is venue comms + city operations. The wording has a gap — member money re-enters the design.</div></div>
+<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">(D4)</span>The set of things we track</span><span class="pill p-deriv">follows from others</span></div><div class="choice">Event, Venue, City, Host, Venue-Comms Thread, Receipt, Incident — each with a stable ID.</div><div class="why">Follows from looking at lifecycle, persistence, how-many-to-how-many, and ownership.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D5)</span>One event, many venues</span><span class="pill p-held">solid</span></div><div class="choice">One-to-many; receipts/confirmations/incidents tracked per venue.</div><div class="why">Tours span venues; a single event-level "confirmed" flag hides a venue that quietly fell through. A one-way door, so decide it now.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D6)</span>What a hand-off is</span><span class="pill p-held">solid</span></div><div class="choice">Hand-off = a stage change + a required information package + a named owner + a due date (gated).</div><div class="why">Structurally stops missing or late info from spreading (paired with Decision 18, exceptions stay in the system (D18)).</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D7)</span>One official record</span><span class="pill p-held">solid</span></div><div class="choice">Split by domain — one event record + one finance book + one playbook; chat is never the record.</div><div class="why">"One tool for everything" is brittle; one authoritative home per domain is defensible.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D8)</span>Who owns what</span><span class="pill p-held">solid</span></div><div class="choice">Two dimensions — headquarters vs the local city team, and by lifecycle stage.</div><div class="why">Standard pattern for a business with many local branches; gives unclear ownership a structural answer.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D9)</span>The event lifecycle</span><span class="pill p-held">solid</span></div><div class="choice">Sourced → Drafted → Venue-Requested → Venue-Booked → Confirmed → Run → Reconciled → Closed (+ Cancelled, Rescheduled).</div><div class="why">Booked (a soft hold) is deliberately not Confirmed (signed) — that's the seam where Base fails; Reconciled (money settled) is split from Closed (postmortem done).</div></div>
+<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">(D10)</span>One accountable owner per stage</span><span class="pill p-crack">has a gap</span></div><div class="choice">Exactly one accountable owner for each stage.</div><div class="why">Kills "everyone assumed someone else had it." The gap: the Incident owner is a phantom "Central Ops" that isn't in the list of roles.</div></div>
+<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">(D11)</span>Multi-venue confirmation</span><span class="pill p-fork">open choice</span></div><div class="choice">Per-venue status rolls up; the event only advances when every required venue is ready; a venue dropping out after advancing raises an Incident, never a silent gap.</div><div class="why">One event-level flag hides a venue that quietly fell through. Gap: what members are told on a partial failure.</div></div>
+<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">(D12)</span>Gated hand-offs + deadlines</span><span class="pill p-crack">has a gap</span></div><div class="choice">Every stage change needs a named information package before the next owner accepts it; deadlines anchored to the event date.</div><div class="why">Puts Decision 6, what a hand-off is (D6) into practice. The gap: the deadline numbers are placeholders — flag them as illustrative or remove.</div></div>
+<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">(D13)</span>One status, four views</span><span class="pill p-crack">has a gap</span></div><div class="choice">One official status, four views (city / finance / member / venue); members see it only once the venue is actually signed.</div><div class="why">The public view can't get ahead of signed reality. The gap: no reverse gear for member money or visibility when an event is rescheduled or cancelled.</div></div>
+<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">(D14)</span>Decide and move</span><span class="pill p-fork">open choice</span></div><div class="choice">Lock the recommended side of each open choice as version 1; each one is reversible in a line.</div><div class="why">Don't stall the machine on easily reversible calls. Caveat: it needs a review gate — without one it let gaps ride unchecked.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D15)</span>Official record, finalized</span><span class="pill p-held">solid</span></div><div class="choice">Split by system role (operations record / finance book / playbook / coordination chat) + 4 rules; money = planned budget vs actual spend, joined at reconciliation.</div><div class="why">Separates concerns that change at different rates and need different controls; the rule "a fact isn't real until it's written to the official record" kills the "plan for 80, room holds 50" failure.</div></div>
+<div class="dcard s-fork" data-status="fork"><div class="dh"><span class="dt"><span class="dn">(D16)</span>Standardize structure, localize content</span><span class="pill p-fork">open choice</span></div><div class="choice">Standardize the structure, localize the content — headquarters owns the data shape, templates, and procedures; the local city team owns the values, people, venues, and calendar.</div><div class="why">Data stays comparable and easy to roll up, and a new city inherits the system on day one; local content still respects what fits each local venue.</div></div>
+<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">(D17)</span>Dependency map</span><span class="pill p-deriv">follows from others</span></div><div class="choice">Mapped across systems, teams, and processes, marking what breaks if each link snaps; a gate is a hardened link; two exposures remain.</div><div class="why">Shows the architecture already hardens most links and names the two that aren't (knowledge between headquarters and the local city team; keeping the joined records in sync).</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D18)</span>Exceptions stay in the system</span><span class="pill p-held">solid</span></div><div class="choice">An authorized override → opens an Incident + a required back-fill + a visible risk flag, never silent; hard limits for money going out, opening public sales, and closing the books clean.</div><div class="why">A gate you can't override gets routed around; an authorized one keeps the exception inside the system and turns the override rate into a health metric.</div></div>
+<div class="dcard s-crack" data-status="crack"><div class="dh"><span class="dt"><span class="dn">(D19)</span>Risk &amp; scale</span><span class="pill p-crack">has a gap</span></div><div class="choice">Failure modes trace back to the 2 root causes; "scale" is several different dimensions; three of them need explicit mitigation.</div><div class="why">Harden each dimension on its own. The gap: "cost grows slower than volume" depends on automation, not yet on structure; the same-night-events mitigation leans on the (still unsolved) knowledge loop.</div></div>
+<div class="dcard s-deriv" data-status="deriv"><div class="dh"><span class="dt"><span class="dn">(D20)</span>Build order</span><span class="pill p-deriv">follows from others</span></div><div class="choice">Foundations first → process → data → standardization → automation; automation is the test of a clean process, not the foundation.</div><div class="why">The brief's own thesis: automation won't fix a flawed process.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D21)</span>Migration</span><span class="pill p-held">solid</span></div><div class="choice">Run old and new side by side, city by city: new events start on the new lifecycle, in-flight events finish on the old; one pilot city first; a named owner reconciles the overlap; stable IDs are back-filled; governed by the override-and-back-fill path from Decision 18, exceptions stay in the system (D18).</div><div class="why">No big-bang rebuild is possible while 200+ events a month run live — how to cut over is the first rollout decision. Added after the pressure-test.</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D22)</span>Owner continuity</span><span class="pill p-held">solid</span></div><div class="choice">Every stage names a successor + an escalation path to the City Manager, so an owner who vanishes or is unavailable never strands an event mid-stage.</div><div class="why">One owner per stage gives accountability but is a single point of failure if that owner is lost; a successor rule restores continuity without splitting the accountable role. Added after the pressure-test; refines Decision 10, one accountable owner per stage (D10) and Decision 19, risk and scale (D19).</div></div>
+<div class="dcard s-held" data-status="held"><div class="dh"><span class="dt"><span class="dn">(D23)</span>Playbook at scale</span><span class="pill p-held">solid</span></div><div class="choice">The playbook-update loop carries its own deadline (past it → auto-escalate) and tiers to regional playbook owners as cities grow.</div><div class="why">New lessons re-spike with each new market; an unbounded central-approval delay would break consistency exactly at scale. Added after the pressure-test; refines Decision 19, risk and scale (D19).</div></div>
+</div>
+<h3>Decisions glossary</h3>
+<p class="muted">A plain-language map of every decision ID and the key terms, so the parenthetical IDs above stay traceable. Each row is one decision in one line.</p>
+<!-- glossary:start -->
 <table>
-<tr><th>Entity</th><th>Type</th><th>Identity</th><th>Owner</th><th>Relationships</th></tr>
-<tr><td><b>Event</b></td><td>transactional</td><td><code>event_id</code></td><td>Event Producer</td><td>1 city · many venues · 0–1 host · many comms/receipts/incidents</td></tr>
-<tr><td><b>Venue</b></td><td>master</td><td><code>venue_id</code></td><td>Venue Partnerships</td><td>many events · 1 city</td></tr>
-<tr><td><b>City</b></td><td>master / org unit</td><td><code>city_id</code></td><td>City Manager</td><td>many venues, events</td></tr>
-<tr><td><b>Host</b></td><td>master</td><td><code>host_id</code></td><td>Partnerships <span class="muted">(open: A2)</span></td><td>many events</td></tr>
-<tr><td><b>Comms Thread</b></td><td>transactional</td><td><code>thread_id</code></td><td>Producer / Partnerships</td><td>1 venue · 0–1 event</td></tr>
-<tr><td><b>Receipt</b></td><td>sub-entity</td><td><code>receipt_id</code></td><td>Finance</td><td>1 event · 1 venue</td></tr>
-<tr><td><b>Incident</b></td><td>transactional</td><td><code>incident_id</code></td><td class="muted">undefined (crack)</td><td>1 event · 0–1 venue</td></tr>
+<tr><th>ID</th><th>Short name</th><th>What it means</th></tr>
+<tr><td>D1</td><td>Sort before you solve</td><td>The seven listed challenges are really two root causes plus symptoms — fix the two roots and the symptoms dissolve</td></tr>
+<tr><td>D2</td><td>The core unit is the Event</td><td>Communications, costs, hosts, and incidents all attach to the event; they can't stand alone</td></tr>
+<tr><td>D3</td><td>Scope = operations side</td><td>Model the venue/operations subsystem, not member acquisition or matching</td></tr>
+<tr><td>D4</td><td>The set of things we track</td><td>Event, Venue, City, Host, Venue-Comms Thread, Receipt, Incident — each with a stable ID</td></tr>
+<tr><td>D5</td><td>One event, many venues</td><td>An event can span multiple venues (e.g. a tour), so confirmations are tracked per venue</td></tr>
+<tr><td>D6</td><td>What a hand-off is</td><td>A hand-off = a state change + a required information package + a named owner + a due date</td></tr>
+<tr><td>D7</td><td>One official record</td><td>Each domain has one authoritative record (event record, finance, playbook); chat is never authoritative</td></tr>
+<tr><td>D8</td><td>Who owns what</td><td>Headquarters owns the "how" (templates, schema, approvals); the local city team owns the "who/where/when"</td></tr>
+<tr><td>D9</td><td>The event lifecycle</td><td>Sourced → Drafted → Venue-Requested → Venue-Booked → Confirmed → Run → Reconciled → Closed (plus Cancelled, Rescheduled). "Booked" is a soft hold; "Confirmed" is signed</td></tr>
+<tr><td>D10</td><td>One accountable owner per stage</td><td>Exactly one role is accountable for each lifecycle stage — no shared, fuzzy ownership</td></tr>
+<tr><td>D11</td><td>Multi-venue confirmation</td><td>Each required venue is tracked separately; the event advances only when all are ready, and a venue dropping out raises an incident, never a silent gap</td></tr>
+<tr><td>D12</td><td>Gated hand-offs</td><td>Every stage change needs a named information package and a deadline before the next owner accepts it</td></tr>
+<tr><td>D13</td><td>One status, four views</td><td>A single status is shown through city, finance, member, and venue lenses; members see it only once the venue is actually signed</td></tr>
+<tr><td>D14</td><td>Decide and move</td><td>Lock the recommended side of each open choice as version 1; each one stays easy to reverse</td></tr>
+<tr><td>D15</td><td>Official record, finalized</td><td>Authority is split by system role (operations record / finance book / playbook / chat) under four rules; chat is never the record</td></tr>
+<tr><td>D16</td><td>Standardize structure, localize content</td><td>Headquarters owns the shared structure; the local city team owns the local values, so a new city inherits the system on day one</td></tr>
+<tr><td>D17</td><td>Dependency map</td><td>Risks cluster at the seams between systems/teams; a gate is a hardened seam, and two seams remain exposed</td></tr>
+<tr><td>D18</td><td>Exceptions stay in the system</td><td>An authorized override opens an incident plus a required back-fill and a visible risk flag — never a silent skip; hard limits guard money and signatures</td></tr>
+<tr><td>D19</td><td>Risk and scale</td><td>Failure modes trace back to the two root causes; "scale" is a vector where each dimension breaks something different first; three dimensions need explicit mitigation</td></tr>
+<tr><td>D20</td><td>Build order</td><td>Process → data model → standardization → automation. Automation is the test of a clean process, not the foundation</td></tr>
+<tr><td>D21</td><td>Migration</td><td>Run old and new side by side, city by city; start with one pilot city; a named owner reconciles the overlap; stable IDs are back-filled</td></tr>
+<tr><td>D22</td><td>Owner continuity</td><td>Every stage names a successor and an escalation path, so a missing owner never strands an event mid-stage</td></tr>
+<tr><td>D23</td><td>Playbook at scale</td><td>The playbook-update loop gets its own deadline and tiers to regional owners as the number of cities grows</td></tr>
 </table>
-<p class="muted">Every entity carries a stable system key independent of its display name — that's what stops "one venue, five spellings" reappearing at the data layer.</p>
+<!-- glossary:end --></section>
+<section class="section" id="artifacts"><h2 class="shead">Design artifacts</h2>
+<p class="lead">The structural outputs — the set of things we track, the gated lifecycle, who's accountable / consulted / informed, and the one-official-record model. Full detail in <code>02_design/</code>.</p>
+
+<h3>The things we track</h3>
+<table>
+<tr><th>Thing</th><th>Type</th><th>Stable ID</th><th>Owner</th><th>Relationships</th></tr>
+<tr><td><b>Event</b></td><td>changes often</td><td>a stable ID</td><td>Event Producer</td><td>1 city · many venues · 0–1 host · many messages/receipts/incidents</td></tr>
+<tr><td><b>Venue</b></td><td>reference</td><td>a stable ID</td><td>Venue Partnerships</td><td>many events · 1 city</td></tr>
+<tr><td><b>City</b></td><td>reference / org unit</td><td>a stable ID</td><td>City Manager</td><td>many venues, events</td></tr>
+<tr><td><b>Host</b></td><td>reference</td><td>a stable ID</td><td>Partnerships <span class="muted">(open: Assumption 2 (A2))</span></td><td>many events</td></tr>
+<tr><td><b>Venue-Comms Thread</b></td><td>changes often</td><td>a stable ID</td><td>Producer / Partnerships</td><td>1 venue · 0–1 event</td></tr>
+<tr><td><b>Receipt</b></td><td>sub-item</td><td>a stable ID</td><td>Finance</td><td>1 event · 1 venue</td></tr>
+<tr><td><b>Incident</b></td><td>changes often</td><td>a stable ID</td><td class="muted">undefined (has a gap)</td><td>1 event · 0–1 venue</td></tr>
+</table>
+<p class="muted">Every thing carries a stable ID — a permanent system key that's independent of its display name. That's what stops "one venue, five spellings" reappearing in the data.</p>
 
 <h3>Event lifecycle (gated state machine)</h3>
 <div class="flow"><span class="st">Sourced</span><span class="arr">→</span><span class="st">Drafted</span><span class="arr">→</span><span class="st">Venue-Requested</span><span class="arr">→</span><span class="st">Venue-Booked</span><span class="arr">→</span><span class="st">Confirmed</span><span class="arr">→</span><span class="st">Run</span><span class="arr">→</span><span class="st">Reconciled</span><span class="arr">→</span><span class="st">Closed</span></div>
 <div class="flow"><span class="muted">side-states:</span><span class="st side">Cancelled</span><span class="st side">Rescheduled</span><span class="muted">(→ back to Venue-Requested)</span></div>
 <table>
-<tr><th>Transition</th><th>Gate (entry data package)</th><th>Owner</th><th>SLA*</th></tr>
-<tr><td>Drafted → Requested</td><td>locked spec: capacity, theme, date, member_cost, required-venue list</td><td>Partnerships</td><td>T-28d floor</td></tr>
-<tr><td>Requested → Booked</td><td>all required venues ≥ Soft-Held (hold + draft terms + rate)</td><td>Partnerships</td><td>T-21d</td></tr>
-<tr><td><b>Booked → Confirmed</b></td><td>all venues signed + host (if needed) + run-of-show v1</td><td>Producer</td><td>T-7d</td></tr>
-<tr><td>Confirmed → Run</td><td>day-of pack: headcount, run-of-show v2, host briefed, deposit</td><td>On-site Host</td><td>pack T-24h</td></tr>
-<tr><td>Run → Reconciled</td><td>all per-venue receipts + actual attendance + sign-off</td><td>Finance</td><td>≤5 biz days</td></tr>
-<tr><td>Reconciled → Closed</td><td>costs matched + variance + postmortem + venue score</td><td>City Manager</td><td>≤10 biz days</td></tr>
+<tr><th>Stage change</th><th>Gate (required information package)</th><th>Owner</th><th>Deadline*</th></tr>
+<tr><td>Drafted → Requested</td><td>locked spec: capacity, theme, date, member cost, required-venue list</td><td>Partnerships</td><td>28 days out (floor)</td></tr>
+<tr><td>Requested → Booked</td><td>all required venues at least Soft-Held (hold + draft terms + rate)</td><td>Partnerships</td><td>21 days out</td></tr>
+<tr><td><b>Booked → Confirmed</b></td><td>all venues signed + host (if needed) + run-of-show v1</td><td>Producer</td><td>7 days out</td></tr>
+<tr><td>Confirmed → Run</td><td>day-of pack: headcount, run-of-show v2, host briefed, deposit</td><td>On-site Host</td><td>pack 24 hours out</td></tr>
+<tr><td>Run → Reconciled</td><td>all per-venue receipts + actual attendance + sign-off</td><td>Finance</td><td>≤5 business days</td></tr>
+<tr><td>Reconciled → Closed</td><td>costs matched + variance + postmortem + venue score</td><td>City Manager</td><td>≤10 business days</td></tr>
 </table>
-<p class="muted">*SLA values are strawman v1 (D12 crack) — recalibrate to real lead times in discovery.</p>
+<p class="muted">*Deadline values are placeholder version 1 (the gap in Decision 12, gated hand-offs (D12)) — recalibrate to real lead times in discovery.</p>
 
-<h3>Ownership · RACI</h3>
-<p class="muted">A accountable (one only) · R does the work · C consulted · I informed. HQ Ops is C/I everywhere, A nowhere — it owns the cross-cutting "how."</p>
+<h3>Ownership · who's accountable / consulted / informed</h3>
+<p class="muted">Each cell shows the role: <b>A</b> = accountable (one only) · <b>R</b> = does the work · <b>C</b> = consulted · <b>I</b> = informed. Headquarters Ops is consulted or informed everywhere and accountable nowhere — it owns the cross-cutting "how."</p>
 <table>
-<tr><th>State</th><th>HQ Ops</th><th>City Mgr</th><th>Producer</th><th>Partnerships</th><th>Finance</th><th>Host</th></tr>
+<tr><th>Stage</th><th>Headquarters Ops</th><th>City Manager</th><th>Producer</th><th>Partnerships</th><th>Finance</th><th>Host</th></tr>
 <tr><td>Sourced</td><td>C</td><td>I</td><td>I</td><td><b>A/R</b></td><td>–</td><td>–</td></tr>
 <tr><td>Drafted</td><td>C</td><td>C</td><td><b>A/R</b></td><td>C</td><td>I</td><td>–</td></tr>
 <tr><td>Venue-Requested</td><td>I</td><td>I</td><td>C</td><td><b>A/R</b></td><td>–</td><td>–</td></tr>
@@ -226,16 +256,16 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <tr><td>Closed</td><td>I</td><td><b>A/R</b></td><td>C</td><td>I</td><td>C</td><td>–</td></tr>
 </table>
 
-<h3>Source of truth &amp; information flow</h3>
+<h3>One official record &amp; how information flows</h3>
 <table>
-<tr><th>Role</th><th>Authoritative for</th></tr>
-<tr><td><b>Spine</b> (system of record)</td><td>event operational state — status, dates, capacity, budget envelope, ownership, venue links</td></tr>
-<tr><td><b>Financial book</b></td><td>settled money — invoices, payments, reconciliation actuals</td></tr>
-<tr><td><b>Doctrine store</b></td><td>the "how" — SOPs, templates, schema, approval thresholds</td></tr>
-<tr><td><b>Coordination</b> (chat)</td><td><b>nothing</b> — ephemeral; anything that matters is promoted to the spine</td></tr>
+<tr><th>Role</th><th>The official record for</th></tr>
+<tr><td><b>Operations record</b> (the system of record)</td><td>the event's operational state — status, dates, capacity, planned budget, ownership, venue links</td></tr>
+<tr><td><b>Finance book</b></td><td>settled money — invoices, payments, reconciliation actuals</td></tr>
+<tr><td><b>Playbook</b></td><td>the "how" — standard procedures, templates, data shape, approval thresholds</td></tr>
+<tr><td><b>Coordination</b> (chat)</td><td><b>nothing</b> — it's temporary; anything that matters gets written to the operations record</td></tr>
 </table>
-<p><b>The four rules:</b> ① one authoritative domain per fact · ② reference by stable key, never name · ③ <b>promote, don't strand</b> (a fact isn't known until it's on the spine) · ④ cross-domain read by reference, not copy. Rule ③ is the structural kill for the "80→50" failure.</p>
-<p class="muted">Per-layer status (one record, many lenses): at <b>Venue-Booked</b> finance sees deposit-at-risk while members see only a tentative "save the date"; at <b>Confirmed</b> sales open against a <i>signed</i> venue. The member view is a derived read of status, so the public state can't outrun signed reality.</p>
+<p><b>The four rules:</b> ① one official home per fact · ② refer to things by their stable ID, never their name · ③ <b>a fact isn't real until it's written to the official record</b> · ④ read across domains by reference, not by copying. Rule ③ is the structural fix for the "plan for 80, room holds 50" failure.</p>
+<p class="muted">One status, many views: at <b>Venue-Booked</b> finance sees a deposit at risk while members see only a tentative "save the date"; at <b>Confirmed</b>, sales open against a <i>signed</i> venue. The member view is read straight from the one status, so the public state can't get ahead of signed reality.</p>
 
 <h3>Deliverables</h3>
 <div class="grid g3">
@@ -243,134 +273,134 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <div class="panel"><b>2 · Risk &amp; scale plan</b><div class="muted" style="font-size:13px">Failure modes, the override path, 20→500 breakpoints, sequencing. <code>03_deliverables/2-risk-scale-plan.md</code></div></div>
 <div class="panel"><b>3 · Decision log</b><div class="muted" style="font-size:13px">Curated export of all 23 decisions. <code>03_deliverables/3-decision-log.md</code></div></div>
 </div></section>
-<section class="section" id="grill"><h2 class="shead">Grill room</h2>
-<p class="lead">Every decision interrogated. <b>G</b> = interrogator; <b>T</b> = the Tyree sub-agent defending the call. The verdict is how it held — and the cracks are the questions a grader will ask.</p>
+<section class="section" id="grill"><h2 class="shead">Pressure-test room</h2>
+<p class="lead">Every decision interrogated. <b>Challenge</b> = the interrogator; <b>Our answer</b> = the sub-agent defending the call. The verdict is how it held — and the gaps are the questions a grader will ask.</p>
 
-<h3>D1–D10 · compact</h3>
+<h3>Decisions 1–10 ((D1)–(D10)) · compact</h3>
 <table>
-<tr><th>#</th><th>Trigger</th><th>The killer question</th><th>Conclusion</th><th>Verdict</th></tr>
-<tr><td>D1</td><td>Solve all seven, or sort?</td><td>Why is "missing info" a symptom, not a root?</td><td>Fix record + ownership and it vanishes → two roots.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D2</td><td>The unit everything hangs on?</td><td>Why not the venue relationship?</td><td>The brief scopes ops; the event holds the lifecycle → atom = Event.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D3</td><td>How much of Base to model?</td><td>Then why are member RSVP, revenue, refunds everywhere?</td><td>Conceded — scope holds, the wording cracked.</td><td><span class="pill p-crack">cracked</span></td></tr>
-<tr><td>D4</td><td>One atom or many entities?</td><td>Prove Venue isn't a field on Event.</td><td>Persists across events, owns terms → master, one-to-many.</td><td><span class="pill p-deriv">derived</span></td></tr>
-<tr><td>D5</td><td>One venue or many?</td><td>Reversibility — why now?</td><td>One-way door — assume many, degenerate to one.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D6</td><td>How does work move?</td><td>Isn't a blocking gate just bureaucracy?</td><td>Alone yes; D18 pairs an override — gate + log, not a wall.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D7</td><td>One record or many?</td><td>Two domains disagree at 500/mo — who wins?</td><td>Authoritative domain wins; reconciliation checks the join.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D8</td><td>Who owns what?</td><td>Why not "the city owns everything"?</td><td>Then schema drifts, no roll-up — split the how from the who.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D9</td><td>What states?</td><td>Defend Booked ≠ Confirmed in one line.</td><td>Soft hold vs signed is the seam Base fails on.</td><td><span class="pill p-held">held</span></td></tr>
-<tr><td>D10</td><td>One owner per state?</td><td>Where is "Central Ops" in your taxonomy?</td><td>Conceded — phantom role; owner map holds, Incident owner cracked.</td><td><span class="pill p-crack">cracked</span></td></tr>
+<tr><th>Decision</th><th>Trigger</th><th>The killer question</th><th>Conclusion</th><th>Verdict</th></tr>
+<tr><td>(D1)</td><td>Solve all seven, or sort?</td><td>Why is "missing info" a symptom, not a root cause?</td><td>Fix the record + ownership and it vanishes → two root causes.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D2)</td><td>The unit everything hangs on?</td><td>Why not the venue relationship?</td><td>The brief scopes operations; the event holds the lifecycle → core unit = Event.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D3)</td><td>How much of Base to model?</td><td>Then why are member RSVP, revenue, refunds everywhere?</td><td>Conceded — scope holds, the wording has a gap.</td><td><span class="pill p-crack">has a gap</span></td></tr>
+<tr><td>(D4)</td><td>One thing or many?</td><td>Prove Venue isn't just a field on Event.</td><td>Persists across events, owns its terms → a reference thing, one-to-many.</td><td><span class="pill p-deriv">follows from others</span></td></tr>
+<tr><td>(D5)</td><td>One venue or many?</td><td>Reversibility — why decide now?</td><td>A one-way door — assume many, collapse to one if needed.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D6)</td><td>How does work move?</td><td>Isn't a blocking gate just bureaucracy?</td><td>Alone yes; Decision 18 (D18) pairs an override — gate + log, not a wall.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D7)</td><td>One record or many?</td><td>Two domains disagree at 500 a month — who wins?</td><td>The official domain wins; reconciliation checks where they join.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D8)</td><td>Who owns what?</td><td>Why not "the local city team owns everything"?</td><td>Then the data shape drifts, nothing rolls up — split the how from the who.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D9)</td><td>What stages?</td><td>Defend Booked ≠ Confirmed in one line.</td><td>Soft hold vs signed is the seam Base fails on.</td><td><span class="pill p-held">solid</span></td></tr>
+<tr><td>(D10)</td><td>One owner per stage?</td><td>Where is "Central Ops" in your list of roles?</td><td>Conceded — phantom role; the owner map holds, the Incident owner has a gap.</td><td><span class="pill p-crack">has a gap</span></td></tr>
 </table>
 
-<h3>D11 · multi-venue confirm logic &nbsp;<span class="pill p-fork">fork / mostly held</span></h3>
-<div class="bub bg"><span class="sp">G</span>D5 committed you to one-to-many. How does a three-venue tour reach "Confirmed" without the record lying?</div>
-<div class="bub bt"><span class="sp">T</span>Per-venue sub-status track. Every required venue runs its own line — Targeted → Requested → Soft-Held → Signed → Run-Ready. The event's state is a roll-up of those lines, not a free-standing flag.</div>
-<div class="bub bg"><span class="sp">G</span>One slow venue freezes a finished event. At 500 a month that's a throughput killer. Defend the hold.</div>
-<div class="bub bt"><span class="sp">T</span>The alternative is advancing while a venue is unsigned — the exact dark-venue failure. The release valve is the word <i>required</i>: only required venues gate; optional stops never hold the event.</div>
-<div class="bub bg"><span class="sp">G</span>Event's Confirmed, tickets out, Wednesday a required venue cancels. What happens?</div>
-<div class="bub bt"><span class="sp">T</span>Never silent — the venue flips to Fallback-Pending, the event carries a venue-risk flag, and it raises an Incident. But the member holding a ticket to the dropped leg? …Not specified. A real gap.</div>
-<div class="verd"><b>Verdict — fork/held.</b> Roll-up and Incident-on-drop defend; partial-failure member comms is open.</div>
+<h3>Decision 11, multi-venue confirmation (D11) &nbsp;<span class="pill p-fork">open choice / mostly solid</span></h3>
+<div class="bub bg"><span class="sp">Challenge</span>Decision 5 (D5) committed you to one event, many venues. How does a three-venue tour reach "Confirmed" without the record lying?</div>
+<div class="bub bt"><span class="sp">Our answer</span>Track a sub-status per venue. Every required venue runs its own line — Targeted → Requested → Soft-Held → Signed → Run-Ready. The event's state rolls up from those lines; it's not a free-standing flag.</div>
+<div class="bub bg"><span class="sp">Challenge</span>One slow venue freezes a finished event. At 500 a month that's a throughput killer. Defend the hold.</div>
+<div class="bub bt"><span class="sp">Our answer</span>The alternative is advancing while a venue is unsigned — exactly the case where a venue quietly fell through while the event still reads "confirmed." The release valve is the word <i>required</i>: only required venues gate; optional stops never hold the event.</div>
+<div class="bub bg"><span class="sp">Challenge</span>Event's Confirmed, tickets out, and Wednesday a required venue cancels. What happens?</div>
+<div class="bub bt"><span class="sp">Our answer</span>Never silent — the venue flips to Fallback-Pending, the event carries a venue-risk flag, and it raises an Incident. But the member holding a ticket to the dropped leg? …Not specified. A real gap.</div>
+<div class="verd"><b>Verdict — open choice / mostly solid.</b> The roll-up and raising-an-Incident-on-drop defend; what members are told on a partial failure is still open.</div>
 
-<h3>D12 · gated handoffs: data package + SLA &nbsp;<span class="pill p-crack">SLAs cracked</span></h3>
-<div class="bub bg"><span class="sp">G</span>Why does the data package matter more than the SLA?</div>
-<div class="bub bt"><span class="sp">T</span>The package <i>is</i> the gate — the precise list of what must exist before the next owner accepts. No package, no advance. That's what makes missing info structurally unable to propagate.</div>
-<div class="bub bg"><span class="sp">G</span>Your SLAs — T-7, T-21, five business days. Where did those numbers come from?</div>
-<div class="bub bt"><span class="sp">T</span>…Strawman. The defensible claim is the shape — late gates anchor to event date, early gates run in business-days — not the values. They wait on Q-base, which we never had.</div>
-<div class="bub bg"><span class="sp">G</span>Then say so loudly or cut them — a reader can't tell your strawman from a calibrated SLA.</div>
-<div class="bub bt"><span class="sp">T</span>Agreed. Flag illustrative or remove. The package-gated mechanism stands regardless.</div>
-<div class="verd"><b>Verdict — held on mechanism, cracked on SLA values.</b></div>
+<h3>Decision 12, gated hand-offs: information package + deadline (D12) &nbsp;<span class="pill p-crack">deadlines have a gap</span></h3>
+<div class="bub bg"><span class="sp">Challenge</span>Why does the information package matter more than the deadline?</div>
+<div class="bub bt"><span class="sp">Our answer</span>The package <i>is</i> the gate — the precise list of what must exist before the next owner accepts. No package, no advance. That's what makes missing info structurally unable to spread.</div>
+<div class="bub bg"><span class="sp">Challenge</span>Your deadlines — 7 days out, 21 days out, five business days. Where did those numbers come from?</div>
+<div class="bub bt"><span class="sp">Our answer</span>…Placeholders. The defensible claim is the shape — late gates anchor to the event date, early gates run in business days — not the exact values. They wait on the "current baseline" discovery question (Q-base), which we never had.</div>
+<div class="bub bg"><span class="sp">Challenge</span>Then say so loudly or cut them — a reader can't tell a placeholder from a calibrated deadline.</div>
+<div class="bub bt"><span class="sp">Our answer</span>Agreed. Flag them as illustrative or remove them. The package-gated mechanism stands regardless.</div>
+<div class="verd"><b>Verdict — solid on the mechanism, has a gap on the deadline values.</b></div>
 
-<h3>D13 · per-layer status semantics &nbsp;<span class="pill p-crack">cracked · fix first</span></h3>
-<div class="bub bg"><span class="sp">G</span>Why is "one record, many lenses" better than each team tracking its own status?</div>
-<div class="bub bt"><span class="sp">T</span>Private copies are how "five spellings, five trackers" is reborn. If the Member view is a derived read of the one status — not a manual switch — the public state can never get ahead of signed reality.</div>
-<div class="bub bg"><span class="sp">G</span>Event is Confirmed, sales open, members hold tickets. It gets Rescheduled — back to Venue-Requested. What does the Member lens read there?</div>
-<div class="bub bt"><span class="sp">T</span>…Invisible. The state reverts below the visibility line, but the member obligations created at Confirmed don't revert with it. No row for "sold, now un-sold."</div>
-<div class="bub bg"><span class="sp">G</span>Same for Cancel after sales — where's the member-revenue refund?</div>
-<div class="bub bt"><span class="sp">T</span>Not modeled. Cancel handles the venue side and sunk cost, never returns members' money. The most economically active moment in the lifecycle has no reverse gear. Biggest correctness gap.</div>
-<div class="verd"><b>Verdict — cracked.</b> Status-as-derived-view holds; member money/visibility on reschedule + cancel is unmodeled. Highest-priority fix.</div>
+<h3>Decision 13, one status four views (D13) &nbsp;<span class="pill p-crack">has a gap · fix first</span></h3>
+<div class="bub bg"><span class="sp">Challenge</span>Why is "one record, many views" better than each team tracking its own status?</div>
+<div class="bub bt"><span class="sp">Our answer</span>Private copies are how "five spellings, five trackers" is reborn. If the member view is read straight from the one status — not flipped by hand — the public state can never get ahead of signed reality.</div>
+<div class="bub bg"><span class="sp">Challenge</span>Event is Confirmed, sales open, members hold tickets. It gets Rescheduled — back to Venue-Requested. What does the member view read there?</div>
+<div class="bub bt"><span class="sp">Our answer</span>…Invisible. The state reverts below the visibility line, but the member obligations created at Confirmed don't revert with it. There's no row for "sold, now un-sold."</div>
+<div class="bub bg"><span class="sp">Challenge</span>Same for Cancel after sales — where's the refund of member money?</div>
+<div class="bub bt"><span class="sp">Our answer</span>Not modeled. Cancel handles the venue side and sunk cost, but never returns members' money. The most financially active moment in the lifecycle has no reverse gear. Biggest correctness gap.</div>
+<div class="verd"><b>Verdict — has a gap.</b> Status-read-straight-from-the-record holds; member money and visibility on reschedule + cancel is unmodeled. Highest-priority fix.</div>
 
-<h3>D14 · proceed-on-recommendation &nbsp;<span class="pill p-fork">fork · method on trial</span></h3>
-<div class="bub bg"><span class="sp">G</span>Defend deciding by default — locking forks as v1 without live ratification.</div>
-<div class="bub bt"><span class="sp">T</span>Reversibility. Every fork is a two-way door — one rule flips it. Stalling the machine on one-line-reversible calls buys no reasoning value.</div>
-<div class="bub bg"><span class="sp">G</span>But the cracks — D10, D12, D13 — all rode in under this. The method removed the catch.</div>
-<div class="bub bt"><span class="sp">T</span>Accepted, with a correction: proceed-on-recommendation is sound for reversible forks <i>only with a mandatory review gate</i> before "done." The flaw was treating "locked v1" as finished without the audit.</div>
-<div class="verd"><b>Verdict — fork/held, with a caveat.</b> Fine for two-way doors, but only with a real review gate.</div>
+<h3>Decision 14, decide and move (D14) &nbsp;<span class="pill p-fork">open choice · method on trial</span></h3>
+<div class="bub bg"><span class="sp">Challenge</span>Defend deciding by default — locking open choices as version 1 without live sign-off.</div>
+<div class="bub bt"><span class="sp">Our answer</span>Reversibility. Every open choice is a two-way door — one rule flips it. Stalling the machine on calls that reverse in a line buys no reasoning value.</div>
+<div class="bub bg"><span class="sp">Challenge</span>But the gaps — Decision 10 (D10), Decision 12 (D12), Decision 13 (D13) — all rode in under this. The method removed the catch.</div>
+<div class="bub bt"><span class="sp">Our answer</span>Accepted, with a correction: deciding by default is sound for reversible choices <i>only with a mandatory review gate</i> before calling it "done." The flaw was treating "locked version 1" as finished without the audit.</div>
+<div class="verd"><b>Verdict — open choice / solid, with a caveat.</b> Fine for two-way doors, but only with a real review gate.</div>
 
-<h3>D15 · source of truth, finalized &nbsp;<span class="pill p-held">held</span></h3>
-<div class="bub bg"><span class="sp">G</span>"Federated" is a label — give me the mechanism that stops four silos.</div>
-<div class="bub bt"><span class="sp">T</span>Four rules: one domain per fact; reference by stable key; promote-don't-strand (a fact isn't known until it's on the spine); read cross-domain by reference, not copy.</div>
-<div class="bub bg"><span class="sp">G</span>Federation's cost is joins. Where do domains meet, what breaks?</div>
-<div class="bub bt"><span class="sp">T</span>The money boundary: spine owns the budget envelope and status, the financial book owns invoices and settlement; they meet at reconciliation. Between reconciliations, continuous drift isn't monitored — a named exposure, not solved.</div>
-<div class="verd"><b>Verdict — held.</b> Four rules + reconciliation join defend cold; between-cycle drift monitoring is the one exposure.</div>
+<h3>Decision 15, official record finalized (D15) &nbsp;<span class="pill p-held">solid</span></h3>
+<div class="bub bg"><span class="sp">Challenge</span>"Split by domain" is a label — give me the mechanism that stops four silos.</div>
+<div class="bub bt"><span class="sp">Our answer</span>Four rules: one domain per fact; refer to things by their stable ID; a fact isn't real until it's written to the official record; read across domains by reference, not by copying.</div>
+<div class="bub bg"><span class="sp">Challenge</span>Splitting the record means you have to join it back. Where do the domains meet, and what breaks?</div>
+<div class="bub bt"><span class="sp">Our answer</span>The money boundary: the operations record owns the planned budget and status, the finance book owns invoices and settlement; they meet at reconciliation. Between reconciliations, ongoing drift isn't watched — a named exposure, not solved.</div>
+<div class="verd"><b>Verdict — solid.</b> Four rules + the reconciliation join defend cold; watching for drift between cycles is the one exposure.</div>
 
-<h3>D16–D20 · summary <span class="muted">(full detailed grill pending)</span></h3>
+<h3>Decisions 16–20 ((D16)–(D20)) · summary <span class="muted">(full detailed pressure-test pending)</span></h3>
 <table>
-<tr><th>#</th><th>The call</th><th>How it holds</th></tr>
-<tr><td>D16</td><td>Standardize structure, localize content</td><td><span class="pill p-fork">fork</span> litmus defends; forks reversible</td></tr>
-<tr><td>D17</td><td>Dependency map — a gate is a hardened dependency</td><td><span class="pill p-deriv">derived</span> names the 2 unprotected seams</td></tr>
-<tr><td>D18</td><td>Sanctioned override → Incident; override-rate as metric</td><td><span class="pill p-held">held</span> the strongest risk call</td></tr>
-<tr><td>D19</td><td>Risk &amp; scale posture</td><td><span class="pill p-crack">cracked</span> sub-linear cost is automation-dependent; concurrency circular</td></tr>
-<tr><td>D20</td><td>Sequencing — automation is the test, last</td><td><span class="pill p-deriv">derived</span> restates the brief's thesis</td></tr>
+<tr><th>Decision</th><th>The call</th><th>How it holds</th></tr>
+<tr><td>(D16)</td><td>Standardize structure, localize content</td><td><span class="pill p-fork">open choice</span> the test defends it; the choices reverse easily</td></tr>
+<tr><td>(D17)</td><td>Dependency map — a gate is a hardened link</td><td><span class="pill p-deriv">follows from others</span> names the 2 unprotected seams</td></tr>
+<tr><td>(D18)</td><td>Authorized override → Incident; override rate as a metric</td><td><span class="pill p-held">solid</span> the strongest risk call</td></tr>
+<tr><td>(D19)</td><td>Risk &amp; scale</td><td><span class="pill p-crack">has a gap</span> cost-grows-slower-than-volume depends on automation; same-night-events fix is circular</td></tr>
+<tr><td>(D20)</td><td>Build order — automation is the test, done last</td><td><span class="pill p-deriv">follows from others</span> restates the brief's thesis</td></tr>
 </table></section>
-<section class="section" id="risks"><h2 class="shead">Risks &amp; cracks</h2>
-<p class="lead">What the deep review and the grill exposed. The spine held; six things need fixing before submission.</p>
-<div class="note" style="background:rgba(191,52,78,0.16);border-color:rgba(191,52,78,0.42)"><b>Top risk — defensibility.</b> Most of D10–D20 and all three deliverables were agent-generated. In a reasoning-graded exercise, the first gap to close is whether every decision can be defended cold — the polish currently runs ahead of the practiced argument.</div>
-<h3>The six cracks</h3>
-<div class="crackitem"><div class="ct"><span class="tag">P0</span>Phantom role — Incident ownership (D10 / D18)</div><div>The entity model names "Central Ops / on-call" as Incident owner; it's not in the role taxonomy and contradicts D18 (City Manager escalation). The exception system's owner is undefined. <b>Fix:</b> assign to City Manager + define an on-call tier; reconcile across entity-model, RACI, D18.</div></div>
-<div class="crackitem"><div class="ct"><span class="tag">P0</span>Reschedule/Cancel after member sales (D9 / D13)</div><div>Member RSVP opens at Confirmed, but Reschedule reverts the event to a state the Member lens renders invisible, and Cancel never models member-revenue refunds. <b>Fix:</b> a member-obligation sub-state that travels through a reschedule + a refund step inside cancel.</div></div>
-<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>"Sub-linear cost" is oversold (D19)</div><div>It's the headline success metric, but the gates require per-event human acceptance — linear labor until the (deferred, unbuilt) automation layer. <b>Fix:</b> reframe as "reliability now; sub-linear after automation."</div></div>
-<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>Concurrency mitigation is circular (D19)</div><div>Concurrency is patched with "playbooks" — the knowledge loop, which is itself a flagged unsolved exposure. <b>Fix:</b> sequence the knowledge loop first, or define an interim manual escalation roster.</div></div>
-<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>Scope wording is now false (D3)</div><div>"Demand couples only at sizing" — but member money is all over the design. <b>Fix:</b> widen the boundary statement to "demand couples at sizing and at the money/comms tied to a specific event."</div></div>
-<div class="crackitem"><div class="ct"><span class="tag p2">P2</span>SLA values are unfounded (D12)</div><div>T-7 / T-21 / 5-day numbers have no basis. <b>Fix:</b> flag as illustrative pending Q-base, or remove.</div></div>
-<h3>Scale breakpoints — what breaks first as volume grows (D19)</h3>
+<section class="section" id="risks"><h2 class="shead">Risks &amp; gaps</h2>
+<p class="lead">What the deep review and the pressure-test exposed. The core held; six things need fixing before submission.</p>
+<div class="note" style="background:rgba(191,52,78,0.16);border-color:rgba(191,52,78,0.42)"><b>Top risk — defensibility.</b> Most of Decisions 10–20 ((D10)–(D20)) and all three deliverables were generated by automated helper agents. In a reasoning-graded exercise, the first gap to close is whether every decision can be defended cold — the polish currently runs ahead of the practiced argument.</div>
+<h3>The six gaps</h3>
+<div class="crackitem"><div class="ct"><span class="tag">P0</span>Phantom role — Incident ownership (Decision 10 (D10) / Decision 18 (D18))</div><div>The list of things we track names "Central Ops / on-call" as the Incident owner; it's not in the list of roles and contradicts Decision 18 (D18) (City Manager escalation). The exception system's owner is undefined. <b>Fix:</b> assign it to the City Manager + define an on-call tier; reconcile it across the things-we-track table, the who's-accountable grid, and Decision 18 (D18).</div></div>
+<div class="crackitem"><div class="ct"><span class="tag">P0</span>Reschedule/Cancel after member sales (Decision 9 (D9) / Decision 13 (D13))</div><div>Member RSVP opens at Confirmed, but Reschedule reverts the event to a state the member view renders invisible, and Cancel never models refunds of member money. <b>Fix:</b> a member-obligation sub-state that travels through a reschedule + a refund step inside cancel.</div></div>
+<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>"Cost grows slower than volume" is oversold (Decision 19 (D19))</div><div>It's the headline success metric, but the gates require a human to accept each event — labor that grows in step with volume until the (deferred, unbuilt) automation layer. <b>Fix:</b> reframe as "reliability now; cost grows slower than volume after automation."</div></div>
+<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>Same-night-events fix is circular (Decision 19 (D19))</div><div>Many same-night events are patched with "playbooks" — the knowledge loop, which is itself a flagged unsolved exposure. <b>Fix:</b> sequence the knowledge loop first, or define an interim manual escalation roster.</div></div>
+<div class="crackitem"><div class="ct"><span class="tag p1">P1</span>Scope wording is now false (Decision 3 (D3))</div><div>"Demand only touches this at sizing" — but member money is all over the design. <b>Fix:</b> widen the boundary statement to "demand touches this at sizing and at the money/comms tied to a specific event."</div></div>
+<div class="crackitem"><div class="ct"><span class="tag p2">P2</span>Deadline values are unfounded (Decision 12 (D12))</div><div>The 7-days-out / 21-days-out / 5-day numbers have no basis. <b>Fix:</b> flag them as illustrative pending the "current baseline" discovery question (Q-base), or remove.</div></div>
+<h3>Scale breakpoints — what breaks first as volume grows (Decision 19 (D19))</h3>
 <table>
 <tr><th>Dimension</th><th>What breaks first</th><th>Hardened?</th></tr>
-<tr><td>Events / month (25×)</td><td>manual reconciliation &amp; confirmation-chasing</td><td>✓ gated handoffs</td></tr>
+<tr><td>Events / month (25×)</td><td>manual reconciliation &amp; chasing confirmations</td><td>✓ gated hand-offs</td></tr>
 <tr><td>Cities (few → dozens)</td><td>knowledge consistency — each city drifts</td><td>⚠ partial</td></tr>
-<tr><td>Venues / event (tours)</td><td>confirmation roll-up — dark-venue risk</td><td>✓ per-venue roll-up</td></tr>
-<tr><td>Concurrency (same-night)</td><td>escalation capacity — human bottleneck</td><td>⚠ not yet</td></tr>
-<tr><td>Staff / roles per city</td><td>ownership ambiguity returns</td><td>✓ one owner per state</td></tr>
-<tr><td>Venue roster</td><td>identity collisions — "five spellings"</td><td>✓ stable keys</td></tr>
+<tr><td>Venues / event (tours)</td><td>confirmation roll-up — venue-quietly-falls-through risk</td><td>✓ per-venue roll-up</td></tr>
+<tr><td>Same-night events</td><td>escalation capacity — human bottleneck</td><td>⚠ not yet</td></tr>
+<tr><td>Staff / roles per city</td><td>ownership ambiguity returns</td><td>✓ one owner per stage</td></tr>
+<tr><td>Venue roster</td><td>identity collisions — "five spellings"</td><td>✓ stable IDs</td></tr>
 </table>
-<h3>Exception model (D18) — the win condition</h3>
-<div class="panel">An authorized role can <b>force-advance</b> past an unmet gate — but it opens an Incident (which gate, who, why) + mandatory back-fill at reconciliation + a visible risk flag. <b>Never a silent skip.</b> A few gates are hard (non-overridable): money-out needs a signature, public sale needs a real signature, close needs a clean ledger. Because every override is an Incident, <b>override-rate becomes a health metric</b> — it tells you which gates are too rigid versus where ops keeps failing, feeding the playbook loop.</div></section>
+<h3>Exception model (Decision 18 (D18)) — the win condition</h3>
+<div class="panel">An authorized role can <b>force-advance</b> past an unmet gate — but it opens an Incident (which gate, who, why) + a mandatory back-fill at reconciliation + a visible risk flag. <b>Never a silent skip.</b> A few gates are hard (you can't override them): money going out needs a signature, opening public sales needs a real signature, and closing needs a clean ledger. Because every override is an Incident, <b>the override rate becomes a health metric</b> — it tells you which gates are too rigid versus where operations keeps failing, feeding the playbook loop.</div></section>
 <section class="section" id="assumptions"><h2 class="shead">Assumptions &amp; open questions</h2>
-<p class="lead">Where Base-internal facts were unknown, the assumption is stated and paired with the question that validates it. The gaps in the model <i>are</i> the discovery interview.</p>
+<p class="lead">Where a fact about Base's internals was unknown, the assumption is stated and paired with the question that validates it. The gaps in the model <i>are</i> the discovery interview.</p>
 <table>
-<tr><th>#</th><th>Assumption</th><th>Validate by asking</th><th>Status</th></tr>
-<tr><td>A1</td><td>Role taxonomy: HQ Ops · City Manager · Producer · Partnerships · Finance · On-site Host</td><td>Who actually owns booking / confirm / receipts / incidents today, per city?</td><td>needs stakeholder</td></tr>
-<tr><td>A2</td><td>One Host entity with internal/external type</td><td>Are facilitators staff, external experts, or both? Re-booked?</td><td>design / stakeholder</td></tr>
-<tr><td>A3</td><td><s>One event → one venue</s> → one-to-many</td><td>—</td><td>resolved (D5)</td></tr>
-<tr><td>A4</td><td>Event has 0–1 host</td><td>Do all events have a facilitator, or some self-run?</td><td>needs stakeholder</td></tr>
-<tr><td>A5</td><td>"Confirmation" = a gate state with its own SLA, read from one record</td><td>Is confirmation a one-time milestone or a tracked artifact with a deadline?</td><td>resolved direction</td></tr>
-<tr><td>A6</td><td>Receipts are per-event</td><td>Are some venue costs monthly / relationship-level?</td><td>needs stakeholder</td></tr>
-<tr><td>A7</td><td>"Reconciled" = all receipts collected + costs settled</td><td>What must be true to close an event financially?</td><td>needs stakeholder</td></tr>
+<tr><th>Assumption</th><th>What we assumed</th><th>Validate by asking</th><th>Status</th></tr>
+<tr><td>(A1)</td><td>List of roles: Headquarters Ops · City Manager · Producer · Partnerships · Finance · On-site Host</td><td>Who actually owns booking / confirm / receipts / incidents today, per city?</td><td>needs stakeholder</td></tr>
+<tr><td>(A2)</td><td>One Host record with an internal/external type</td><td>Are facilitators staff, external experts, or both? Re-booked?</td><td>design / stakeholder</td></tr>
+<tr><td>(A3)</td><td><s>One event → one venue</s> → one-to-many</td><td>—</td><td>resolved (Decision 5 (D5))</td></tr>
+<tr><td>(A4)</td><td>Event has 0–1 host</td><td>Do all events have a facilitator, or are some self-run?</td><td>needs stakeholder</td></tr>
+<tr><td>(A5)</td><td>"Confirmation" = a gate state with its own deadline, read from one record</td><td>Is confirmation a one-time milestone or a tracked item with a deadline?</td><td>resolved direction</td></tr>
+<tr><td>(A6)</td><td>Receipts are per-event</td><td>Are some venue costs monthly / relationship-level?</td><td>needs stakeholder</td></tr>
+<tr><td>(A7)</td><td>"Reconciled" = all receipts collected + costs settled</td><td>What must be true to close an event financially?</td><td>needs stakeholder</td></tr>
 </table>
 <h3>Open discovery questions (pure unknowns)</h3>
 <table>
 <tr><th>Tag</th><th>Question</th><th>Feeds</th></tr>
-<tr><td>Q-vol</td><td>Events/month per city now + 12-month projection? same-night concurrency?</td><td>the scale vector</td></tr>
-<tr><td>Q-base</td><td>Current confirmation steps, lead time, failure rate?</td><td>the baseline (and the SLA crack)</td></tr>
-<tr><td>Q-venue</td><td>Canonical venue list with stable IDs today, or scattered across tools?</td><td>roots #1/#2</td></tr>
-<tr><td>Q-esc</td><td>What counts as an exception, who's called, what's the SLA?</td><td>root #6</td></tr>
-<tr><td>Q-host</td><td>Hosts internal / external / both, and re-booked?</td><td>resolves A2, A4</td></tr>
+<tr><td>Q-vol</td><td>Events/month per city now + 12-month projection? how many run the same night?</td><td>the scale dimensions</td></tr>
+<tr><td>Q-base</td><td>Current confirmation steps, lead time, failure rate?</td><td>the baseline (and the deadline gap)</td></tr>
+<tr><td>Q-venue</td><td>One official venue list with stable IDs today, or scattered across tools?</td><td>root causes #1/#2</td></tr>
+<tr><td>Q-esc</td><td>What counts as an exception, who's called, what's the deadline?</td><td>root cause #6</td></tr>
+<tr><td>Q-host</td><td>Hosts internal / external / both, and re-booked?</td><td>resolves Assumption 2 (A2), Assumption 4 (A4)</td></tr>
 </table></section>
 <section class="section" id="files"><h2 class="shead">File map</h2>
-<p class="lead">This hub summarizes; the underlying files hold full detail. Structure mirrors the goal — fixed inputs, messy thinking, clean deliverables.</p>
+<p class="lead">This hub summarizes; the underlying files hold the full detail. The structure mirrors the goal — fixed inputs, messy thinking, clean deliverables.</p>
 <div class="panel filemap">
 <div><span class="d">base/</span></div>
-<div>├─ Base_Systems_Design_Exercise.pdf <span class="muted">— the brief (requirements source of truth)</span></div>
+<div>├─ Base_Systems_Design_Exercise.pdf <span class="muted">— the brief (the requirements source of truth)</span></div>
 <div>├─ index.html <span class="muted">— cover / landing page</span></div>
 <div>├─ framework.html <span class="muted">— this hub (the deep framework view)</span></div>
 <div>├─ README.md <span class="muted">— project index</span></div>
 <div>├─ <span class="d">00_working/</span> <span class="muted">— reasoning as a system of record</span></div>
-<div>│&nbsp;&nbsp;├─ decision-log.md <span class="muted">— D1–D23 (single source of truth)</span></div>
+<div>│&nbsp;&nbsp;├─ decision-log.md <span class="muted">— all 23 decisions (the one official record of them)</span></div>
 <div>│&nbsp;&nbsp;├─ assumptions-register.md</div>
 <div>│&nbsp;&nbsp;├─ state-roadmap.md <span class="muted">— coverage, queue, master plan</span></div>
-<div>│&nbsp;&nbsp;├─ brief-coverage.md · coverage-check.md <span class="muted">— ~20 brief Qs mapped</span></div>
-<div>│&nbsp;&nbsp;├─ phase-agent-prompts.md <span class="muted">— grill agents, one per phase</span></div>
+<div>│&nbsp;&nbsp;├─ brief-coverage.md · coverage-check.md <span class="muted">— ~20 brief questions mapped</span></div>
+<div>│&nbsp;&nbsp;├─ phase-agent-prompts.md <span class="muted">— pressure-test agents, one per phase</span></div>
 <div>│&nbsp;&nbsp;├─ decision-grill-dialogue.md <span class="muted">— the defensibility dialogue</span></div>
-<div>│&nbsp;&nbsp;├─ decision-grill-script.md <span class="muted">— D1–D10 scenes</span></div>
-<div>│&nbsp;&nbsp;└─ decision-grill-script-D11-D15.md <span class="muted">— detailed transcripts</span></div>
+<div>│&nbsp;&nbsp;├─ decision-grill-script.md <span class="muted">— scenes for the first ten decisions</span></div>
+<div>│&nbsp;&nbsp;└─ decision-grill-script-(D11)–(D15).md <span class="muted">— detailed transcripts (decisions eleven to fifteen)</span></div>
 <div>├─ <span class="d">01_research/</span></div>
 <div>│&nbsp;&nbsp;├─ base-company.md <span class="muted">— base.club facts</span></div>
 <div>│&nbsp;&nbsp;└─ ops-patterns.md <span class="muted">— multi-unit ops research</span></div>
@@ -378,13 +408,13 @@ code{background:rgba(255,226,192,0.10);color:var(--ink);padding:1px 5px;border-r
 <div>│&nbsp;&nbsp;├─ entity-model.md</div>
 <div>│&nbsp;&nbsp;├─ event-lifecycle.md <span class="muted">— states + transitions + owners</span></div>
 <div>│&nbsp;&nbsp;├─ ownership-raci.md</div>
-<div>│&nbsp;&nbsp;└─ information-flow.md <span class="muted">— source of truth, lenses, dependencies</span></div>
+<div>│&nbsp;&nbsp;└─ information-flow.md <span class="muted">— the one official record, the views, the dependencies</span></div>
 <div>└─ <span class="d">03_deliverables/</span></div>
 <div>&nbsp;&nbsp;&nbsp;├─ 1-design-doc.md · 2-risk-scale-plan.md · 3-decision-log.md</div>
 <div>&nbsp;&nbsp;&nbsp;├─ architecture-diagram.svg / .png</div>
 <div>&nbsp;&nbsp;&nbsp;└─ exec-artifact/ <span class="muted">— exec response (docx, html, visuals)</span></div>
 </div>
-<div class="note"><b>Source-of-truth note:</b> decisions live once in <code>00_working/decision-log.md</code>; deliverable 3 is a curated export. This hub is a read view — when a v1 fork is redlined, update the log, not the hub copy.</div></section>
+<div class="note"><b>One-official-record note:</b> decisions live exactly once in <code>00_working/decision-log.md</code>; deliverable 3 is a curated export of it. This hub is a read-only view — when a version-1 open choice is revised, update the log, not the hub copy.</div></section>
 
 </main>
 </div>

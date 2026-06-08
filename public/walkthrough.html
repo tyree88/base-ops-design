@@ -105,44 +105,44 @@ const LANES = [
 
 const STATES = [
   { name: "Sourced", lane: "partnerships",
-    gateIn: "city_id + demand / quarterly-target reference + venue-type target",
+    gateIn: "the city, the demand or quarterly-target reference, and the kind of venue we're after",
     sla: "pipeline intake" },
   { name: "Drafted", lane: "producer",
-    gateIn: "≥1 candidate venue (venue_id, capacity, rate range) + city_id + date window + demand signal",
-    sla: "3 business days from Sourced" },
+    gateIn: "at least one candidate venue (with its capacity and rate range), the city, a date window, and a demand signal",
+    sla: "3 business days after Sourced" },
   { name: "Venue-Requested", lane: "partnerships",
-    gateIn: "locked spec — capacity target, theme, date (≤2 candidates), member_cost, cost-to-Base ceiling, run-of-show v0, required-venue list — sent to all required venues",
-    sla: "spec lock + outreach ≤5 biz days; floor T-28d" },
+    gateIn: "a locked plan — capacity target, theme, date (no more than two candidate venues), member price, cost ceiling, a first-draft run-of-show, and the list of venues this event needs — sent to every required venue",
+    sla: "lock the plan and reach out within 5 business days; no later than 28 days before the event" },
   { name: "Venue-Booked", lane: "partnerships",
-    gateIn: "all required venues ≥ Soft-Held: availability + soft hold + draft terms + rate quote (per venue)",
-    sla: "T-21d" },
+    gateIn: "every required venue is at least softly held: availability, a soft hold, draft terms, and a rate quote for each one",
+    sla: "by 21 days before the event" },
   { name: "Confirmed", lane: "producer", hardCheckpoint: true,
-    gateIn: "every required venue SIGNED + host assigned (if required) + run-of-show v1 (all-green)",
-    sla: "T-7d" },
+    gateIn: "every required venue has signed, a host is assigned (where one is needed), and the run-of-show is fully ready",
+    sla: "by 7 days before the event" },
   { name: "Run", lane: "host",
-    gateIn: "day-of pack: final RSVP/headcount, run-of-show v2, host briefed, venue day-of contact, materials/AV checklist, deposit sent/scheduled",
-    sla: "pack complete T-24h; fires at event start" },
+    gateIn: "the day-of pack: final guest count, the final run-of-show, the host briefed, a day-of venue contact, a materials and audio-visual checklist, and the deposit sent or scheduled",
+    sla: "pack complete 24 hours before; the event then runs at start time" },
   { name: "Reconciled", lane: "finance",
-    gateIn: "close-out: actual attendance, incident log, all per-venue receipts/invoices, host sign-off, damage/overage note",
-    sla: "receipts ≤5 biz days post-event" },
+    gateIn: "the close-out: actual attendance, the incident log, every venue's receipts and invoices, the host's sign-off, and any damage or overage note",
+    sla: "receipts in within 5 business days after the event" },
   { name: "Closed", lane: "cityManager",
-    gateIn: "costs matched to receipts + paid, cost-to-Base vs budget variance, member revenue reconciled, postmortem note, venue reliability_score updated",
-    sla: "≤10 biz days post-event" },
+    gateIn: "costs matched to receipts and paid, cost-versus-budget variance, member revenue reconciled, a postmortem note, and the venue's reliability score updated",
+    sla: "within 10 business days after the event" },
 ];
 
 const SIDE_STATES = [
   { name: "Rescheduled", lane: "producer", entersFrom: "Confirmed / Booked", returnsTo: "Venue-Requested",
-    gateIn: "new date/window + reason + venue re-availability check + member-comms (if ≥Confirmed) + which agreements carry vs void",
-    sla: "re-request ≤2 biz days" },
+    gateIn: "a new date or window, the reason, a re-check of venue availability, a note to members (once the event was Confirmed), and which agreements carry over versus which are voided",
+    sla: "re-request within 2 business days" },
   { name: "Cancelled", lane: "cityManager", entersFrom: "any state",
-    gateIn: "reason code + current-state snapshot + venue notifications sent + sunk-cost/deposit record + member-comms (if ≥Confirmed)",
-    sla: "venue + member notice ≤24h of decision" },
+    gateIn: "a reason, a snapshot of where the event stood, confirmation that venues were notified, a record of money already spent and deposits, and a note to members (once the event was Confirmed)",
+    sla: "notify venues and members within 24 hours of the decision" },
 ];
 
 const UNKNOWNS = [
   { n: "01", q: "What are today's actual confirmation steps, lead times, and failure rate?", why: "the baseline we're improving against" },
-  { n: "02", q: "Events per month per city now, the 12-month projection, and same-night concurrency?", why: 'the real shape of "scale"' },
-  { n: "03", q: "Is there a canonical venue list with stable IDs today, or is it scattered across tools?", why: "sizes root cause #1" },
+  { n: "02", q: "Events per month per city now, the 12-month projection, and how many run the same night?", why: 'the real shape of "scale"' },
+  { n: "03", q: "Is there one official venue list with stable IDs today, or is it scattered across tools?", why: "sizes the first root cause" },
   { n: "04", q: "What currently counts as an exception, who gets called, and what's the expected response time?", why: "shapes the escalation path" },
   { n: "05", q: "Are hosts internal staff, external experts, or both — and are they re-booked?", why: "shapes the data model" },
 ];
@@ -158,8 +158,8 @@ const ENTITIES = [
 ];
 
 const KPIS = [
-  { label: "Confirmation by T-7", value: 98.4, unit: "%", target: "≥ 98%", trend: "+1.2 vs last mo" },
-  { label: "Receipt SLA (≤ 5 biz days)", value: 94.0, unit: "%", target: "≥ 95%", trend: "+3.0 vs last mo" },
+  { label: "Confirmed 7+ days out", value: 98.4, unit: "%", target: "≥ 98%", trend: "+1.2 vs last mo" },
+  { label: "Receipts in within 5 business days", value: 94.0, unit: "%", target: "≥ 95%", trend: "+3.0 vs last mo" },
   { label: "Override rate (system health)", value: 6.2, unit: "%", target: "watch trend", trend: "-1.4 vs last mo" },
   { label: "Events this month", value: 312, unit: "", target: "toward 500/mo", trend: "+28 vs last mo" },
 ];
@@ -176,38 +176,38 @@ const OVERRIDE_TREND = [
 ];
 
 const CAPABILITIES = [
-  { n: 1, t: "Categorize & route venue comms", d: "A rule over message category × event state → the state's owner." },
-  { n: 2, t: "Centralized partner-comms view", d: "A query over the one event record (keyed event_id + venue_id), not a new inbox." },
-  { n: 3, t: "Automated confirmation follow-ups", d: "A rule over the gated state machine — it already knows what's unconfirmed, and by when." },
-  { n: 4, t: "Automated receipt collection", d: "Automating a defined step — the reconciliation checkpoint already defines what's owed." },
-  { n: 5, t: "Last-minute change support", d: "The sanctioned override path + Incident + reschedule/cancel states, designed in." },
+  { n: 1, t: "Sort and route venue messages", d: "A rule that sends each message to the right owner based on its type and the event's stage." },
+  { n: 2, t: "One shared view of partner messages", d: "A view drawn from the one official event record, not yet another inbox." },
+  { n: 3, t: "Automatic confirmation follow-ups", d: "A rule on the staged process — it already knows what is unconfirmed, and by when." },
+  { n: 4, t: "Automatic receipt collection", d: "Automating a defined step — the close-out checkpoint already says what is owed." },
+  { n: 5, t: "Last-minute change support", d: "The approved override path, plus the incident, reschedule, and cancel paths, all built in." },
 ];
 
 const FAILURE_MODES = [
-  { t: "Plan for 80, room holds 50", d: "A venue's change lands in an inbox and never reaches the record. The signature failure — structurally killed by promote-don't-strand.", guard: "Promote to the spine" },
-  { t: "The dark venue", d: "A multi-venue event reads \"confirmed\" while one required room quietly fell through.", guard: "All-green roll-up gate" },
-  { t: "Knowledge silo (HQ ↔ city)", d: "A lesson learned in one city never spreads; a new city reinvents the system.", guard: "Doctrine store + SOP loop" },
-  { t: "Federated-SoT join drift", d: "Spine and financial book disagree on the budget; an event \"closes\" with money still owed.", guard: "Reconciliation join gate" },
+  { t: "Plan for 80, room holds 50", d: "A venue's change lands in someone's inbox and never reaches the official record. The signature failure — ruled out because a fact isn't real until it's written to that record.", guard: "Write it to the official record" },
+  { t: "A venue quietly drops out", d: "An event spanning several venues reads \"confirmed\" while one required room has quietly fallen through.", guard: "Advance only when every venue is ready" },
+  { t: "Knowledge stuck in one place (headquarters and the local city team)", d: "A lesson learned in one city never spreads; a new city reinvents the system.", guard: "Shared playbook + update loop" },
+  { t: "The records disagree", d: "The operations record and the finance book disagree on the budget; an event \"closes\" with money still owed.", guard: "Reconcile the records before close" },
 ];
 
 const OVERRIDE_STEPS = [
-  { n: 1, title: "Gate unmet, event must proceed", body: 'The checkpoint says "you cannot proceed" — but the event is tomorrow.' },
-  { n: 2, title: "Authorized role force-advances", body: "City Manager (HQ / Finance for money) force-advances past the unmet checkpoint." },
-  { n: 3, title: "Opens an Incident + at-risk flag", body: 'Logs which checkpoint, who authorized it, and why; the event carries a visible "advanced-on-override" flag.' },
-  { n: 4, title: "Mandatory back-fill before Close", body: "The skipped info must be supplied at reconciliation — the event cannot close until the gap is back-filled." },
+  { n: 1, title: "Checkpoint unmet, but the event must go ahead", body: 'The checkpoint says "you cannot proceed" — but the event is tomorrow.' },
+  { n: 2, title: "An authorized person pushes it through", body: "The local city team lead (or Finance, where money is involved) pushes the event past the unmet checkpoint." },
+  { n: 3, title: "Opens an incident and an at-risk flag", body: 'Records which checkpoint, who authorized it, and why; the event then carries a visible "pushed through early" flag.' },
+  { n: 4, title: "The missing piece must be filled in before close", body: "The skipped information has to be supplied at the close-out — the event cannot close until that gap is filled in." },
 ];
 const HARD_GATES = [
   "No money goes out without a signed agreement.",
-  'Public ticket sales open only against an actually-signed venue — never a force-advanced "confirmed."',
-  "No event closes with an open override or unreconciled money — an override is a deferral, not a waiver.",
+  'Public ticket sales open only against a venue that has actually signed — never one that was pushed through to "confirmed."',
+  "No event closes with an open override or money still unaccounted for — pushing through delays the requirement, it never cancels it.",
 ];
 
 const BREAKPOINTS = [
-  { vol: 20, load: 14, note: "manual chase OK" },
-  { vol: 80, load: 41, note: "reconciliation strain" },
-  { vol: 160, load: 63, note: "concurrency / escalation limit" },
-  { vol: 300, load: 82, note: "knowledge-consistency drift" },
-  { vol: 500, load: 97, note: "target — structural ceiling" },
+  { vol: 20, load: 14, note: "manual chasing OK" },
+  { vol: 80, load: 41, note: "close-out strain" },
+  { vol: 160, load: 63, note: "same-night / escalation limit" },
+  { vol: 300, load: 82, note: "knowledge drifts apart" },
+  { vol: 500, load: 97, note: "target — system ceiling" },
 ];
 
 Object.assign(window, {
@@ -434,10 +434,10 @@ function Lifecycle() {
     <div>
       <div style={{ background: T.navy, color: T.ink, borderRadius: 12, padding: "16px 22px", marginBottom: 22, border: `1px solid ${T.line}` }}>
         <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 400, letterSpacing: "0.02em", lineHeight: 1.3, textTransform: "uppercase" }}>
-          a handoff = a state change + a required data package + a named owner + a due date
+          a hand-off = a change in stage + a required pack of information + a named owner + a due date
         </div>
         <div style={{ fontFamily: T.sans, fontSize: 13, color: T.muted, marginTop: 6 }}>
-          one accountable owner per state.
+          exactly one accountable owner per stage.
         </div>
       </div>
 
@@ -500,7 +500,7 @@ function Lifecycle() {
                 <rect x={mx - 7} y={Math.min(prev.y, cp.y) - 8} width="14" height={Math.abs(cp.y - prev.y) + 16} rx="3"
                   fill="none" stroke={T.role.cityManager} strokeWidth="2" opacity="0.65" />
                 <text x={mx} y={topY - 6} textAnchor="middle" fill={T.role.cityManager}
-                  style={{ fontFamily: T.sans, fontSize: 11.5, fontWeight: 700 }}>Booked ≠ Confirmed</text>
+                  style={{ fontFamily: T.sans, fontSize: 11.5, fontWeight: 700 }}>Booked is not Confirmed</text>
               </g>
             );
           })()}
@@ -548,13 +548,13 @@ function Lifecycle() {
         </div>
         <div style={{ fontFamily: T.sans, fontSize: 15.5, color: T.body, lineHeight: 1.5 }}>{active.gateIn}</div>
         <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.muted }}>SLA</span>
+          <span style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.muted }}>Deadline</span>
           <Badge tone="neutral">{active.sla}</Badge>
-          <Badge tone="muted" uppercase>strawman, to validate in discovery</Badge>
+          <Badge tone="muted" uppercase>illustrative, to validate in discovery</Badge>
         </div>
         {active.hardCheckpoint && (
           <div style={{ marginTop: 12, fontFamily: T.sans, fontSize: 13.5, color: T.role.cityManager }}>
-            <strong>Booked ≠ Confirmed</strong> — soft / verbal hold vs a signed agreement + host + run-of-show. This is where Base's confirmations fail today.
+            <strong>Booked is not the same as Confirmed</strong> — a soft or verbal hold versus a signed agreement plus a host plus a ready run-of-show. This is where Base's confirmations fail today.
           </div>
         )}
       </div>
@@ -620,7 +620,7 @@ function Hero() {
         </h1>
         <p style={{ ...stage(0.28), fontFamily: T.sans, fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.55, color: T.body,
           marginTop: 26, marginBottom: 0, maxWidth: "52ch" }}>
-          A reasoning-level systems design for the team scaling Base from roughly 20 events a month to 500+ across
+          A reasoning-level operating design for the team scaling Base from roughly 20 events a month to 500+ across
           dozens of cities — written for the operators who will run it, not the tools they'll buy.
         </p>
         <div style={{ ...stage(0.4), marginTop: 36 }}>
@@ -695,24 +695,24 @@ function Framework() {
 
       <Reveal delay={0.05} style={{ marginTop: 22 }}>
         <Callout tone="accent">
-          No canonical record and no clear ownership are the roots. Manual follow-up, dropped information, and
-          undefined escalation are what those roots produce.
+          No single official record and no clear ownership are the roots. Manual follow-up, dropped information, and
+          no defined escalation path are what those roots produce.
         </Callout>
       </Reveal>
 
       <Reveal delay={0.05} style={{ marginTop: 30 }}>
-        <h3 style={{ fontFamily: T.serif, fontSize: 28, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>The Event is the atom.</h3>
+        <h3 style={{ fontFamily: T.serif, fontSize: 28, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>The Event is the core unit.</h3>
         <p style={{ fontFamily: T.sans, fontSize: 17, lineHeight: 1.5, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
-          Communications, costs, hosts, and exceptions all attach downstream — they cannot stand alone. Every entity
-          carries a stable system key independent of its display name, because names collide and change: that is exactly
-          how "one venue, five spellings" reappears at the data layer.
+          Communications, costs, hosts, and exceptions all hang off the event — they cannot stand alone. Every thing we
+          track carries a stable system ID, separate from its display name, because names collide and change: that is exactly
+          how "one venue, five spellings" reappears in the data.
         </p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 20 }}>
           {ENTITIES.map((e) => <EntityChip key={e.label} label={e.label} stableKey={e.key} atom={e.atom} />)}
         </div>
         <OneToMany />
         <p style={{ fontFamily: T.sans, fontSize: 13.5, color: T.muted, marginTop: 6, maxWidth: "60ch" }}>
-          Event ↔ Venue is one-to-many, so a multi-venue event can never hide a single failing location.
+          One event can have many venues, so an event spanning several venues can never hide a single location that fell through.
         </p>
       </Reveal>
     </div>
@@ -726,7 +726,7 @@ function RootCause() {
   ];
   const W = 980, chH = 30, chGap = 11, chY = (i) => 16 + i * (chH + chGap);
   const roots = [
-    { label: "No canonical record", y: chY(1) + 14, feeders: [0, 1] },
+    { label: "No single official record", y: chY(1) + 14, feeders: [0, 1] },
     { label: "No clear ownership", y: chY(5) + 0, feeders: [2, 6] },
   ];
   const symptoms = [{ label: "#4 Manual follow-up" }, { label: "#5 Dropped / stale info" }, { label: "#6 Undefined escalation" }];
@@ -828,8 +828,8 @@ function RiskScale() {
           ))}
         </div>
         <Callout tone="assumption" style={{ marginTop: 16 }}>
-          A gate is a hardened dependency. Risks cluster at the seams — source-of-truth joins and ownership handoffs —
-          and every seam already carries a gate. <strong style={{ color: T.ink }}>The risk map and the system design are the same map, two views.</strong>
+          A checkpoint is a reinforced seam. Risks cluster at the seams — where official records meet, and where work hands off
+          between owners — and every seam already carries a checkpoint. <strong style={{ color: T.ink }}>The risk map and the system design are the same map, two views.</strong>
         </Callout>
       </Reveal>
 
@@ -845,13 +845,13 @@ function RiskScale() {
       </Reveal>
 
       <Reveal delay={0.05} style={{ marginTop: 34 }}>
-        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The sanctioned override path — never a silent skip</Eyebrow>
+        <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The approved way to override — never a silent skip</Eyebrow>
         <h3 style={{ fontFamily: T.serif, fontSize: 24, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>
           Keep the exception inside the system.
         </h3>
         <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.55, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
-          Reality will not always wait for a checkpoint. So the override is designed in — the source of truth survives
-          contact with reality, and <strong style={{ color: T.ink }}>the override rate becomes a health metric.</strong>
+          Reality will not always wait for a checkpoint. So the override is built in — the official record survives
+          contact with reality, and <strong style={{ color: T.ink }}>how often people override becomes a health metric.</strong>
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 0, marginTop: 22, position: "relative" }}>
           {OVERRIDE_STEPS.map((s, i) => (
@@ -873,7 +873,7 @@ function RiskScale() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="2">
               <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
             </svg>
-            <span style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.accent }}>Three hard gates — non-overridable</span>
+            <span style={{ fontFamily: T.sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.accent }}>Three hard limits — cannot be overridden</span>
           </div>
           <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
             {HARD_GATES.map((g) => (
@@ -922,11 +922,11 @@ Object.assign(window, { RiskScale });
 <!-- ============ Sections: BI Automation Hub, The Path, CTA ============ -->
 <script type="text/babel">
 const PHASES = [
-  { n: 1, name: "Foundation", role: "partnerships", tag: "MVP", bullets: ["Stable identity keys", "Entity model + canonical event record", "Source-of-truth boundaries"] },
-  { n: 2, name: "Process", role: "host", tag: "MVP", bullets: ['Lifecycle states + "done" defs', "Gated handoff packages", "One owner per state + RACI"] },
-  { n: 3, name: "Standardize", role: "cityManager", tag: "MVP", bullets: ["HQ schema / templates / SOPs", "City configuration layer", "Onboarding kit"] },
-  { n: 4, name: "Automate", role: "producer", tag: "Later — the test", bullets: ["Categorize & route venue comms", "Centralized partner-comms view", "Pre-event follow-ups", "Receipt collection", "Disruption support"] },
-  { n: 5, name: "Scale-out", role: "amber", tag: "Later", bullets: ["Pilot one city", "Harden against reality", "Replicate via SOP"] },
+  { n: 1, name: "Foundation", role: "partnerships", tag: "First release", bullets: ["Stable IDs for everything", "The set of things we track + one official event record", "Clear lines on who owns which record"] },
+  { n: 2, name: "Process", role: "host", tag: "First release", bullets: ['The event stages + what "done" means at each', "The information pack each hand-off requires", "One owner per stage + who's accountable, consulted, informed"] },
+  { n: 3, name: "Standardize", role: "cityManager", tag: "First release", bullets: ["Shared structure, templates, and playbooks from headquarters", "A per-city settings layer", "An onboarding kit for new cities"] },
+  { n: 4, name: "Automate", role: "producer", tag: "Later — the test", bullets: ["Sort and route venue messages", "One shared view of partner messages", "Pre-event follow-ups", "Receipt collection", "Last-minute change support"] },
+  { n: 5, name: "Scale-out", role: "amber", tag: "Later", bullets: ["Pilot one city", "Harden against reality", "Replicate using the playbook"] },
 ];
 const phaseColor = (r) => (r === "amber" ? T.amber : T.role[r]);
 
@@ -939,8 +939,8 @@ function BIHub() {
           The hub is the outcome of the framework, not a bolt-on.
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "64ch" }}>
-          It only works because the layers beneath it are clean: stable entity keys, gated handoffs, and one owner per
-          state. <strong>Automation is the test, not the foundation</strong> — if a step can't be cleanly automated,
+          It only works because the layers beneath it are clean: stable IDs for everything, checked hand-offs, and one owner per
+          stage. <strong>Automation is the test, not the foundation</strong> — if a step can't be cleanly automated,
           that's the signal the process or data underneath isn't clean yet.
         </p>
       </Reveal>
@@ -967,14 +967,14 @@ function BIHub() {
         <Reveal delay={0.05}><ChartCard title="Per-city event volume" caption="500/mo is a system-wide target + labeled assumption — to validate in discovery.">
           <BarChart data={CITY_VOLUME} />
         </ChartCard></Reveal>
-        <Reveal delay={0.08}><ChartCard title="Override rate — system health" caption="We watch the trend, not a single number. The pattern shows which checkpoints are too rigid vs where ops keeps failing.">
+        <Reveal delay={0.08}><ChartCard title="Override rate — system health" caption="We watch the trend, not a single number. The pattern shows which checkpoints are too rigid versus where operations keeps failing.">
           <LineChart data={OVERRIDE_TREND} healthyMax={7.0} />
         </ChartCard></Reveal>
       </div>
 
       <Reveal delay={0.05} style={{ marginTop: 34 }}>
         <Eyebrow tone="muted" style={{ marginBottom: 8 }}>The automation layer — last, not first</Eyebrow>
-        <h3 style={{ fontFamily: T.serif, fontSize: 26, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>Five capabilities, each a rule on a clean substrate.</h3>
+        <h3 style={{ fontFamily: T.serif, fontSize: 26, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>Five capabilities, each a rule on a clean foundation.</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 20 }}>
           {CAPABILITIES.map((c) => (
             <div key={c.n} style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 12, padding: "18px 20px" }}>
@@ -985,7 +985,7 @@ function BIHub() {
           ))}
         </div>
         <Callout tone="assumption" style={{ marginTop: 18 }}>
-          All five sit at the end of the sequence, on top of clean entities, gated handoffs, and clear ownership.
+          All five sit at the end of the sequence, on top of clean records, checked hand-offs, and clear ownership.
           <strong style={{ color: T.ink }}> Automation is the test, not the foundation.</strong>
         </Callout>
       </Reveal>
@@ -1074,7 +1074,7 @@ function Path() {
                     fontWeight: 400, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}>{p.n}</span>
                   <span style={{ fontFamily: T.serif, fontSize: 18, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>{p.name}</span>
                 </div>
-                <Badge tone={p.tag.startsWith("MVP") ? "green" : "muted"} uppercase style={{ marginTop: 12 }}>{p.tag}</Badge>
+                <Badge tone={p.tag.startsWith("First release") ? "green" : "muted"} uppercase style={{ marginTop: 12 }}>{p.tag}</Badge>
                 {on && <ul style={{ margin: "12px 0 0", padding: "0 0 0 16px", color: T.body }}>
                   {p.bullets.map((b) => <li key={b} style={{ fontFamily: T.sans, fontSize: 13, lineHeight: 1.5 }}>{b}</li>)}
                 </ul>}
@@ -1084,7 +1084,7 @@ function Path() {
         </div>
         <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
           <div style={{ flex: "3", borderTop: `2px solid ${T.role.partnerships}`, paddingTop: 8, fontFamily: T.sans, fontSize: 12, fontWeight: 700, color: T.role.partnerships, letterSpacing: "0.04em" }}>
-            PHASES 1–3 · MVP — THE SUBSTRATE
+            PHASES 1–3 · FIRST RELEASE — THE FOUNDATION
           </div>
           <div style={{ flex: "2", borderTop: `2px solid ${T.accent}`, paddingTop: 8, fontFamily: T.sans, fontSize: 12, fontWeight: 700, color: T.accent, letterSpacing: "0.04em" }}>
             PHASES 4–5 · LATER — EARNS ITS PLACE
@@ -1107,11 +1107,11 @@ function CTA() {
           We didn't automate the chaos. We built the structure that makes the chaos optional — then let automation prove it.
         </p>
         <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.6, color: T.body, margin: "22px 0 0", maxWidth: "62ch" }}>
-          The full reasoning lives in the accompanying written framework — a design document and a decision log of
-          twenty-three decisions (D1–D23): how the seven challenges collapse into two root causes, the gated event
-          lifecycle, the federated source of truth, the sanctioned-override exception path, this implementation sequence,
-          and the post-grill hardening — transition / migration while live, owner-continuity under disruption, and
-          doctrine propagation at scale.
+          The full reasoning lives in the accompanying written framework — a design document and a log of all twenty-three
+          decisions: how the seven challenges collapse into two root causes, the staged event
+          lifecycle, the one official record split across roles, the approved way to override, this build sequence,
+          and the hardening that came out of stress-testing — switching over while the business runs live, keeping an owner
+          on every event when someone is out, and keeping the playbook consistent as cities multiply.
         </p>
         <hr style={{ border: 0, height: 2, width: 56, background: T.accent, margin: "30px 0 16px" }} />
         <div style={{ fontFamily: T.serif, fontSize: 22, letterSpacing: "0.06em", textTransform: "uppercase", color: T.ink }}>Great Minds Meet Here</div>
@@ -1148,11 +1148,11 @@ function LifecycleSection() {
       <Reveal>
         <Eyebrow style={{ marginBottom: 14 }}>02 · System Design</Eyebrow>
         <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12, maxWidth: "20ch" }}>
-          How information moves — one record, federated by role.
+          How information moves — one official record, split across roles.
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "62ch" }}>
-          Each transition is a gated handoff. The event cannot enter the next state until the required data package
-          exists and a named owner accepts it — so missing or late information becomes structurally unable to propagate.
+          Each step is a checked hand-off. The event cannot move to the next stage until the required pack of information
+          exists and a named owner accepts it — so missing or late information simply has no way to slip through.
         </p>
       </Reveal>
       <Reveal delay={0.06} style={{ marginTop: 30 }}><Lifecycle /></Reveal>

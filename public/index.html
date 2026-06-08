@@ -81,7 +81,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
         <circle cx="71" cy="58" r="20" fill="#FFE2C0"></circle>
       </svg>
       <span class="mark">Base</span>
-      <span class="meta">Operational Systems Design</span>
+      <span class="meta">How Base Runs Events</span>
     </div>
     <nav class="tabs" aria-label="Sections">
       <a class="tab" id="tab-walkthrough" href="#walkthrough"><span class="idx">01</span>Walkthrough</a>
@@ -91,15 +91,15 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
   </header>
 
   <main class="stage">
-    <iframe id="stage" title="Walkthrough — the operating framework, scrolled" src="walkthrough.html"></iframe>
+    <iframe id="stage" title="Walkthrough — the guided tour of how Base runs events" src="walkthrough.html"></iframe>
   </main>
 
 <script>
   // Tab registry — id → iframe src + iframe title. Walkthrough (the scroll output) is the default.
   var TABS = {
-    walkthrough: { src: "walkthrough.html", title: "Walkthrough — the operating framework, scrolled" },
-    framework:   { src: "framework.html",   title: "Framework — decisions, risks, assumptions" },
-    brain:       { src: "brain.html",       title: "Brain — knowledge graph" }
+    walkthrough: { src: "walkthrough.html", title: "Walkthrough — the guided tour of how Base runs events" },
+    framework:   { src: "framework.html",   title: "Framework — the decisions, risks, and assumptions behind the design" },
+    brain:       { src: "brain.html",       title: "Brain — an explorable map of how every decision connects" }
   };
   var ORDER = ["walkthrough", "framework", "brain"];
   var frame = document.getElementById("stage");
