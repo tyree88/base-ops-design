@@ -8,8 +8,9 @@
 <style>
 /* ============================================================
    Base Operating System — SOLUTION tab (tab #2).
-   The future state once the system design is implemented: the Event
-   at the center of a clean, mostly self-running machine. Synthesis,
+   The future state, process-first: the gap (human glue) → the
+   structural fix → the principle (context engineering) → the
+   operating layer → Base instantiated → what it earns. Synthesis,
    not problem-restating. Self-contained; nocturnal Base brand.
    ============================================================ */
 
@@ -44,8 +45,11 @@ body { margin: 0; background: var(--paper); color: var(--ink); min-height: 100vh
 .eyebrow { font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 0.18em;
   font-weight: 700; font-size: 12.5px; color: var(--accent); }
 h1 { font-family: var(--font-serif); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em;
-  font-size: clamp(28px, 4.4vw, 46px); line-height: 1.18; color: var(--ink); margin: 16px 0 0; max-width: 20ch; }
+  font-size: clamp(28px, 4.4vw, 46px); line-height: 1.18; color: var(--ink); margin: 16px 0 0; max-width: 22ch; }
 h1 .accent { color: var(--accent); }
+h2.gap-head { font-family: var(--font-serif); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em;
+  font-size: clamp(24px, 3.6vw, 38px); line-height: 1.18; color: var(--ink); margin: 16px 0 0; max-width: 22ch; }
+h2.gap-head .accent { color: var(--accent); }
 .lead { font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 18px); line-height: 1.6;
   color: var(--body); max-width: 64ch; margin: 24px 0 0; }
 .lead b { color: var(--ink); font-weight: 600; }
@@ -63,17 +67,17 @@ h1 .accent { color: var(--accent); }
 .hub { background: var(--navy); border: 1px solid var(--line); border-radius: 16px; padding: clamp(16px, 3vw, 28px); }
 .hub svg { width: 100%; height: auto; display: block; }
 
-/* future-state panels */
+/* future-state panels + structural-move panels */
 .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 22px; }
 .panel { background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px;
   border-top: 3px solid var(--spoke, var(--accent)); }
 .panel .pt { font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: var(--ink); }
 .panel .pd { font-family: var(--font-sans); font-size: 13.5px; line-height: 1.5; color: var(--muted); margin-top: 8px; }
 
-/* the mechanism — the Event as the atom across systems */
+/* section heading shared by structural fix / operating layer / Base instantiated */
 .mech { margin-top: 34px; }
 .mech-h { font-family: var(--font-serif); font-size: clamp(20px, 2.6vw, 28px); font-weight: 400; letter-spacing: 0.03em;
-  text-transform: uppercase; color: var(--ink); margin: 0; max-width: 22ch; }
+  text-transform: uppercase; color: var(--ink); margin: 0; max-width: 24ch; }
 .mech-lead { font-family: var(--font-sans); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.6; color: var(--body);
   max-width: 66ch; margin: 14px 0 0; }
 .mech-lead b { color: var(--ink); font-weight: 600; }
@@ -96,8 +100,23 @@ h1 .accent { color: var(--accent); }
 .step .st { font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 6px; }
 .step .sd { font-family: var(--font-sans); font-size: 13px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
 
+/* the principle — the named anchor beat (context engineering, once) */
+.principle { margin-top: 34px; background: var(--navy); border: 1px solid var(--line);
+  border-left: 3px solid var(--teal); border-radius: 16px; padding: clamp(20px, 3.4vw, 32px); }
+.principle .pk { font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 0.18em;
+  font-weight: 700; font-size: 12.5px; color: var(--teal); }
+.principle .ph { font-family: var(--font-serif); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em;
+  font-size: clamp(20px, 2.8vw, 30px); line-height: 1.2; color: var(--ink); margin: 12px 0 0; max-width: 26ch; }
+.principle .pp { font-family: var(--font-sans); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.6;
+  color: var(--body); max-width: 70ch; margin: 16px 0 0; }
+.principle .pp b { color: var(--ink); font-weight: 600; }
+.principle .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 16px; }
+.principle .two > div { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.principle .two .tt { display: block; font-family: var(--font-sans); font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.principle .two .td { display: block; font-family: var(--font-sans); font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 7px; }
+
 /* what it earns */
-.earns { margin-top: 30px; background: rgba(191,52,78,0.06); border: 1px solid var(--line);
+.earns { margin-top: 34px; background: rgba(191,52,78,0.06); border: 1px solid var(--line);
   border-left: 3px solid var(--accent); border-radius: 12px; padding: 22px 24px; }
 .earns .lbl { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
@@ -108,6 +127,14 @@ h1 .accent { color: var(--accent); }
   border-radius: 50%; background: var(--gold); }
 .earns li b { color: var(--ink); font-weight: 600; }
 .earns .note { margin-top: 14px; font-size: 12px; color: var(--muted); }
+
+/* proof note */
+.proof { margin-top: 18px; background: var(--soft); border: 1px solid var(--line); border-left: 3px solid var(--teal);
+  border-radius: 12px; padding: 20px 22px; }
+.proof .lbl { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+.proof p { margin: 0; font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--body); }
+.proof p b { color: var(--ink); font-weight: 600; }
 
 /* connective close */
 .close { margin-top: 34px; }
@@ -134,105 +161,144 @@ h1 .accent { color: var(--accent); }
   font-size: 11.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
   transition: border-color .18s, background .18s; }
 #open-full:hover { border-color: var(--accent); background: rgba(191,52,78,0.16); }
+
+/* ============ movement 0 — the journey ladder (where you are → where you can go) ============ */
+.journey { margin-bottom: 4px; }
+.j-head { font-family: var(--font-serif); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em;
+  font-size: clamp(26px, 4vw, 44px); line-height: 1.16; color: var(--ink); margin: 14px 0 0; max-width: 22ch; }
+.j-head .accent { color: var(--accent); }
+.j-sub { font-family: var(--font-sans); font-size: clamp(14px, 1.7vw, 16.5px); line-height: 1.6; color: var(--body);
+  max-width: 62ch; margin: 18px 0 0; }
+.j-sub b { color: var(--ink); font-weight: 600; }
+
+.ladder { list-style: none; margin: 26px 0 0; padding: 0; display: grid;
+  grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.ladder > li { display: flex; }
+.rung { display: flex; flex-direction: column; gap: 9px; flex: 1; background: var(--soft); border: 1px solid var(--line);
+  border-radius: 13px; padding: 15px 15px 17px; text-decoration: none; color: var(--ink);
+  border-top: 3px solid var(--g, var(--accent));
+  transition: border-color var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard); }
+.rung:hover { transform: translateY(-3px); }
+.r-top { display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.r-n { font-family: var(--font-mono); font-size: 12px; color: var(--g, var(--accent)); font-weight: 600; }
+.r-here { font-family: var(--font-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--paper); background: var(--g, var(--gold)); padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+.r-label { font-family: var(--font-sans); font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+.r-ess { font-family: var(--font-sans); font-size: 12px; color: var(--muted); line-height: 1.4; min-height: 3.2em; }
+.glue-meter { height: 6px; border-radius: 999px; background: var(--gold); overflow: hidden; opacity: 0.85;
+  display: flex; justify-content: flex-end; }
+.glue-meter > span { display: block; height: 100%; background: var(--teal); border-radius: 999px; }
+.glue-key { display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-top: -3px; }
+.r-human { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.01em; color: var(--g, var(--accent)); margin-top: 2px; }
+.r-human b { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 760px) {
+  .ladder { grid-template-columns: 1fr; gap: 10px; }
+  .r-ess { min-height: 0; }
+}
 </style>
 </head>
 <body>
 <div class="aurora-floor" aria-hidden="true"></div>
 <div class="wrap">
 
-  <div class="eyebrow">If we build this —</div>
-  <h1>The destination: a club that <span class="accent">runs itself, event by event</span></h1>
+  <!-- ============ movement 0 — the journey: where you are → where you can go ============ -->
+  <section class="journey">
+    <div class="eyebrow">Where Base is — and where it can go</div>
+    <h1 class="j-head">From <span class="accent">people-as-the-glue</span> to a club that runs itself</h1>
+    <p class="j-sub">
+      Five steps, not a leap — you're on the first. At each step the system takes more of the busywork and
+      <b>people move up to judgment</b>. The shift you're watching is the connective tissue moving from human to machine.
+    </p>
+    <ol class="ladder">
+      <li><a class="rung" href="#m-gap" style="--g:#D6A85F">
+        <div class="r-top"><span class="r-n">0</span><span class="r-here">You are here</span></div>
+        <div class="r-label">People are the glue</div>
+        <div class="r-ess">status in heads + five trackers</div>
+        <div class="glue-meter"><span style="width:6%"></span></div>
+        <div class="glue-key"><span>human</span><span>machine</span></div>
+        <div class="r-human">You <b>do the glue</b></div>
+      </a></li>
+      <li><a class="rung" href="#m-fix" style="--g:#C2885F">
+        <div class="r-top"><span class="r-n">1</span></div>
+        <div class="r-label">One source of truth</div>
+        <div class="r-ess">every event, one official record</div>
+        <div class="glue-meter"><span style="width:30%"></span></div>
+        <div class="glue-key"><span>human</span><span>machine</span></div>
+        <div class="r-human">You <b>trust one record</b></div>
+      </a></li>
+      <li><a class="rung" href="#m-operating" style="--g:#9B6FB0">
+        <div class="r-top"><span class="r-n">2</span></div>
+        <div class="r-label">The system assists</div>
+        <div class="r-ess">surfaces what changed, drafts the next step</div>
+        <div class="glue-meter"><span style="width:55%"></span></div>
+        <div class="glue-key"><span>human</span><span>machine</span></div>
+        <div class="r-human">You <b>approve</b></div>
+      </a></li>
+      <li><a class="rung" href="#m-base" style="--g:#4E8E96">
+        <div class="r-top"><span class="r-n">3</span></div>
+        <div class="r-label">The routine runs itself</div>
+        <div class="r-ess">confirmations + receipts run themselves</div>
+        <div class="glue-meter"><span style="width:78%"></span></div>
+        <div class="glue-key"><span>human</span><span>machine</span></div>
+        <div class="r-human">You <b>handle exceptions</b></div>
+      </a></li>
+      <li><a class="rung" href="#m-earns" style="--g:#2E8B8B">
+        <div class="r-top"><span class="r-n">4</span><span class="r-here">Where you can go</span></div>
+        <div class="r-label">It mostly runs itself</div>
+        <div class="r-ess">events advance on their own</div>
+        <div class="glue-meter"><span style="width:92%"></span></div>
+        <div class="glue-key"><span>human</span><span>machine</span></div>
+        <div class="r-human">You <b>set direction</b></div>
+      </a></li>
+    </ol>
+  </section>
+
+  <div class="rule-dotted"><span class="dot"></span></div>
+
+  <!-- ============ movement 1 — the gap (human glue) ============ -->
+  <div class="eyebrow" id="m-gap">The gap, named</div>
+  <h2 class="gap-head">Every team has good tools. The glue between them is <span class="accent">a person</span>.</h2>
   <p class="lead">
-    Once the system is in place, the work stops being a scramble. Every event becomes <b>the core unit the whole
-    machine turns on</b> — sourced, confirmed, run, and settled through one clean path that mostly runs itself. The
-    promise made real: <b>operating cost grows slower than the number of events</b>. <span style="color:var(--muted)">(Illustrative target — to validate in discovery.)</span>
+    At 500+ events a month, the thing that breaks isn't the tools — each does its one job well. It's the
+    <b>connective tissue between them</b>: someone copying status between systems, chasing confirmations, re-keying
+    the same fact in four places. That hand-work is where error, delay, and friction live.
+  </p>
+  <p class="lead" style="margin-top:16px">
+    The same trap caught the apps that promised to fix it. Their bottleneck was never <i>organizing</i> information —
+    it was <b>capturing</b> it without stopping the work that produces it. So the answer isn't a better place to file
+    things; it's to remove the manual capture entirely. <span style="color:var(--muted)">This is the picture
+    <i>after</i> the design is built — not a restatement of the problems.</span>
   </p>
 
   <div class="rule-dotted"><span class="dot"></span></div>
 
-  <!-- ============ the synthesis hub: the Event at the center ============ -->
-  <div class="hub reveal">
-    <svg viewBox="0 0 760 460" role="img" aria-label="The Event at the center of a self-running system: one official record, the automation layer, the live map, and the self-running flow.">
-      <defs>
-        <radialGradient id="ev" cx="50%" cy="42%" r="62%">
-          <stop offset="0%" stop-color="#D9536B"/><stop offset="100%" stop-color="#BF344E"/>
-        </radialGradient>
-      </defs>
-      <!-- connectors -->
-      <g stroke-width="1.6" fill="none" opacity="0.85">
-        <line x1="380" y1="230" x2="380" y2="92"  stroke="#2E8B8B"/>
-        <line x1="380" y1="230" x2="380" y2="368" stroke="#3FA66B"/>
-        <line x1="380" y1="230" x2="150" y2="230" stroke="#D6A85F"/>
-        <line x1="380" y1="230" x2="610" y2="230" stroke="#9B6FB0"/>
-      </g>
-      <g fill="#FFE2C0">
-        <circle cx="380" cy="161" r="3"/><circle cx="380" cy="299" r="3"/>
-        <circle cx="265" cy="230" r="3"/><circle cx="495" cy="230" r="3"/>
-      </g>
-
-      <!-- spoke nodes -->
-      <!-- top: one official record (teal) -->
-      <g>
-        <rect x="280" y="40" width="200" height="52" rx="11" fill="#0E1622" stroke="#2E8B8B" stroke-width="1.4"/>
-        <text x="380" y="62" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">One Official Record</text>
-        <text x="380" y="80" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">every fact has one home</text>
-      </g>
-      <!-- left: automation (gold) -->
-      <g>
-        <rect x="10" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#D6A85F" stroke-width="1.4"/>
-        <text x="110" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Automation Layer</text>
-        <text x="110" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">chases the follow-ups itself</text>
-      </g>
-      <!-- right: live map (violet) -->
-      <g>
-        <rect x="550" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#9B6FB0" stroke-width="1.4"/>
-        <text x="650" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Live Map</text>
-        <text x="650" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">navigate every event</text>
-      </g>
-      <!-- bottom: self-running flow (green) -->
-      <g>
-        <rect x="280" y="368" width="200" height="52" rx="11" fill="#0E1622" stroke="#3FA66B" stroke-width="1.4"/>
-        <text x="380" y="390" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Self-Running Flow</text>
-        <text x="380" y="408" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">clean, owned stages</text>
-      </g>
-
-      <!-- the Event atom at the center -->
-      <circle cx="380" cy="230" r="62" fill="url(#ev)"/>
-      <circle cx="380" cy="230" r="62" fill="none" stroke="#FFE2C0" stroke-width="1.5" opacity="0.85"/>
-      <text x="380" y="226" text-anchor="middle" fill="#FFF4E6" font-family="Forum,Georgia,serif" font-size="22" letter-spacing="0.04em">THE EVENT</text>
-      <text x="380" y="248" text-anchor="middle" fill="rgba(255,244,230,0.85)" font-family="Poppins,sans-serif" font-size="11" font-weight="600">the core unit</text>
-    </svg>
-  </div>
-
-  <!-- ============ future-state panels ============ -->
-  <div class="panels">
-    <div class="panel reveal" style="--spoke:var(--teal)">
-      <div class="pt">One official record</div>
-      <div class="pd">Every fact about an event lives in one place. Nothing to reconcile across tools, nothing dropped between them — what you read is what's true.</div>
-    </div>
-    <div class="panel reveal" style="--spoke:var(--gold)">
-      <div class="pt">The system does the chasing</div>
-      <div class="pd">Confirmations and receipts are followed up automatically. People stop hand-chasing status; the routine work simply happens on time.</div>
-    </div>
-    <div class="panel reveal" style="--spoke:var(--violet)">
-      <div class="pt">A live map, not a doc</div>
-      <div class="pd">The whole operation is navigable as a living map — every event, owner, and connection in one view, so anyone can see where things stand at a glance.</div>
-    </div>
-    <div class="panel reveal" style="--spoke:var(--green)">
-      <div class="pt">Each event advances itself</div>
-      <div class="pd">An event moves through clean, owned stages on its own. Each step has one accountable owner and can't advance until it's truly ready.</div>
-    </div>
-  </div>
-
-  <!-- ============ the mechanism: the Event as the atom across systems ============ -->
-  <div class="mech reveal">
-    <div class="eyebrow" style="margin-bottom: 14px">How it works — the Event is the atom</div>
-    <h2 class="mech-h">One atom, many views — and no manual re-entry</h2>
+  <!-- ============ movement 2 — the fix is structural ============ -->
+  <div class="mech reveal" id="m-fix">
+    <div class="eyebrow" style="margin-bottom: 14px">The fix is structural — not more tools</div>
+    <h2 class="mech-h">One record, gated stages, one owner each</h2>
     <p class="mech-lead">
-      Every team's tool keeps its job. The shift is underneath: every system speaks about the same thing — <b>the Event</b> — by one <b>stable ID</b>. The Event is <b>the atom</b>: each system holds a <i>view</i> of it, never its own copy. An operating layer keeps them all pointing at the one official record, so a fact is fixed once and every view updates.
+      Before any automation, the substrate has to be clean. Three structural moves carry it — process and data
+      design, done first. <b>Automation is the test of a clean substrate, not a substitute for one.</b>
     </p>
 
-    <!-- the atom, referenced by every system -->
+    <div class="panels">
+      <div class="panel reveal" style="--spoke:var(--teal)">
+        <div class="pt">One official record per event</div>
+        <div class="pd">Every system speaks about the same thing — the Event — by one stable ID. Each holds a <i>view</i>, never its own copy. This dissolves "one venue, five spellings, five trackers" at the data layer.</div>
+      </div>
+      <div class="panel reveal" style="--spoke:var(--gold)">
+        <div class="pt">Gated handoffs</div>
+        <div class="pd">An event can't move to the next stage until the named information that stage needs exists and a named owner accepts it. Missing or late facts can't propagate silently.</div>
+      </div>
+      <div class="panel reveal" style="--spoke:var(--green)">
+        <div class="pt">One accountable owner per stage</div>
+        <div class="pd">Every stage has exactly one role that owns it and drives it to the next gate — never shared, never orphaned.</div>
+      </div>
+    </div>
+
+    <!-- the atom, referenced by every system — visualizes "one official record" -->
     <div class="atom-map">
       <svg viewBox="0 0 760 250" role="img" aria-label="Each system references the same Event by its stable ID; the Event is the one shared atom.">
         <!-- converging lines -->
@@ -258,6 +324,42 @@ h1 .accent { color: var(--accent); }
       </svg>
       <p class="atom-cap">Each system references the same Event by its stable ID — <b>one atom, many views, never a second copy</b>. The systems don't hold competing facts; they hold pointers to the one record.</p>
     </div>
+  </div>
+
+  <!-- ============ movement 3 — the principle (context engineering, named once) ============ -->
+  <div class="principle reveal">
+    <div class="pk">The principle</div>
+    <h2 class="ph">Keep the smallest set of true facts in front of whoever acts next</h2>
+    <p class="pp">
+      Those three moves share one discipline, and it has a name: <b>context engineering</b> — keeping the
+      <b>smallest set of true, current facts</b> in front of whoever acts next, instead of piling on more tools or
+      more copies. A capable operator — a person or a machine — works best on a tight, authoritative set of facts,
+      and worst when it has to reconcile five conflicting copies first. The five competing trackers aren't a tooling
+      gap; they're noise crowding out signal.
+    </p>
+    <p class="pp" style="margin-top:14px">Seen this way, the two things actually missing are the two things you <i>engineer</i>:</p>
+    <div class="two">
+      <div>
+        <span class="tt">A captured memory</span>
+        <span class="td">A durable, versioned record that lives outside any one person's head or inbox — so the organization stops re-learning itself every cycle.</span>
+      </div>
+      <div>
+        <span class="tt">A living doctrine</span>
+        <span class="td">The "how" — the SOPs — held at the right altitude: standardized structure with strong, reusable heuristics, not brittle rules and not vague guidance.</span>
+      </div>
+    </div>
+    <p class="pp" style="margin-top:14px; color:var(--muted)">Memory and doctrine are the connective tissue, made durable.</p>
+  </div>
+
+  <!-- ============ movement 4 — the operating layer (capture → document) ============ -->
+  <div class="mech reveal" id="m-operating">
+    <div class="eyebrow" style="margin-bottom: 14px">The operating layer</div>
+    <h2 class="mech-h">The machine does the curating</h2>
+    <p class="mech-lead">
+      <b>Today</b>, the glue is a person. <b>In the future state</b>, capture is automatic: an operating layer reads
+      each system on a schedule, pulls only what changed, and writes it once to the Event's record. People stop
+      re-entering — <b>the system does the glue</b> — and the effort once spent on hand-work is reclaimed.
+    </p>
 
     <!-- solving manual entry -->
     <div class="manual">
@@ -273,15 +375,100 @@ h1 .accent { color: var(--accent); }
 
     <!-- the mechanism, by role -->
     <div class="pipeline">
-      <div class="step"><div class="sn">01 · CAPTURE</div><div class="st">Read, don't re-type</div><div class="sd">Agents read each system on a schedule and extract what changed — no human stops work to log it.</div></div>
-      <div class="step"><div class="sn">02 · DOCUMENT</div><div class="st">Write once, to the atom</div><div class="sd">Each change is written once to the Event's official record, keyed to its stable ID. One home per fact.</div></div>
-      <div class="step"><div class="sn">03 · BUILD</div><div class="st">Skills on a clean record</div><div class="sd">Teams compose reusable skills and agent behaviors on top — each a thin rule on the Event, not a new system.</div></div>
-      <div class="step"><div class="sn">04 · GROW</div><div class="st">Memory that compounds</div><div class="sd">A documented memory gets richer every cycle — less is re-explained, more is inherited. The org speeds up.</div></div>
+      <div class="step"><div class="sn">01 · CAPTURE</div><div class="st">Read, don't re-type</div><div class="sd">The layer reads each system on a schedule and pulls only what changed — no human stops work to log it.</div></div>
+      <div class="step"><div class="sn">02 · DOCUMENT</div><div class="st">Write once, to the atom</div><div class="sd">Each change is written once to the Event's record, keyed to its stable ID. One home per fact; others read it by reference.</div></div>
+      <div class="step"><div class="sn">03 · BUILD</div><div class="st">Skills on a clean record</div><div class="sd">Teams compose reusable skills on top — each a thin rule on the Event, not a new system.</div></div>
+      <div class="step"><div class="sn">04 · GROW</div><div class="st">Memory that compounds</div><div class="sd">The documented memory gets richer every cycle — less is re-explained, more is inherited. The org speeds up.</div></div>
     </div>
   </div>
 
-  <!-- ============ what it earns ============ -->
-  <div class="earns reveal">
+  <!-- ============ movement 5 — Base, instantiated (the hub + qualities) ============ -->
+  <div class="mech reveal" id="m-base">
+    <div class="eyebrow" style="margin-bottom: 14px">Base, instantiated</div>
+    <h2 class="mech-h">A club that runs itself, event by event</h2>
+    <p class="mech-lead">
+      The principle, made concrete for Base: every event becomes <b>the core unit the whole machine turns on</b> —
+      sourced, confirmed, run, and settled through one clean path that mostly runs itself, so
+      <b>operating cost grows slower than the number of events</b>. <span style="color:var(--muted)">(Illustrative target — to validate in discovery.)</span>
+    </p>
+
+    <!-- the synthesis hub: the Event at the center -->
+    <div class="hub reveal" style="margin-top:22px">
+      <svg viewBox="0 0 760 460" role="img" aria-label="The Event at the center of a self-running system: one official record, the automation layer, the live map, and the self-running flow.">
+        <defs>
+          <radialGradient id="ev" cx="50%" cy="42%" r="62%">
+            <stop offset="0%" stop-color="#D9536B"/><stop offset="100%" stop-color="#BF344E"/>
+          </radialGradient>
+        </defs>
+        <!-- connectors -->
+        <g stroke-width="1.6" fill="none" opacity="0.85">
+          <line x1="380" y1="230" x2="380" y2="92"  stroke="#2E8B8B"/>
+          <line x1="380" y1="230" x2="380" y2="368" stroke="#3FA66B"/>
+          <line x1="380" y1="230" x2="150" y2="230" stroke="#D6A85F"/>
+          <line x1="380" y1="230" x2="610" y2="230" stroke="#9B6FB0"/>
+        </g>
+        <g fill="#FFE2C0">
+          <circle cx="380" cy="161" r="3"/><circle cx="380" cy="299" r="3"/>
+          <circle cx="265" cy="230" r="3"/><circle cx="495" cy="230" r="3"/>
+        </g>
+
+        <!-- spoke nodes -->
+        <!-- top: one official record (teal) -->
+        <g>
+          <rect x="280" y="40" width="200" height="52" rx="11" fill="#0E1622" stroke="#2E8B8B" stroke-width="1.4"/>
+          <text x="380" y="62" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">One Official Record</text>
+          <text x="380" y="80" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">every fact has one home</text>
+        </g>
+        <!-- left: automation (gold) -->
+        <g>
+          <rect x="10" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#D6A85F" stroke-width="1.4"/>
+          <text x="110" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Automation Layer</text>
+          <text x="110" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">chases the follow-ups itself</text>
+        </g>
+        <!-- right: live map (violet) -->
+        <g>
+          <rect x="550" y="204" width="200" height="52" rx="11" fill="#0E1622" stroke="#9B6FB0" stroke-width="1.4"/>
+          <text x="650" y="226" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Live Map</text>
+          <text x="650" y="244" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">navigate every event</text>
+        </g>
+        <!-- bottom: self-running flow (green) -->
+        <g>
+          <rect x="280" y="368" width="200" height="52" rx="11" fill="#0E1622" stroke="#3FA66B" stroke-width="1.4"/>
+          <text x="380" y="390" text-anchor="middle" fill="#FFE2C0" font-family="Poppins,sans-serif" font-size="13" font-weight="700">Self-Running Flow</text>
+          <text x="380" y="408" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="11">clean, owned stages</text>
+        </g>
+
+        <!-- the Event atom at the center -->
+        <circle cx="380" cy="230" r="62" fill="url(#ev)"/>
+        <circle cx="380" cy="230" r="62" fill="none" stroke="#FFE2C0" stroke-width="1.5" opacity="0.85"/>
+        <text x="380" y="226" text-anchor="middle" fill="#FFF4E6" font-family="Forum,Georgia,serif" font-size="22" letter-spacing="0.04em">THE EVENT</text>
+        <text x="380" y="248" text-anchor="middle" fill="rgba(255,244,230,0.85)" font-family="Poppins,sans-serif" font-size="11" font-weight="600">the core unit</text>
+      </svg>
+    </div>
+
+    <!-- the four qualities -->
+    <div class="panels">
+      <div class="panel reveal" style="--spoke:var(--teal)">
+        <div class="pt">One record, zero reconciliation</div>
+        <div class="pd">Every fact about an event lives in one place. Nothing to reconcile across tools, nothing dropped between them — what you read is what's true.</div>
+      </div>
+      <div class="panel reveal" style="--spoke:var(--gold)">
+        <div class="pt">The system does the chasing</div>
+        <div class="pd">Confirmations and receipts are followed up automatically. People stop hand-chasing status; the routine work simply happens on time.</div>
+      </div>
+      <div class="panel reveal" style="--spoke:var(--violet)">
+        <div class="pt">A live map, not a doc</div>
+        <div class="pd">The whole operation is navigable as a living map — every event, owner, and connection in one view, so anyone can see where things stand at a glance.</div>
+      </div>
+      <div class="panel reveal" style="--spoke:var(--green)">
+        <div class="pt">Each event advances itself</div>
+        <div class="pd">An event moves through clean, owned stages on its own. Each step has one accountable owner and can't advance until it's truly ready.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ movement 6 — what it earns + proof ============ -->
+  <div class="earns reveal" id="m-earns">
     <span class="lbl">What this earns</span>
     <ul>
       <li><b>Scale without scaling the team</b> — run 500+ events a month across dozens of cities while the human effort per event keeps falling.</li>
@@ -290,6 +477,11 @@ h1 .accent { color: var(--accent); }
       <li><b>A new city goes live on day one</b> — it inherits the whole system instead of reinventing one.</li>
     </ul>
     <div class="note">All figures illustrative — to validate in discovery. Not live or authoritative Base data.</div>
+  </div>
+
+  <div class="proof reveal">
+    <span class="lbl">Proof it isn't hypothetical</span>
+    <p>This very presentation runs the same loop — a versioned, file-based source of truth, a queryable knowledge graph (the <b>Brain</b> tab), and a working memory read each session. The recommendation is to industrialize that loop for the whole organization: a performance gradient you improve continuously, not a magic switch.</p>
   </div>
 
   <!-- ============ connective close: links into the other tabs ============ -->
