@@ -187,7 +187,7 @@ const FAILURE_MODES = [
   { t: "Plan for 80, room holds 50", d: "A venue's change lands in someone's inbox and never reaches the official record. The signature failure, ruled out because a fact isn't real until it's written to that record.", guard: "Write it to the official record" },
   { t: "A venue quietly drops out", d: "An event spanning several venues reads \"confirmed\" while one required room has quietly fallen through.", guard: "Advance only when every venue is ready" },
   { t: "Knowledge stuck in one place (headquarters and the local city team)", d: "A lesson learned in one city never spreads; a new city reinvents the system.", guard: "Shared playbook + update loop" },
-  { t: "The records disagree", d: "The operations record and the finance book disagree on the budget; an event \"closes\" with money still owed.", guard: "Reconcile the records before close" },
+  { t: "The records disagree", d: "The operational spine and the financial book are different domains by design; reconciliation is the defined join that compares them. Skip it and an event \"closes\" with money still owed.", guard: "Reconcile the join before close — envelope vs actuals" },
 ];
 
 const OVERRIDE_STEPS = [
@@ -437,7 +437,7 @@ function Lifecycle() {
           a hand-off = a change in stage + a required pack of information + a named owner + a due date
         </div>
         <div style={{ fontFamily: T.sans, fontSize: 13, color: T.muted, marginTop: 6 }}>
-          exactly one accountable owner per stage.
+          exactly one accountable owner per stage — each with a named successor (escalation to the City Manager), so no event is orphaned when an owner is out.
         </div>
       </div>
 
@@ -589,6 +589,24 @@ Object.assign(window, { Lifecycle });
 
 <!-- ============ Sections 1–3: Hero, Discovery, Framework ============ -->
 <script type="text/babel">
+const SOT_DOMAINS = [
+  { role: "Spine · system-of-record", owns: "event operational state — status, dates, capacity, budget envelope, ownership, venue links", why: "one record per event; everything else references it by event_id" },
+  { role: "Financial book-of-record", owns: "settled money — invoices, payments, reconciliation actuals", why: "money has its own controls and audit; ops edits must not mutate financial truth" },
+  { role: "Doctrine store", owns: "the “how” — SOPs, templates, schema, approval thresholds", why: "versioned, reused across every event, headquarters-owned" },
+  { role: "Coordination channel", owns: "nothing — ephemeral human back-and-forth", why: "never canonical; anything that matters is promoted to the spine" },
+];
+const SOT_RULES = [
+  "One domain per fact — nothing authoritative in two places.",
+  "Reference by stable key (event_id / venue_id), never by name — kills “one venue, five spellings.”",
+  "Promote, don’t strand — an inbound fact (“capacity cut to 50”) is not known until it is written to the spine. Coordination is where facts arrive, never where they live.",
+  "Cross-domain = read by reference, not copy — the spine displays finance actuals, it never keeps its own copy, or they drift.",
+];
+const CHALLENGED = [
+  { a: "“An event maps to one venue.”", v: "Reversed to one-to-many — tours and multi-room nights make it 1-to-many; a single-venue event is the degenerate case." },
+  { a: "“Confirmation is a one-time milestone.”", v: "Reframed as a tracked state with its own deadline and escalation, read from one record." },
+  { a: "“Integrate the current tools and it’s fixed.”", v: "Rejected — one-tool-for-everything is brittle with no canonical record underneath; authoritative-per-domain instead." },
+  { a: "“The answer is more software / AI.”", v: "Rejected — process before automation. Automation is the test, not the foundation." },
+];
 function TriangleSun({ size = 52 }) {
   return (
     <svg width={size} height={size * 0.9} viewBox="0 0 120 108" fill="none" aria-label="Base mark">
@@ -615,7 +633,7 @@ function Hero() {
         <div style={{ ...stage(0.12) }}><Eyebrow>An Operating Framework for Base</Eyebrow></div>
         <h1 style={{ ...stage(0.2), fontFamily: T.serif, fontSize: "clamp(30px, 4.4vw, 48px)", fontWeight: 400,
           lineHeight: 1.22, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, margin: "18px 0 0" }}>
-          Operating cost grows{" "}
+          Coordination cost grows{" "}
           <span style={{ color: T.accent }}>slower than event volume</span>
         </h1>
         <p style={{ ...stage(0.28), fontFamily: T.sans, fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.55, color: T.body,
@@ -651,6 +669,7 @@ function Discovery() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginTop: 32 }}>
         {UNKNOWNS.map((u, i) => <UnknownCard key={u.n} u={u} delay={i * 0.06} />)}
       </div>
+      <ChallengedBlock />
     </div>
   );
 }
@@ -715,6 +734,8 @@ function Framework() {
           One event can have many venues, so an event spanning several venues can never hide a single location that fell through.
         </p>
       </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 30 }}><Federation /></Reveal>
     </div>
   );
 }
@@ -796,11 +817,74 @@ function OneToMany() {
   );
 }
 
+function Federation() {
+  return (
+    <div>
+      <h3 style={{ fontFamily: T.serif, fontSize: 28, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>One record per fact, federated by domain.</h3>
+      <p style={{ fontFamily: T.sans, fontSize: 17, lineHeight: 1.5, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
+        "One official record" does not mean one database. Each fact has exactly one authoritative home; the rest read it by reference.
+        That is how operations and finance can carry different numbers without the truth going ambiguous, and why reconciliation is a
+        defined join, not a bug.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12, marginTop: 20 }}>
+        {SOT_DOMAINS.map((d) => (
+          <div key={d.role} style={{ background: T.navy, border: `1px solid ${T.line}`, borderLeft: `3px solid ${T.teal}`, borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontFamily: T.sans, fontSize: 14.5, fontWeight: 700, color: T.ink }}>{d.role}</div>
+            <div style={{ fontFamily: T.sans, fontSize: 13, color: T.body, marginTop: 8, lineHeight: 1.45 }}><span style={{ color: T.muted }}>authoritative for </span>{d.owns}</div>
+            <div style={{ fontFamily: T.sans, fontSize: 12, color: T.muted, marginTop: 8, lineHeight: 1.4, fontStyle: "italic" }}>{d.why}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 18, display: "grid", gap: 10 }}>
+        {SOT_RULES.map((r, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontFamily: T.sans, fontSize: 14.5, color: T.body, lineHeight: 1.45 }}>
+            <span style={{ fontFamily: T.serif, fontSize: 16, color: T.accent, lineHeight: 1.2, flexShrink: 0 }}>{i + 1}</span>{r}
+          </div>
+        ))}
+      </div>
+      <Callout tone="assumption" style={{ marginTop: 18 }}>
+        <strong style={{ color: T.ink }}>Money boundary.</strong> The spine owns the budget envelope and status (planning truth); the financial
+        book owns invoices, payments, and settlement (money truth). The join is reconciliation, Run → Reconciled: envelope versus actuals,
+        variance flagged. The authoritative domain for a fact always wins.
+      </Callout>
+    </div>
+  );
+}
+
+function ChallengedBlock() {
+  return (
+    <Reveal delay={0.05} style={{ marginTop: 34 }}>
+      <Eyebrow tone="muted" style={{ marginBottom: 14 }}>Assumptions we refuse to swallow</Eyebrow>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+        {CHALLENGED.map((c) => (
+          <div key={c.a} style={{ background: T.soft, border: `1px solid ${T.line}`, borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontFamily: T.serif, fontSize: 17, fontWeight: 400, color: T.muted, textDecoration: "line-through", textDecorationColor: T.accent }}>{c.a}</div>
+            <div style={{ fontFamily: T.sans, fontSize: 13.5, color: T.body, marginTop: 8, lineHeight: 1.45 }}>{c.v}</div>
+          </div>
+        ))}
+      </div>
+    </Reveal>
+  );
+}
+
 Object.assign(window, { Hero, Discovery, Framework });
 </script>
 
 <!-- ============ Risk Analysis (Q4) + Scalability (Q5) ============ -->
 <script type="text/babel">
+const SCALE_VECTOR = [
+  { dim: "Events per month (the headline 25×)", breaks: "Manual reconciliation + confirmation-chasing", why: "Linear human effort multiplied by 25 — the core problem", status: "structural", guard: "gated hand-offs" },
+  { dim: "Cities (a few → dozens)", breaks: "Knowledge consistency — each new city drifts or reinvents", why: "No shared standard means every city becomes its own dialect", status: "partial", guard: "de-silo loop + standard onboarding" },
+  { dim: "Venues per event (tours)", breaks: "Confirmation roll-up — silent dark-venue risk", why: "More legs = more chances one fails unnoticed", status: "structural", guard: "per-venue roll-up" },
+  { dim: "Concurrency (same-night events)", breaks: "Escalation capacity — one on-call human can’t cover N simultaneous events", why: "The exception handler is a human bottleneck", status: "open", guard: "tiered + per-city escalation; availability-lock entity still open" },
+  { dim: "Staff & roles per city", breaks: "Ownership ambiguity returns (“who has this?”)", why: "Accountability dilutes as headcount grows", status: "structural", guard: "one owner per stage + named successor" },
+  { dim: "Venue / provider roster", breaks: "Identity collisions — “one venue, five spellings”", why: "Master-data volume without ID discipline", status: "structural", guard: "stable system keys" },
+];
+const OPEN_EXPOSURES = [
+  "HQ ↔ city knowledge flow — a lesson learned in one city must spread, not stay local. Partly handled by the shared-playbook loop; the de-silo loop is the next priority.",
+  "Federated source-of-truth join consistency — keeping the spine, the financial book, and the doctrine store in sync as volume grows 25×. Guarded by read-by-reference and the reconciliation check; watched as it scales.",
+  "Same-night concurrency reservation — escalation is tiered and per-city, but a venue/host availability-lock entity is not yet modeled. Named, owned, and slated for the next pass.",
+];
 function RiskScale() {
   return (
     <div>
@@ -815,6 +899,8 @@ function RiskScale() {
           breaks first is the manual reconciliation a working baseline was quietly resting on.
         </p>
       </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 26 }}><ScaleVector /></Reveal>
 
       <Reveal delay={0.05} style={{ marginTop: 30 }}>
         <Eyebrow tone="muted" style={{ marginBottom: 14 }}>The failure modes that concern us most</Eyebrow>
@@ -838,8 +924,9 @@ function RiskScale() {
         <div style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 14, padding: "22px 24px" }}>
           <BreakpointChart data={BREAKPOINTS} />
           <div style={{ fontFamily: T.sans, fontSize: 12.5, color: T.muted, marginTop: 14, lineHeight: 1.5 }}>
-            Operational load vs event volume — illustrative, to validate in discovery. The model holds for any large
-            multiplier; it is the compounding of per-event gaps, not the exact factor, that breaks a manual system.
+            <strong style={{ color: T.ink }}>Coordination load</strong> (index) vs event volume — illustrative, to validate in discovery.
+            Coordination overhead — the reconciliation, routing, and onboarding that scales with events × cities × gaps — grows slower
+            than volume; per-event execution labor stays roughly linear. It is coordination cost, not total cost, that the structure flattens.
           </div>
         </div>
       </Reveal>
@@ -884,6 +971,15 @@ function RiskScale() {
           </ul>
         </div>
       </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 22 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 10 }}>Seams we haven't closed yet — named, not hidden</Eyebrow>
+        <div style={{ display: "grid", gap: 10 }}>
+          {OPEN_EXPOSURES.map((e, i) => (
+            <Callout key={i} tone="amber">{e}</Callout>
+          ))}
+        </div>
+      </Reveal>
     </div>
   );
 }
@@ -897,7 +993,7 @@ function BreakpointChart({ data }) {
   const area = `${path} L ${sx(data.length - 1)} ${H - padB} L ${sx(0)} ${H - padB} Z`;
   return (
     <div style={{ overflowX: "auto" }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 560, display: "block" }} role="img" aria-label="Operational load vs event volume">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 560, display: "block" }} role="img" aria-label="Coordination load vs event volume">
         {[0, 50, 100].map((g) => { const y = sy(g); return (
           <g key={g}><line x1={padL} y1={y} x2={W - padR} y2={y} stroke={T.line} strokeWidth="1" />
             <text x={padL - 8} y={y} textAnchor="end" dominantBaseline="middle" fill={T.muted} style={{ fontFamily: T.mono, fontSize: 10 }}>{g}</text></g>
@@ -916,6 +1012,43 @@ function BreakpointChart({ data }) {
   );
 }
 
+function ScaleVector() {
+  const tone = { structural: T.green, partial: T.amber, open: T.accent };
+  return (
+    <div style={{ background: T.navy, border: `1px solid ${T.line}`, borderRadius: 14, padding: "8px 10px" }}>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", minWidth: 640, borderCollapse: "collapse", fontFamily: T.sans }}>
+          <thead>
+            <tr>
+              {["Scale dimension", "What breaks first", "Why", "Hardened?"].map((h) => (
+                <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.muted, borderBottom: `1px solid ${T.line}` }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {SCALE_VECTOR.map((r) => (
+              <tr key={r.dim}>
+                <td style={{ padding: "12px", fontSize: 13.5, fontWeight: 700, color: T.ink, borderBottom: `1px solid ${T.line}`, verticalAlign: "top" }}>{r.dim}</td>
+                <td style={{ padding: "12px", fontSize: 13, color: T.body, borderBottom: `1px solid ${T.line}`, verticalAlign: "top" }}>{r.breaks}</td>
+                <td style={{ padding: "12px", fontSize: 12.5, color: T.muted, borderBottom: `1px solid ${T.line}`, verticalAlign: "top" }}>{r.why}</td>
+                <td style={{ padding: "12px", borderBottom: `1px solid ${T.line}`, verticalAlign: "top" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.sans, fontSize: 11.5, fontWeight: 700, color: tone[r.status] }}>
+                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: tone[r.status] }} />{r.status}
+                  </span>
+                  <div style={{ fontFamily: T.sans, fontSize: 11, color: T.muted, marginTop: 4, maxWidth: 180, lineHeight: 1.35 }}>{r.guard}</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ fontFamily: T.sans, fontSize: 12, color: T.muted, padding: "10px 12px 4px", lineHeight: 1.5 }}>
+        Each dimension breaks a different part first. Most are already structural; three need explicit mitigation — concurrency, knowledge drift, and the source-of-truth join.
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, { RiskScale });
 </script>
 
@@ -929,6 +1062,22 @@ const PHASES = [
   { n: 5, name: "Scale-out", role: "amber", tag: "Later", bullets: ["Pilot one city", "Harden against reality", "Replicate using the playbook"] },
 ];
 const phaseColor = (r) => (r === "amber" ? T.amber : T.role[r]);
+
+const PREBUILD_DECISIONS = [
+  "The canonical set of things we track + their stable IDs (keyed, not named)",
+  "Which stages are hard checkpoints versus soft — and where Booked ends and Confirmed begins",
+  "The one accountable owner per stage — and each owner’s named successor",
+  "Override authority + the three non-overridable hard limits",
+  "The transition wedge: what crosses when, who reconciles during the overlap, and the back-fill rule",
+];
+const CUTOVER_STEPS = [
+  "Parallel-run, not flag-day — no flag-day rebuild is possible while the business runs live.",
+  "New events instantiate on the new lifecycle; in-flight events drain on the old process.",
+  "One pilot city cuts over first and becomes the template the rest inherit.",
+  "A named overlap-reconciliation owner keeps the old record and the new spine consistent.",
+  "Stable keys are back-filled onto in-flight events so they cross mid-lifecycle without a silent drop.",
+  "A half-migrated event is just an event with an open gap — governed by the same override-and-back-fill path.",
+];
 
 function BIHub() {
   return (
@@ -1058,6 +1207,18 @@ function Path() {
         </p>
       </Reveal>
 
+      <Reveal delay={0.04} style={{ marginTop: 26 }}>
+        <Eyebrow tone="muted" style={{ marginBottom: 12 }}>Decisions to ratify before we build anything</Eyebrow>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 10 }}>
+          {PREBUILD_DECISIONS.map((d, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", background: T.soft, border: `1px solid ${T.line}`, borderRadius: 10, padding: "12px 14px" }}>
+              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.accent, fontWeight: 700, flexShrink: 0, marginTop: 2 }}>{String(i + 1).padStart(2, "0")}</span>
+              <span style={{ fontFamily: T.sans, fontSize: 13, color: T.body, lineHeight: 1.45 }}>{d}</span>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
       <Reveal delay={0.06} style={{ marginTop: 30 }}>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {PHASES.map((p) => {
@@ -1092,6 +1253,23 @@ function Path() {
         </div>
         {sel === 4 && <Callout tone="accent" style={{ marginTop: 16 }}>This phase is the litmus test for the system's health — applied last.</Callout>}
       </Reveal>
+
+      <Reveal delay={0.05} style={{ marginTop: 34 }}>
+        <Eyebrow style={{ marginBottom: 8 }}>Switching over while the business runs live</Eyebrow>
+        <h3 style={{ fontFamily: T.serif, fontSize: 24, fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink }}>
+          Parallel-run, not flag-day.
+        </h3>
+        <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.55, color: T.body, marginTop: 12, maxWidth: "64ch" }}>
+          Phase 5 above adds <em>new</em> cities. This is the harder move: migrating the live operation onto the new spine without stopping it — the first decision of the rollout, not the last.
+        </p>
+        <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
+          {CUTOVER_STEPS.map((s, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontFamily: T.sans, fontSize: 14.5, color: T.body, lineHeight: 1.45 }}>
+              <span style={{ color: T.accent, flexShrink: 0 }}>→</span>{s}
+            </div>
+          ))}
+        </div>
+      </Reveal>
     </div>
   );
 }
@@ -1109,9 +1287,9 @@ function CTA() {
         <p style={{ fontFamily: T.sans, fontSize: 15.5, lineHeight: 1.6, color: T.body, margin: "22px 0 0", maxWidth: "62ch" }}>
           The full reasoning lives in the accompanying written framework — a design document and a log of all twenty-three
           decisions: how the seven challenges collapse into two root causes, the staged event
-          lifecycle, the one official record split across roles, the approved way to override, this build sequence,
-          and the hardening that came out of stress-testing: switching over while the business runs live, keeping an owner
-          on every event when someone is out, and keeping the playbook consistent as cities multiply.
+          lifecycle, one record per fact federated by domain, the approved way to override, this build sequence,
+          and the hardening that came out of stress-testing: keeping an owner on every event when someone is out,
+          and keeping the playbook consistent as cities multiply.
         </p>
         <hr style={{ border: 0, height: 2, width: 56, background: T.accent, margin: "30px 0 16px" }} />
         <div style={{ fontFamily: T.serif, fontSize: 22, letterSpacing: "0.06em", textTransform: "uppercase", color: T.ink }}>Great Minds Meet Here</div>
@@ -1148,7 +1326,7 @@ function LifecycleSection() {
       <Reveal>
         <Eyebrow style={{ marginBottom: 14 }}>02 · System Design</Eyebrow>
         <h2 style={{ fontFamily: T.serif, fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, letterSpacing: "0.03em", textTransform: "uppercase", color: T.ink, lineHeight: 1.12, maxWidth: "20ch" }}>
-          How information moves — one official record, split across roles.
+          How information moves — one record per fact, federated by domain and owned across roles.
         </h2>
         <p style={{ fontFamily: T.sans, fontSize: 18, lineHeight: 1.5, color: T.body, marginTop: 16, maxWidth: "62ch" }}>
           Each step is a checked hand-off. The event cannot move to the next stage until the required pack of information
