@@ -197,6 +197,60 @@ h2.gap-head .accent { color: var(--accent); }
   .ladder { grid-template-columns: 1fr; gap: 10px; }
   .r-ess { min-height: 0; }
 }
+
+/* ============ day-in-the-life — lifecycle stage-strip ============ */
+.lifestrip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 22px; }
+.lcell { background: var(--soft); border: 1px solid var(--line); border-radius: 11px; padding: 13px 12px; border-top: 3px solid var(--st-c, var(--teal)); }
+.lcell .ls { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; color: var(--st-c, var(--teal)); }
+.lcell .lt { font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 5px; line-height: 1.2; }
+.lcell .lsys { font-family: var(--font-sans); font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+.lcell .lhuman { font-family: var(--font-mono); font-size: 10px; color: var(--accent); margin-top: 7px; }
+.lcell.exception { border-color: var(--accent); border-top-color: var(--accent); background: rgba(191,52,78,0.08); }
+.lcell.exception .ls { color: var(--accent); }
+.life-break { margin-top: 16px; background: rgba(191,52,78,0.07); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 12px; padding: 16px 20px; font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--body); }
+.life-break b { color: var(--ink); }
+.life-break .bt { display:block; font-size: 11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color: var(--accent); margin-bottom: 7px; }
+@media (max-width: 760px){ .lifestrip { grid-template-columns: 1fr 1fr; } }
+
+/* ============ the watchtower — every event × city from one vantage ============ */
+.watch-stage { background: var(--navy); border: 1px solid var(--line); border-radius: 16px; padding: clamp(14px,3vw,26px); margin-top: 22px; }
+.watch-stage svg { width: 100%; height: auto; display: block; }
+.watch-cap { font-family: var(--font-sans); font-size: 12.5px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+.watch-cap b { color: var(--ink); }
+.wt-legend { display:flex; gap:18px; flex-wrap:wrap; margin-top:10px; font-family:var(--font-sans); font-size:11px; color:var(--muted); }
+.wt-legend span { display:inline-flex; align-items:center; gap:6px; }
+.wt-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
+
+/* ============ war-room — drill into one event ============ */
+.warroom { margin-top: 18px; background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.wr-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:12px; }
+.wr-head .wr-id { font-family: var(--font-serif); font-size: 18px; letter-spacing:0.03em; color: var(--ink); text-transform:uppercase; }
+.wr-head .wr-meta { font-family: var(--font-sans); font-size:12px; color: var(--muted); }
+.wr-head .wr-live { margin-left:auto; font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color: var(--green); display:inline-flex; align-items:center; gap:6px; }
+.wr-live .pulse { width:8px; height:8px; border-radius:50%; background: var(--green); animation: wrpulse 1.8s ease-in-out infinite; }
+@keyframes wrpulse { 0%,100%{opacity:.35} 50%{opacity:1} }
+@media (prefers-reduced-motion: reduce){ .wr-live .pulse { animation: none; opacity:1; } }
+.wr-tiles { display:grid; grid-template-columns: repeat(auto-fit,minmax(132px,1fr)); gap:12px; margin-top:14px; }
+.wr-tile { background: var(--navy); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+.wr-tile .wk { font-family:var(--font-sans); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); }
+.wr-tile .wv { font-family:var(--font-serif); font-size:21px; color:var(--ink); margin-top:4px; line-height:1.1; }
+.wr-tile .wv small { font-family:var(--font-sans); font-size:12px; color:var(--muted); }
+.wr-tile.flag { border-color: var(--accent); }
+.wr-tile.flag .wv { color: var(--accent); }
+.wr-tile.ok .wv { color: var(--teal); }
+.wr-feed { margin-top:13px; font-family:var(--font-sans); font-size:11.5px; color:var(--muted); line-height:1.5; }
+.wr-feed b { color: var(--ink); }
+
+/* ============ day-one in a new city ============ */
+.dayone { margin-top: 34px; background: rgba(46,139,139,0.06); border:1px solid var(--line); border-left:3px solid var(--teal); border-radius:14px; padding: 22px 24px; }
+.dayone .lbl { display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color: var(--teal); margin-bottom:12px; }
+.dayone h2 { font-family: var(--font-serif); font-size: clamp(18px,2.4vw,25px); font-weight:400; letter-spacing:0.03em; text-transform:uppercase; color:var(--ink); margin:0 0 14px; max-width:24ch; }
+.dayone ul.inherit { display:grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap:10px; margin:0; padding:0; }
+.dayone ul.inherit li { list-style:none; font-family:var(--font-sans); font-size:13.5px; line-height:1.45; color:var(--body); padding-left:18px; position:relative; }
+.dayone ul.inherit li::before { content:""; position:absolute; left:0; top:7px; width:7px; height:7px; border-radius:50%; background:var(--teal); }
+.dayone ul.inherit li b { color:var(--ink); }
+.dayone .first { margin-top:16px; font-family:var(--font-sans); font-size:14px; color:var(--body); }
+.dayone .first b { color:var(--ink); }
 </style>
 </head>
 <body>
@@ -209,7 +263,8 @@ h2.gap-head .accent { color: var(--accent); }
     <h1 class="j-head">The climb — from <span class="accent">people-as-the-glue</span> to a club that runs itself</h1>
     <p class="j-sub">
       Five steps, not a leap. You're on the first. At each step the system takes more of the busywork and
-      <b>people move up to judgment</b>. The shift you're watching is the connective tissue moving from human to machine.
+      <b>people move up to judgment</b>. The shift you're watching is the connective tissue moving from human to machine —
+      and a brand-new city <b>skips the climb</b>, inheriting the system near the top.
     </p>
     <ol class="ladder">
       <li><a class="rung" href="#m-gap" style="--g:#D6A85F">
@@ -261,15 +316,10 @@ h2.gap-head .accent { color: var(--accent); }
   <div class="eyebrow" id="m-gap">Step 0 · today, up close</div>
   <h2 class="gap-head">Every team has good tools. The glue between them is <span class="accent">a person</span>.</h2>
   <p class="lead">
-    At 500+ events a month, each tool still does its one job well. What breaks is the
-    <b>connective tissue between them</b>: someone copying status between systems, chasing confirmations, re-keying
-    the same fact in four places. The hand-work itself, not the people doing it, is where error and delay creep in.
-  </p>
-  <p class="lead" style="margin-top:16px">
-    The same trap caught the apps that promised to fix it. Their bottleneck was never <i>organizing</i> information.
-    It was <b>capturing</b> it without stopping the work that produces it. So the answer isn't a better place to file
-    things; it's to remove the manual capture entirely. <span style="color:var(--muted)">This is the picture
-    <i>after</i> the design is built, not a restatement of the problems.</span>
+    At 500+ events a month, each tool still does its one job well. What breaks is the <b>connective tissue between
+    them</b> — and today that tissue is a <b>person</b>: copying status, chasing confirmations, re-keying the same fact
+    in four places, and answering "where does this event stand?" by pinging five people. The hand-work, not the people,
+    is where error and delay creep in. <span style="color:var(--muted)">(The full diagnosis is on the Walkthrough; here we build the destination.)</span>
   </p>
 
   <div class="rule-dotted"><span class="dot"></span></div>
@@ -310,6 +360,13 @@ h2.gap-head .accent { color: var(--accent); }
           <line x1="518" y1="66" x2="380" y2="180"/>
           <line x1="664" y1="66" x2="380" y2="180"/>
         </g>
+        <!-- dashed write-back: acted facts return to the two systems that need them -->
+        <g stroke="#BF344E" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8" fill="none">
+          <line x1="360" y1="182" x2="226" y2="68"/>
+          <line x1="400" y1="182" x2="518" y2="68"/>
+        </g>
+        <text x="150" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic">writes back: status, flags</text>
+        <text x="560" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic" text-anchor="end">writes back: drafts</text>
         <!-- role-system nodes (by role, not product) -->
         <g font-family="Poppins,sans-serif" font-size="12" font-weight="600" text-anchor="middle">
           <g><rect x="14"  y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="80"  y="48" fill="#FFE2C0">Projects</text></g>
@@ -323,7 +380,7 @@ h2.gap-head .accent { color: var(--accent); }
         <text x="380" y="203" text-anchor="middle" fill="#FFE2C0" font-family="Forum,Georgia,serif" font-size="17" letter-spacing="0.04em">THE EVENT</text>
         <text x="380" y="221" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="10.5">one official record · one stable ID</text>
       </svg>
-      <p class="atom-cap">Each system references the same Event by its stable ID: <b>one atom, many views, never a second copy</b>. Each holds a pointer to that one record.</p>
+      <p class="atom-cap">Each system references the same Event by its stable ID: <b>one atom, many views, never a second copy</b>. Solid lines in = the tools feed the record; <b style="color:var(--accent)">dashed lines out</b> = the system writes acted facts back to the two tools that need them. The data flow is a <b>round trip</b>, not a drain.</p>
     </div>
   </div>
 
@@ -332,10 +389,9 @@ h2.gap-head .accent { color: var(--accent); }
     <div class="pk">The principle</div>
     <h2 class="ph">Keep the smallest set of true facts in front of whoever acts next</h2>
     <p class="pp">
-      Those three moves share one discipline: keeping the <b>smallest set of true, current facts</b> in front of
-      whoever acts next, instead of piling on more tools or more copies. A capable operator, a person or a machine,
-      works best on a tight, authoritative set of facts and worst when it has to reconcile five conflicting copies
-      first. The five competing trackers aren't a tooling gap; they're noise crowding out signal.
+      Those three moves share one discipline: keep the <b>smallest set of true, current facts</b> in front of whoever
+      acts next — not more tools, not more copies. Any capable operator, person or machine, works best on a tight,
+      authoritative set and worst reconciling five conflicting copies first.
       <span style="color:var(--muted)">(The emerging name for this discipline is <b style="color:var(--ink)">context engineering</b>.)</span>
     </p>
     <p class="pp" style="margin-top:14px">Seen this way, the two things actually missing are the two things you <i>engineer</i>:</p>
@@ -382,6 +438,122 @@ h2.gap-head .accent { color: var(--accent); }
       <div class="step"><div class="sn">02 · DOCUMENT</div><div class="st">Write once, to the atom</div><div class="sd">Each change is written once to the Event's record, keyed to its stable ID. One home per fact; others read it by reference.</div></div>
       <div class="step"><div class="sn">03 · BUILD</div><div class="st">Skills on a clean record</div><div class="sd">Teams compose reusable skills on top — each a thin rule on the Event, not a new system.</div></div>
       <div class="step"><div class="sn">04 · GROW</div><div class="st">Memory that compounds</div><div class="sd">The documented memory gets richer every cycle: less is re-explained, more is inherited. The org speeds up.</div></div>
+    </div>
+    <p class="mech-lead" style="margin-top:14px; font-size:14px">↻ <b>It's a loop, not a line</b> — GROW feeds the next CAPTURE, so every cycle the record gets cleaner and the system needs the human less.</p>
+  </div>
+
+  <!-- ============ movement 5b — a day in the life of one event (the unit, proven) ============ -->
+  <div class="mech reveal" id="m-life">
+    <div class="eyebrow" style="margin-bottom:14px">One event, end to end</div>
+    <h2 class="mech-h">A day in the life of Event #1042</h2>
+    <p class="mech-lead">
+      The unit, proven. One event walks its lifecycle mostly on its own — the system does each routine step; a person
+      steps in only where judgment is needed. Watch the stage where it breaks.
+    </p>
+    <div class="lifestrip">
+      <div class="lcell" style="--st-c:var(--teal)"><div class="ls">SOURCED</div><div class="lt">Venue found</div><div class="lsys">soft-hold captured from external comms</div><div class="lhuman">· system ·</div></div>
+      <div class="lcell exception"><div class="ls">CONFIRMED — BREAKS</div><div class="lt">Capacity cut 80→50</div><div class="lsys">venue drops capacity; the gate trips</div><div class="lhuman">↑ human steps in</div></div>
+      <div class="lcell" style="--st-c:var(--gold)"><div class="ls">RE-PLANNED</div><div class="lt">RSVP cap reset</div><div class="lsys">owner approves the fix; record updates</div><div class="lhuman">· approves ·</div></div>
+      <div class="lcell" style="--st-c:var(--teal)"><div class="ls">RUN</div><div class="lt">Doors open</div><div class="lsys">check-ins flow from the member app</div><div class="lhuman">· system ·</div></div>
+      <div class="lcell" style="--st-c:var(--teal)"><div class="ls">RECONCILED</div><div class="lt">Receipts matched</div><div class="lsys">receipts chased + matched to budget</div><div class="lhuman">· system ·</div></div>
+      <div class="lcell" style="--st-c:var(--green)"><div class="ls">CLOSED</div><div class="lt">Settled</div><div class="lsys">clean ledger; one human signs off</div><div class="lhuman">· signs ·</div></div>
+    </div>
+    <div class="life-break">
+      <span class="bt">When a stage breaks</span>
+      At <b>Confirmed</b>, the venue cuts capacity 80→50. Because the stage is gated, the change can't pass silently: it
+      <b>surfaces as a flagged exception</b>, pages the <b>one accountable owner</b> (the City Manager), and the event
+      holds until they approve the re-plan — lower the RSVP cap, or a fallback venue. Then it resumes on its own. That
+      exception is the <i>only</i> moment a human was needed. <span style="color:var(--muted)">(Illustrative walkthrough.)</span>
+    </div>
+  </div>
+
+  <!-- ============ movement 6 — the watchtower: every event × city, one vantage ============ -->
+  <div class="mech reveal" id="m-watch">
+    <div class="eyebrow" style="margin-bottom:14px">The watchtower</div>
+    <h2 class="mech-h">From asking five people — to one vantage over every event</h2>
+    <p class="mech-lead">
+      Once every event is one live record, the founder stops chasing status across cities — they <b>watch</b>. One
+      vantage shows every event in every city at its true state, and the exceptions <b>surface on their own</b>. It
+      watches the operation, not people: nothing is hidden, because nothing has to be asked for.
+    </p>
+
+    <div class="watch-stage">
+      <svg viewBox="0 0 760 470" role="img" aria-label="The watchtower: a central vantage over every event across every city. On-track, confirming, and exception events are visible at once; exceptions surface to the tower.">
+        <!-- oversight sightlines (faint) from the tower to each city -->
+        <g stroke="#FFE2C0" stroke-width="1" opacity="0.16">
+          <line x1="380" y1="108" x2="117" y2="168"/>
+          <line x1="380" y1="108" x2="292" y2="168"/>
+          <line x1="380" y1="108" x2="467" y2="168"/>
+          <line x1="380" y1="108" x2="642" y2="168"/>
+        </g>
+        <!-- exceptions surfacing to the tower (bright) -->
+        <g stroke="#BF344E" stroke-width="1.4" opacity="0.7">
+          <line x1="117" y1="182" x2="380" y2="104"/>
+          <line x1="292" y1="216" x2="380" y2="104"/>
+        </g>
+
+        <!-- city headers -->
+        <g font-family="Poppins,sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#FFE2C0" letter-spacing="0.06em">
+          <text x="117" y="162">AUSTIN</text>
+          <text x="292" y="162">NEW YORK</text>
+          <text x="467" y="162" font-size="10">LOS ANGELES</text>
+          <text x="642" y="162">CHICAGO</text>
+        </g>
+
+        <!-- event cells: 4 cities x 3 events -->
+        <g font-family="Poppins,sans-serif" font-size="9.5" text-anchor="middle" fill="#FFE2C0">
+          <!-- Austin -->
+          <rect x="42"  y="182" width="150" height="28" rx="8" fill="rgba(191,52,78,0.18)" stroke="#BF344E" stroke-width="1.6"/><text x="117" y="200">#1042 · flag</text>
+          <rect x="42"  y="216" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="117" y="234">#1043 · on track</text>
+          <rect x="42"  y="250" width="150" height="28" rx="8" fill="#0E1622" stroke="#D6A85F" stroke-width="1.2"/><text x="117" y="268">#1044 · confirming</text>
+          <!-- New York -->
+          <rect x="217" y="182" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="292" y="200">#2051 · on track</text>
+          <rect x="217" y="216" width="150" height="28" rx="8" fill="rgba(191,52,78,0.18)" stroke="#BF344E" stroke-width="1.6"/><text x="292" y="234">#2052 · exception</text>
+          <rect x="217" y="250" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="292" y="268">#2053 · on track</text>
+          <!-- Los Angeles -->
+          <rect x="392" y="182" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="467" y="200">#3010 · on track</text>
+          <rect x="392" y="216" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="467" y="234">#3011 · on track</text>
+          <rect x="392" y="250" width="150" height="28" rx="8" fill="#0E1622" stroke="#D6A85F" stroke-width="1.2"/><text x="467" y="268">#3012 · confirming</text>
+          <!-- Chicago -->
+          <rect x="567" y="182" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="642" y="200">#4087 · on track</text>
+          <rect x="567" y="216" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="642" y="234">#4088 · on track</text>
+          <rect x="567" y="250" width="150" height="28" rx="8" fill="#0E1622" stroke="#2E8B8B" stroke-width="1"/><text x="642" y="268">#4089 · on track</text>
+        </g>
+
+        <!-- the tower (the operating system / the founder's vantage) -->
+        <path d="M380 18 L366 46 L394 46 Z" fill="none" stroke="#FFE2C0" stroke-width="2.4" stroke-linejoin="round"/>
+        <circle cx="384" cy="37" r="7" fill="#FFE2C0"/>
+        <rect x="364" y="46" width="32" height="58" rx="4" fill="#131F30" stroke="#BF344E" stroke-width="1.6"/>
+        <text x="380" y="128" text-anchor="middle" fill="#FFE2C0" font-family="Forum,Georgia,serif" font-size="15" letter-spacing="0.05em">THE WATCHTOWER</text>
+        <text x="380" y="146" text-anchor="middle" fill="rgba(255,226,192,0.6)" font-family="Poppins,sans-serif" font-size="10.5">the operating system · one vantage</text>
+
+        <!-- footer line: all events surface here -->
+        <text x="380" y="312" text-anchor="middle" fill="rgba(255,226,192,0.55)" font-family="Poppins,sans-serif" font-size="11">12 events live across 4 cities — 2 surfaced for a human, the rest running themselves</text>
+      </svg>
+      <div class="wt-legend">
+        <span><i class="wt-dot" style="background:#2E8B8B"></i> on track</span>
+        <span><i class="wt-dot" style="background:#D6A85F"></i> confirming</span>
+        <span><i class="wt-dot" style="background:#BF344E"></i> exception — surfaces to the tower</span>
+      </div>
+      <p class="watch-cap"><b>The watchtower:</b> every event, every city, true state at a glance. You stop asking five people for an update — you look. <span style="color:var(--muted)">(Illustrative — cities and counts shown for shape, not live Base data.)</span></p>
+    </div>
+
+    <!-- drill into one event: the war room -->
+    <div class="warroom reveal">
+      <div class="wr-head">
+        <span class="wr-id">Event #1042</span>
+        <span class="wr-meta">Rooftop social · Austin · T-2 days</span>
+        <span class="wr-live"><span class="pulse"></span> live</span>
+      </div>
+      <div class="wr-tiles">
+        <div class="wr-tile ok"><div class="wk">RSVPs</div><div class="wv">42<small> / 50 cap</small></div></div>
+        <div class="wr-tile ok"><div class="wk">Venue</div><div class="wv" style="font-size:16px">Confirmed</div></div>
+        <div class="wr-tile"><div class="wk">Owner</div><div class="wv" style="font-size:15px">City&nbsp;Manager</div></div>
+        <div class="wr-tile ok"><div class="wk">Stage</div><div class="wv" style="font-size:16px">Confirmed</div></div>
+        <div class="wr-tile flag"><div class="wk">Receipts</div><div class="wv">1<small> / 2 in</small></div></div>
+        <div class="wr-tile flag"><div class="wk">Open flags</div><div class="wv">1</div></div>
+      </div>
+      <p class="wr-feed">Fed automatically: <b>RSVPs + check-ins from the member app</b>, the confirmation from external comms, receipts from finance. The one open flag — a missing vendor receipt — is already paged to the owner. <b>No one was asked for an update.</b></p>
     </div>
   </div>
 
@@ -461,13 +633,26 @@ h2.gap-head .accent { color: var(--accent); }
       </div>
       <div class="panel reveal" style="--spoke:var(--violet)">
         <div class="pt">A live map, not a doc</div>
-        <div class="pd">The whole operation is navigable as a living map: every event, owner, and connection in one view, so anyone can see where things stand at a glance.</div>
+        <div class="pd">The watchtower above, made permanent: every event, owner, and connection in one view, so anyone sees where things stand at a glance — without asking.</div>
       </div>
       <div class="panel reveal" style="--spoke:var(--green)">
         <div class="pt">Each event advances itself</div>
         <div class="pd">An event moves through clean, owned stages on its own. Each step has one accountable owner and can't advance until it's truly ready.</div>
       </div>
     </div>
+  </div>
+
+  <!-- ============ day one in a new city ============ -->
+  <div class="dayone reveal" id="m-dayone">
+    <span class="lbl">Day one in a new city</span>
+    <h2>A new city skips the climb — it inherits the system</h2>
+    <ul class="inherit">
+      <li><b>The Event record + gated stages</b> — already defined; the first event is created, not invented.</li>
+      <li><b>The doctrine + SOPs</b> — pre-loaded; the city runs the proven plays from hour one.</li>
+      <li><b>The chasing</b> — confirmation + receipt automation already running.</li>
+      <li><b>The watchtower</b> — the new city is a column the moment it opens; HQ sees it like any other.</li>
+    </ul>
+    <p class="first"><b>First action:</b> open your first event. It lands on the shared system near the top of the climb, not at step zero — the glue is already built. <span style="color:var(--muted)">(Illustrative.)</span></p>
   </div>
 
   <!-- ============ movement 6 — what it earns + proof ============ -->
