@@ -251,6 +251,15 @@ h2.gap-head .accent { color: var(--accent); }
 .dayone ul.inherit li b { color:var(--ink); }
 .dayone .first { margin-top:16px; font-family:var(--font-sans); font-size:14px; color:var(--body); }
 .dayone .first b { color:var(--ink); }
+
+/* hero stakes deck + drawn pipeline loop-back */
+.j-stakes { font-family: var(--font-sans); font-size: clamp(16px,2.1vw,20px); line-height:1.45; color: var(--ink); font-weight:500; margin: 16px 0 0; max-width: 60ch; }
+.j-stakes b { color: var(--accent); font-weight:700; }
+.loopback { margin-top: 12px; border-top: 1.5px dashed var(--line); padding-top: 11px; display:flex; align-items:center; gap:10px;
+  font-family: var(--font-sans); font-size: 12.5px; color: var(--muted); }
+.loopback .arc { color: var(--accent); font-size: 17px; line-height:1; }
+.loopback b { color: var(--ink); font-weight:600; }
+.r-here.newcity { background: var(--teal); }
 </style>
 </head>
 <body>
@@ -261,6 +270,7 @@ h2.gap-head .accent { color: var(--accent); }
   <section class="journey">
     <div class="eyebrow">Where Base is — and where it can go</div>
     <h1 class="j-head">The climb — from <span class="accent">people-as-the-glue</span> to a club that runs itself</h1>
+    <p class="j-stakes">Scaling <b>20 → 500+ events a month</b>, across dozens of cities — without scaling the team.</p>
     <p class="j-sub">
       Five steps, not a leap. You're on the first. At each step the system takes more of the busywork and
       <b>people move up to judgment</b>. The shift you're watching is the connective tissue moving from human to machine —
@@ -292,7 +302,7 @@ h2.gap-head .accent { color: var(--accent); }
         <div class="r-human">You <b>approve</b></div>
       </a></li>
       <li><a class="rung" href="#m-base" style="--g:#4E8E96">
-        <div class="r-top"><span class="r-n">3</span></div>
+        <div class="r-top"><span class="r-n">3</span><span class="r-here newcity">New city starts ~here</span></div>
         <div class="r-label">The routine runs itself</div>
         <div class="r-ess">confirmations + receipts run themselves</div>
         <div class="glue-meter"><span style="width:78%"></span></div>
@@ -337,7 +347,7 @@ h2.gap-head .accent { color: var(--accent); }
     <div class="panels">
       <div class="panel reveal" style="--spoke:var(--teal)">
         <div class="pt">One official record per event</div>
-        <div class="pd">Every system points at the same Event by one <b>stable ID</b> — one permanent label, identical in every tool (think <i>Event #1042</i>) — and holds a <i>view</i>, never its own copy. This dissolves "one venue, five spellings, five trackers" at the data layer.</div>
+        <div class="pd">Every system points at the same Event by one <b>stable ID</b> — one permanent label, identical in every tool (think <i>Event #1042</i>) — and holds a <i>view</i>, never its own copy. This dissolves "one venue, five spellings, five trackers" at the data layer. <span style="color:var(--muted)">A new soft-hold is matched to an existing Event by city + date + venue, or it mints a new ID; ambiguous matches go to a human, never a guess.</span></div>
       </div>
       <div class="panel reveal" style="--spoke:var(--gold)">
         <div class="pt">Gated handoffs</div>
@@ -365,8 +375,8 @@ h2.gap-head .accent { color: var(--accent); }
           <line x1="360" y1="182" x2="226" y2="68"/>
           <line x1="400" y1="182" x2="518" y2="68"/>
         </g>
-        <text x="150" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic">writes back: status, flags</text>
-        <text x="560" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic" text-anchor="end">writes back: drafts</text>
+        <text x="150" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic">→ task mgmt: status, flags</text>
+        <text x="560" y="120" fill="rgba(191,52,78,0.85)" font-family="Poppins,sans-serif" font-size="9.5" font-style="italic" text-anchor="end">→ external comms: drafts</text>
         <!-- role-system nodes (by role, not product) -->
         <g font-family="Poppins,sans-serif" font-size="12" font-weight="600" text-anchor="middle">
           <g><rect x="14"  y="22" width="132" height="44" rx="10" fill="#0E1622" stroke="rgba(255,226,192,0.20)"/><text x="80"  y="48" fill="#FFE2C0">Projects</text></g>
@@ -405,7 +415,6 @@ h2.gap-head .accent { color: var(--accent); }
         <span class="td">The "how" (the SOPs) held at the right altitude: standardized structure with strong, reusable heuristics rather than brittle rules or vague guidance.</span>
       </div>
     </div>
-    <p class="pp" style="margin-top:14px; color:var(--muted)">Memory and doctrine are the connective tissue, made durable.</p>
   </div>
 
   <!-- ============ movement 4 — the operating layer (capture → document) ============ -->
@@ -416,7 +425,7 @@ h2.gap-head .accent { color: var(--accent); }
       Keeping that smallest set of facts current is the job — and it's the one piece a person shouldn't do by hand.
       <b>Today</b>, the glue is a person. <b>In the future state</b>, capture is automatic: an operating layer reads
       each system on a schedule, pulls only what changed, and writes it once to the Event's record. People stop
-      re-entering; <b>the system does the glue</b>, and the effort once spent on hand-work is reclaimed for the
+      re-entering, and the effort once spent on hand-work is reclaimed for the
       judgment, relationships, and exceptions only people can handle.
     </p>
 
@@ -439,7 +448,7 @@ h2.gap-head .accent { color: var(--accent); }
       <div class="step"><div class="sn">03 · BUILD</div><div class="st">Skills on a clean record</div><div class="sd">Teams compose reusable skills on top — each a thin rule on the Event, not a new system.</div></div>
       <div class="step"><div class="sn">04 · GROW</div><div class="st">Memory that compounds</div><div class="sd">The documented memory gets richer every cycle: less is re-explained, more is inherited. The org speeds up.</div></div>
     </div>
-    <p class="mech-lead" style="margin-top:14px; font-size:14px">↻ <b>It's a loop, not a line</b> — GROW feeds the next CAPTURE, so every cycle the record gets cleaner and the system needs the human less.</p>
+    <div class="loopback"><span class="arc">↺</span><span><b>A loop, not a line</b> — GROW feeds the next CAPTURE; each cycle the record gets cleaner and needs the human less.</span></div>
   </div>
 
   <!-- ============ movement 5b — a day in the life of one event (the unit, proven) ============ -->
@@ -546,14 +555,14 @@ h2.gap-head .accent { color: var(--accent); }
         <span class="wr-live"><span class="pulse"></span> live</span>
       </div>
       <div class="wr-tiles">
-        <div class="wr-tile ok"><div class="wk">RSVPs</div><div class="wv">42<small> / 50 cap</small></div></div>
+        <div class="wr-tile"><div class="wk">RSVPs</div><div class="wv">47<small> / 50 cap · tight</small></div></div>
         <div class="wr-tile ok"><div class="wk">Venue</div><div class="wv" style="font-size:16px">Confirmed</div></div>
         <div class="wr-tile"><div class="wk">Owner</div><div class="wv" style="font-size:15px">City&nbsp;Manager</div></div>
         <div class="wr-tile ok"><div class="wk">Stage</div><div class="wv" style="font-size:16px">Confirmed</div></div>
         <div class="wr-tile flag"><div class="wk">Receipts</div><div class="wv">1<small> / 2 in</small></div></div>
         <div class="wr-tile flag"><div class="wk">Open flags</div><div class="wv">1</div></div>
       </div>
-      <p class="wr-feed">Fed automatically: <b>RSVPs + check-ins from the member app</b>, the confirmation from external comms, receipts from finance. The one open flag — a missing vendor receipt — is already paged to the owner. <b>No one was asked for an update.</b></p>
+      <p class="wr-feed">Fed automatically: <b>RSVPs + check-ins from the member app</b>, the confirmation from external comms, receipts from finance. After the capacity cut to 50, the 3 over-cap RSVPs were flagged for the waitlist; the open flag — a missing vendor receipt — is paged to the owner. <b>No one was asked for an update.</b></p>
     </div>
   </div>
 
